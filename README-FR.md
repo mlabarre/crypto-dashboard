@@ -172,7 +172,7 @@ sudo docker-compose up -d
 ![Demo Onglet Evolution](demo/evolution.png?raw=true)
 ![Demo Onglet Cryptos](demo/cryptos.png?raw=true)
 ![Demo Onglet Wallets](demo/wallets.png?raw=true)
-![Demo Onglet Ajout de transaction](demo/addTransaction.png?raw=true)
+![Demo Onglet Ajout de transaction](demo/addtransaction.png?raw=true)
 ![Demo Onglet Transactions](demo/transactions.png?raw=true)
 
 
