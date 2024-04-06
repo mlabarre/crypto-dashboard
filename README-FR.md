@@ -1,3 +1,5 @@
+![Demo Onglet Evolution](demo/evolution.png?raw=true)
+
 # crypto-dashboard
 
 Ce projet me sert à gérer un peu plus efficacement mes transactions en crypto-monnaies.
@@ -169,7 +171,6 @@ sudo docker-compose up -d
 ## Screenshots
 
 ![Demo Onglet Portfolio](demo/portfolio.png?raw=true)
-![Demo Onglet Evolution](demo/evolution.png?raw=true)
 ![Demo Onglet Cryptos](demo/cryptos.png?raw=true)
 ![Demo Onglet Wallets](demo/wallets.png?raw=true)
 ![Demo Onglet Ajout de transaction](demo/addtransaction.png?raw=true)
