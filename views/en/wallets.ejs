@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Wallets</title>
+    <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/utils.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subcontainer {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .bloc {
+            height: 1000px;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+
+        .ctable {
+            overflow-y: scroll;
+            height: 1000px;
+            display: block;
+        }
+
+        .button-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action {
+            cursor: pointer;
+        }
+
+        .filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .input {
+            border-radius: 10px;
+            display: flex;
+            margin-right: 30px;
+            height: 30px;
+        }
+
+        .label-top {
+            flex-direction: column;
+        }
+
+        .form {
+            margin-top:30px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="form">
+
+
+    <div id="container" class="container">
+
+        <div w3-include-html="/html/en/header.html"></div>
+
+        <div class="subcontainer">
+
+            <div id="mywallets">
+                <table id="mywalletsTable" class="styled-table">
+                    <thead>
+                    <th>Name</th>
+                    <th>Icon</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="button-box">
+                    <input class="button" type="button" id="buttonInput" value="Add a wallet">
+                </div>
+            </div>
+
+            <div id="newWallet" class="form">
+                <label for="walletName">Wallet name</label>
+                <input class="input" type="text" id="walletName">
+                <div class="label-top form">
+                    <label for="walletIcon">Load an icon</label>
+                    <input type="file" id="walletIcon" accept="image/png"/>
+                </div>
+                <button type="button" class="button" id="buttonAdd">Add</button>
+
+            </div>
+
+            <div>
+                <span id="message"></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    let fill = (data) => {
+        $('#mywalletsTable').find('tbody tr').remove();
+        for (let i=0; i<data.length; i++) {
+            let row = `<tr><td>${data[i].wallet}</td><td>${getIconsHtml(data[i].wallet)}</td></tr>`
+            $('#mywalletsTable').append(row);
+        }
+    }
+    let getWallets = () => {
+        $.ajax(
+            {
+                type: "GET",
+                url: "/api/get-wallets-name",
+                contentType: "application/json; charset=utf-8"
+            })
+            .done((data) => {
+                fill(data);
+            })
+            .fail((error) => {
+                $('#message').text('error');
+            })
+    }
+
+    let hideForm = () => {
+        $('#newWallet').hide();
+    }
+
+    let showForm = () => {
+        $('#newWallet').show();
+    }
+
+    let init = () => {
+        hideForm();
+        $('#buttonInput').on('click', () => {
+            showForm();
+        });
+        $('#buttonAdd').on('click', () => {
+            let uploadedFiles = document.querySelector('#walletIcon');
+            let name = $('#walletName').val();
+            if (uploadedFiles.files.length === 0 || name === "") {
+                alert('Please choose a wallet name and an icon in PNG format');
+                return;
+            }
+            let file = uploadedFiles.files[0];
+            let fdata = new FormData();
+            fdata.append('walletIcon', file);
+            fdata.append('walletName', name);
+            let request = new XMLHttpRequest();
+            request.onreadystatechange = () => {
+                if (request.readyState === 4 && request.status === 200) {
+                    getWallets();
+                    hideForm();
+                } else {
+                    $('#message').val(`Error status : ${request.status}`)
+                }
+            }
+            request.open('post', '/api/add-wallet');
+            request.send(fdata);
+        });
+        getWallets();
+        return 1;
+    }
+
+    includeHTML("h-wallet");
+
+    $(() => {
+        init()
+    })
+
+</script>
+</body>
+</html>

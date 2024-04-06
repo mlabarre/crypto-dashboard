@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptos</title>
+    <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/utils.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <style>
+         .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subcontainer {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            flex-flow: row;
+            justify-content: center;
+        }
+
+        .bloc {
+            height: 1000px;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+        .ctable {
+            overflow-y:scroll;
+            height:1000px;
+            display:block;
+        }
+
+        .button-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action {
+            cursor: pointer;
+        }
+
+        .filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+         .input {
+             border-radius: 10px;
+             display: flex;
+             margin-right: 30px;
+             height: 30px;
+         }
+         .button-filter {
+             margin-top: 0;
+             margin-right: 30px;
+         }
+
+    </style>
+</head>
+<body>
+
+<form id="form">
+
+
+    <div id="container" class="container">
+
+        <div w3-include-html="/html/fr/header.html"></div>
+
+        <div class="filter cond">
+            <input class="input" type="text" id="criteria">
+            <button type="button" class="button button-filter" onclick="filterAvailable();">Filtrer</button>
+            <button type="button" class="button button-filter" onclick="resetFilterAvailable();">Supprimer le filtre</button>
+        </div>
+
+        <div class="subcontainer">
+            <div id="myCryptos">
+                <table id="myCryptosTable" class="styled-table">
+                    <thead>
+                    <th>Id</th>
+                    <th>Symbol</th>
+                    <th>Nom</th>
+                    <th></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="button-box">
+                    <input class="button" type="button" onclick="changeButtonList(this)" name="buttonList"
+                           id="buttonList"
+                           value="Afficher les cryptos dispo">
+                </div>
+            </div>
+
+             <div id="availableCryptos" class="bloc cond">
+                <div class="bloc">
+                    <table id="availableCryptosTable" class="styled-table ctable">
+                        <thead>
+                        <th></th>
+                        <th>Id</th>
+                        <th>Symbol</th>
+                        <th>Nom</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <span id="message"></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    let availableCryptoShown = false;
+
+    let myCryptosList = null;
+
+    let sortArray = (a, b) => {
+        if (a.id < b.id) return -1;
+        else if (a.id > b.id) return 1;
+        else return 0;
+    }
+    let getIndexInArray = (arr, o) => {
+        return arr.findIndex(crypto => crypto.id === o.id && crypto.symbol === o.symbol && crypto.name === o.name);
+    }
+    let addMyCryptosRow = (row) => {
+        let r = `<tr><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" onclick="suppressMyCrypto(this)"><span class="indic-moins">-</span></td></tr>`
+        $('#myCryptosTable').append(r);
+    }
+
+    let buildMyCryptos = () => {
+        $('#myCryptosTable').find('tbody tr').remove();
+        myCryptosList.sort(sortArray)
+        for (let i = 0; i < myCryptosList.length; i++) {
+            addMyCryptosRow(myCryptosList[i]);
+        }
+    }
+
+    let getMyCryptos = async () => {
+        return $.ajax(
+            {
+                type: "GET",
+                url: "/api/get-my-cryptos",
+                contentType: "application/json; charset=utf-8"
+            })
+
+    }
+
+    let availableCryptosList = null;
+
+    let filterAvailable = () => {
+        let criteria = $('#criteria').val();
+        $('#availableCryptosTable').find('tbody').find('tr').each( (r,raw) => {
+            if (raw.children[1].textContent.indexOf(criteria) < 0 && raw.children[2].textContent.indexOf(criteria) < 0) {
+                raw.hidden = true;
+            }
+        })
+    }
+    let resetFilterAvailable = () => {
+        $('#availableCryptosTable').find('tbody').find('tr').each( (r,raw) => {
+            raw.hidden = false;
+        })
+        $('#criteria').val("");
+    }
+    let addAvailableCryptosRow = async (row) => {
+        let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td></tr>`
+        $('#availableCryptosTable').append(r);
+    }
+
+    let removeMyCryptosFromAvailableCryptos = async () => {
+        for (let i = 0; i < myCryptosList.length; i++) {
+            let index = getIndexInArray(availableCryptosList, myCryptosList[i]);
+            availableCryptosList.splice(index, 1);
+        }
+    }
+    let buildAvailableCryptos = async (sortToDo) => {
+        document.getElementsByTagName('body')[0].style.cursor = 'wait';
+        $('#availableCryptosTable').find('tbody tr').remove();
+        if (sortToDo) availableCryptosList.sort(sortArray);
+        await removeMyCryptosFromAvailableCryptos();
+        for (let i = 0; i < availableCryptosList.length; i++) {
+            await addAvailableCryptosRow(availableCryptosList[i]);
+        }
+        if ($('#criteria').val() !== "") {
+            filterAvailable();
+        }
+    }
+
+    let getAvailableCryptos = async () => {
+        return $.ajax(
+            {
+                type: "GET",
+                url: "/api/get-available-cryptos",
+                contentType: "application/json; charset=utf-8"
+            })
+    }
+    let changeButtonList = (o) => {
+        if (availableCryptoShown === true) {
+            o.value = "Afficher les cryptos dispo";
+            availableCryptoShown = false;
+            $('.cond').hide();
+        } else {
+            buildAvailableCryptos(true).then( () => {
+                document.getElementsByTagName('body')[0].style.cursor = 'default';
+                o.value = "Cacher les cryptos dispo";
+                availableCryptoShown = true;
+                $('.cond').show();
+            })
+        }
+    }
+    let addToCollection = (crypto) => {
+        return $.ajax(
+            {
+                type: "POST",
+                url: "/api/add-to-my-cryptos",
+                contentType: "application/json; charset=utf-8",
+                data: crypto
+            })
+    }
+    let removeFromCollection = (crypto) => {
+        return $.ajax(
+            {
+                type: "DELETE",
+                url: `/api/delete-from-my-cryptos?id=${crypto.id}&symbol=${crypto.symbol}&name=${crypto.name}`,
+                contentType: "application/json; charset=utf-8"
+            })
+    }
+    let addMyCrypto = (o) => {
+        let children = o.closest("tr").children;
+        let crypto = {"id": children[1].innerText, "symbol": children[2].innerText, "name": children[3].innerText}
+        let index = getIndexInArray(availableCryptosList, crypto);
+        if (index >= 0) {
+            availableCryptosList.splice(index, 1);
+            myCryptosList.push(crypto);
+            addToCollection(JSON.stringify(crypto)).then((data) => {
+            }).fail((error) => {
+                console.log(error)
+            });
+            buildAvailableCryptos(false).then( () => {
+                document.getElementsByTagName('body')[0].style.cursor = 'default';
+                buildMyCryptos();
+                alert(`Crypto ${crypto.name} ajoutée`)
+            })
+        } else {
+            alert("Erreur. L'item n'existe pas dans availableCryptos")
+        }
+    }
+    let suppressMyCrypto = (o) => {
+        let children = o.closest("tr").children;
+        let crypto = {"id": children[0].innerText, "symbol": children[1].innerText, "name": children[2].innerText}
+        let indexAvailable = getIndexInArray(availableCryptosList, crypto);
+        let indexMy = getIndexInArray(myCryptosList, crypto);
+        if (indexAvailable >= 0) {
+            alert("Erreur. Item existe déjà dans myCryptos : " + JSON.stringify(availableCryptosList[indexAvailable]));
+        } else {
+            myCryptosList.splice(indexMy, 1);
+            availableCryptosList.push(crypto);
+            removeFromCollection(crypto).then((data) => {
+            }).fail((error) => {
+                console.log(error)
+            });
+            buildMyCryptos();
+            buildAvailableCryptos(true).then( () => {
+                document.getElementsByTagName('body')[0].style.cursor = 'default';
+            })
+        }
+    }
+    let init = () => {
+        $('.cond').hide();
+        getMyCryptos().then((data) => {
+            myCryptosList = data;
+            buildMyCryptos();
+        });
+        getAvailableCryptos().then((data) => {
+            availableCryptosList = data;
+            buildAvailableCryptos(true).then( () => {
+                document.getElementsByTagName('body')[0].style.cursor = 'default';
+            })
+        });
+        return 1;
+    }
+
+    includeHTML("h-cryptos");
+
+    $(() => { init() })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  dashboard:
+    image: crypto-dashboard
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+  updater:
+    image: crypto-updater
+    build: ../crypto-updater
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - /datas/mongodb:/data/db
+    ports:
+      - "27017:27017"
+

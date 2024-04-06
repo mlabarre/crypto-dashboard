@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio</title>
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    <script src="/javascripts/utils.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <style>
+        .container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-direction: column;
+            width: 100%;
+            min-width: 600px;
+        }
+
+        .sub-container {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            min-width: 600px;
+        }
+
+        .col2 {
+            margin-left: 30px;
+        }
+        .num {
+            text-align: right;
+        }
+        .total {
+            font-weight: bold;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div w3-include-html="/html/fr/header.html"></div>
+    <div class="title">
+        Balance:  <span id="balance"></span>&nbsp;<%= fiat_symbol %>&nbsp;&nbsp;&nbsp;<span id="date"></span>
+    </div>
+    <div id="container" class="sub-container">
+
+        <div class="col1">
+            <table id="cryptosPerWallet" class="styled-table">
+                <thead>
+                    <th>Wallet</th>
+                    <th>Token</th>
+                    <th class="num"># tokens</th>
+                    <th class="num">Valeur <%= fiat_symbol %></th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="col2">
+            <table id="cryptosPerToken" class="styled-table">
+                <thead>
+                    <th>Token</th>
+                    <th class="num"># tokens</th>
+                    <th class="num">Valeur <%= fiat_symbol %></th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    let setDate = () => {
+        document.getElementById('date').innerHTML = getFormattedDate();
+    }
+
+    let buildRowPerWallet = (crypto, first) => {
+        let row;
+        if (crypto.token === "") {
+            row = `<tr><td></td><td></td><td class="num total">Total</td>`+
+                `<td class="num total">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
+        } else {
+            let wallet = first ? getIconsHtml(crypto.wallet) + '&nbsp;&nbsp;<span>' + crypto.wallet : '';
+            row = `<tr><td>${wallet}</span></td><td>${crypto.token}</td>` +
+                `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4))}</td>`+
+                `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
+        }
+        $('#cryptosPerWallet').append(row);
+    }
+
+    let buildRowPerToken= (crypto) => {
+        let wallets = crypto.wallets.split(",");
+        let images = "";
+        for (let i=0; i<wallets.length; i++) {
+            images += getIconsHtml(wallets[i]);
+        }
+        let row = `<tr><td>${crypto.token} ${images}</td>`+
+            `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4))}</td>`+
+            `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
+        $('#cryptosPerToken').append(row);
+    }
+
+    let display = (jsonData) => {
+        $('#cryptosPerWallet').find('tbody tr').remove()
+        $('#cryptosPerToken').find('tbody tr').remove()
+        let currentWallet = "";
+        $('#balance').text(formatDelim(((jsonData.total * 100) / 100).toFixed(2)));
+        for (let i = 0; i < jsonData.perWallet.length; i++) {
+            let crypto = jsonData.perWallet[i];
+            if (currentWallet !== crypto.wallet) {
+                currentWallet = crypto.wallet;
+                buildRowPerWallet(crypto, true);
+            } else {
+                buildRowPerWallet(crypto, false);
+            }
+        }
+        for (let i = 0; i < jsonData.perToken.length; i++) {
+            let crypto = jsonData.perToken[i];
+                buildRowPerToken(crypto);
+        }
+    }
+    let getTokens = () => {
+        $.ajax(
+            {
+                type: "GET",
+                url: "/api/portfolio",
+                contentType: "application/json; charset=utf-8",
+                accept: "application/json; charset=utf-8"
+            })
+            .done((data) => {
+                display(data);
+            })
+            .fail((error) => {
+                alert(error);
+            })
+    }
+
+    includeHTML("h-portfolio");
+
+    let reload = () => {
+        getTokens();
+        setDate();
+    }
+    let refresh = "<%= refresh %>";
+
+    let init = () => {
+        reload();
+        setInterval(reload, parseInt(refresh) * 1000);
+    }
+    $(() => { init() })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+    <title>Evolution</title>
+    <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/utils.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <style>
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sub-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-direction: column;
+            width: 100%;
+            min-width: 600px;
+        }
+
+        .num {
+            text-align: right;
+        }
+
+        .rate {
+            text-align: center;
+        }
+
+        .title-left {
+            text-align: left
+        }
+
+        * {
+            font-family: Helvetica, sans-serif;
+        }
+
+        .title-data {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 18px;
+        }
+
+       .title {
+            flex: 1;
+            margin: 20px 20px;
+        }
+        .up {
+            color: #2d9112;
+        }
+
+        .down {
+            color: red;
+        }
+
+        .icon {
+            height: 25px
+        }
+
+        .sizeup {
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sizedown {
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div w3-include-html="/html/en/header.html"></div>
+
+    <div class="sub-container">
+        <div class="title">
+            <span class="title-text">Balance: </span><span id="amount" class="title-data"></span>
+            <span class="title-text"> <%= fiat_symbol %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variation: </span>
+            <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;
+            <span id="sizeup" class="sizeup">A</span>&nbsp;<span id="sizedown" class="sizedown">A</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="date"></span>
+        </div>
+
+        <table id="cryptos" class="styled-table">
+            <thead>
+            <th class="title-left clickable" onclick="sortTable('name')">Crypto</th>
+            <th class="title-left clickable" onclick="sortTable('symbol')">Symbol</th>
+            <th class="num clickable" onclick="sortTable('start_price')">Price <%= fiat_symbol %> purchase</th>
+            <th class="num clickable" onclick="sortTable('start_price_usdt')">Price USDT purchase</th>
+            <th class="num clickable" onclick="sortTable('quotation\n')">Quotation <%= fiat_symbol %></th>
+            <th class="num clickable" onclick="sortTable('quotation_usdt\n')">Quotation USDT</th>
+            <th class="num clickable" onclick="sortTable('tokens')">Tokens</th>
+            <th class="num clickable" onclick="sortTable('value')">Value <%= fiat_symbol %></th>
+            <th class="clickable" onclick="sortTable('variation')">Evol./puchase</th>
+            <th class="clickable" onclick="sortTable('variation_on_five_minutes')">Evol./5mn</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1 hour</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24 hours</th>
+            <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    let lastSortField = "variation";
+    let lastSortDirection = "D";
+    let fontSize = 16;
+
+    let setDate = () => {
+        document.getElementById('date').innerHTML = getFormattedDate();
+    }
+
+    let signRate = (rate) => {
+        if (rate.indexOf("-") >= 0) {
+            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ",") + ' %' + '</span>';
+        } else {
+            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ",") + ' %' + '</span>';
+        }
+    }
+
+    let setBalance = (balance) => {
+        $('#amount').text(formatDelim(balance.amount.toFixed(2)));
+        $('#variation').html(signRate(balance.variation.toFixed(2)));
+    }
+
+    let fill = (data) => {
+        let tokens = data.result.tokens;
+        $.each(tokens, (no) => {
+            let coin = tokens[no];
+            if (coin.id !== "N/A") {
+                $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
+                    '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8)) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8)) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8)) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8)) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
+                    '<td class="num">' + formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + signRate(((coin.variation * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
+                    '</tr>');
+            } else {
+                $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td><td colspan="10">` +
+                    `ICO or not yet listed or not declared in the Cryptos tab</td><td class="rate">${getIconsHtml(coin.wallet)}</td></tr>`)
+            }
+        })
+
+        setBalance(data.result.balance)
+    }
+
+    let sortTable = (sortField) => {
+        if (sortField === lastSortField) {
+            lastSortDirection = lastSortDirection === "A" ? "D" : "A";
+        }
+        lastSortField = sortField;
+        getDatas();
+    }
+
+    let getDatas = () => {
+        $('#cryptos').find('tbody tr').remove()
+        $.ajax(
+            {
+                url: "/api/evolution?sortField=" + lastSortField + "&sortDirection=" + lastSortDirection,
+                method: "GET",
+                dataType: "json",
+                success: (data) => {
+                    fill(data);
+                },
+                error: (xhr, status, error) => {
+                    console.log(error)
+                }
+            }
+        )
+    }
+
+    let reload = () => {
+        getDatas();
+        setDate();
+    }
+
+    let changeFontSize = (direction) => {
+        if (direction === "up") {
+            fontSize += 1;
+        } else {
+            if (fontSize >= 6) {
+                fontSize -= 1;
+            }
+        }
+        document.getElementsByTagName("body")[0].style["font-size"] = fontSize + "px";
+    }
+
+    let refresh = "<%= refresh %>";
+
+    let init = () => {
+        reload();
+        setInterval(reload, parseInt(refresh) * 1000);
+
+        $('#sizeup').on('click', () => {
+            changeFontSize('up');
+        });
+        $('#sizedown').on('click', () => {
+            changeFontSize('down');
+        });
+        return 1;
+    }
+
+    includeHTML("h-evolution");
+
+
+    $(() => { init() })
+</script>
+
+</html>
+
