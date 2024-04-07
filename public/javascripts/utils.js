@@ -39,7 +39,6 @@ let includeHTML = async (classTag) => {
                         }
                         element.removeAttribute("w3-include-html");
                         includeHTML(classTag).then(()=>{
-                            console.log("inner includeHTML", document.getElementById('darkmode'));
                             resolve('ok');});
                     }
                 }
@@ -48,7 +47,6 @@ let includeHTML = async (classTag) => {
                 return resolve;
             }
         }
-        console.log("before resolve and return", document.getElementById('darkmode'));
         resolve('ok');
     });
 
