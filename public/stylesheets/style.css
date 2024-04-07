@@ -74,6 +74,7 @@ a {
 
 .current {
   background-color: black !important;
+  color: antiquewhite !important;
 }
 
 .title {
@@ -88,7 +89,7 @@ a {
 }
 
 .bloc-menu {
-  color: antiquewhite;
+  color: black;
   display: flex;
   margin: 0px 10px;
   padding: 8px 15px;
