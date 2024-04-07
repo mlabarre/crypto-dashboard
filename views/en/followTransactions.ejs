@@ -5,7 +5,7 @@
     <title>Transactions tracking</title>
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <link rel='stylesheet' href='/stylesheets/all.min.css'/>
     <style>
         .container {
@@ -47,13 +47,6 @@
             background-color: antiquewhite;
         }
 
-        .red {
-            color: red;
-        }
-
-        .green {
-            color: green;
-        }
 
     </style>
 </head>
@@ -213,11 +206,11 @@
             })
     }
     let init = () => {
-        $('#headerCol').click(() => {
+        $('#headerCol').on('click', () => {
             sortDirection = (sortDirection === "A" ? "D" : "A");
             getDatas();
         })
-        $('#validation').click(() => {
+        $('#validation').on('click', () => {
             getDatas();
         });
         if (returnedSortDirection !== "") {
@@ -230,7 +223,9 @@
         setWallets();
     }
 
-    includeHTML("h-follow");
+    includeHTML("h-follow").then( () => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 
     $(() => {
         init()

@@ -9,6 +9,7 @@ body {
   background-color: black;
   color: antiquewhite;
   font-size: 16px;
+  font-weight: lighter;
 }
 
 a {
@@ -85,8 +86,8 @@ a {
 .bloc-menu {
   color: antiquewhite;
   display: flex;
-  margin: 0px 20px;
-  padding: 5px 15px;
+  margin: 0px 10px;
+  padding: 8px 15px;
   border: 1px solid cadetblue;
   border-radius: 10px;
   background-color: cadetblue;
@@ -127,4 +128,65 @@ select {
   color: black;
 }
 
+.red {
+  color: red;
+}
 
+.green {
+  color: green;
+}
+
+.button {
+  font-weight: lighter;
+  padding: 10px 10px;
+}
+
+.switch {
+  display: inline-block;
+  position: relative;
+  width: 70px;
+  height: 35px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.switch input {
+  position: absolute;
+  top: -10px;
+  left: -30px;
+  width: 0;
+  height: 0;
+}
+
+.switch input + span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: cadetblue;
+  border-radius: 20px;
+}
+
+.switch input:checked + span {
+  background: black;
+  border: 1px solid cadetblue;
+}
+
+.switch input + span:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: all .5s;
+}
+
+.switch input:checked + span:before {
+  left: 39px;
+}

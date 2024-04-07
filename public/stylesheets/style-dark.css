@@ -1,0 +1,201 @@
+
+* {
+    font-family: Helvetica, sans-serif;
+}
+
+
+body {
+    font: 14px Helvetica, Arial, sans-serif;
+    background-color: black;
+    color: antiquewhite;
+    font-size: 16px;
+    font-weight: lighter;
+}
+
+a {
+    color: #00B7FF;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: auto auto;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: black;
+    color: cadetblue;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 4px 15px;
+}
+
+.styled-table th {
+    background-color: cadetblue;
+    color: black;
+    font-weight: normal;
+    border-left: 1px solid cadetblue;
+}
+
+.styled-table tbody tr {
+    border: 1px solid cadetblue;
+    color: cadetblue;
+    background-color: black;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: black;
+    color: cadetblue;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 1px solid cadetblue;
+}
+
+.button {
+    font-size: 18px;
+    padding: 3px 10px;
+    font-weight: normal;
+    border: solid 1px cadetblue;
+    background-color: black;
+    border-radius: 10px;
+    color: cadetblue;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.return-button {
+    margin-left: 30px;
+    margin-top: 0px;
+}
+
+.current {
+    background-color: black !important;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.container-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.bloc-menu {
+    color: antiquewhite;
+    display: flex;
+    margin: 0px 10px;
+    padding: 8px 15px;
+    border: 1px solid cadetblue;
+    border-radius: 10px;
+    background-color: cadetblue;
+    cursor: pointer;
+}
+
+.icon {
+    height: 25px;
+    vertical-align: middle;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.indic-moins, .indic-plus {
+    font-weight: bold;
+    font-size: 14px;
+}
+.indic-moins {
+    color: red;
+}
+
+.indic-plus {
+    color: green;
+}
+
+select {
+    min-height: 25px;
+}
+.button-inline {
+    font-size: 18px;
+    padding: 3px 10px;
+    font-weight: normal;
+    border: solid 1px black;
+    background-color: cadetblue;
+    border-radius: 10px;
+    color: black;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.button {
+    font-weight: lighter;
+    padding: 10px 10px;
+}
+
+.switch {
+    display: inline-block;
+    position: relative;
+    width: 70px;
+    height: 35px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.switch input {
+    position: absolute;
+    top: -10px;
+    left: -30px;
+    width: 0;
+    height: 0;
+}
+
+.switch input + span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: cadetblue;
+    border-radius: 20px;
+}
+
+.switch input:checked + span {
+    background: black;
+    border: 1px solid cadetblue;
+}
+
+.switch input + span:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 26px;
+    height: 26px;
+    background: white;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: all .5s;
+}
+
+.switch input:checked + span:before {
+    left: 39px;
+}
+
+

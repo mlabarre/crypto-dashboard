@@ -5,7 +5,7 @@
     <title>Portfolio</title>
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
     <script src="/javascripts/utils.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <style>
         .container {
             display: flex;
@@ -139,7 +139,9 @@
             })
     }
 
-    includeHTML("h-portfolio");
+    includeHTML("h-portfolio").then( () => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 
     let reload = () => {
         getTokens();

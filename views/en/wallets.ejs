@@ -5,7 +5,7 @@
     <title>Wallets</title>
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <style>
         .container {
             display: flex;
@@ -173,7 +173,9 @@
         return 1;
     }
 
-    includeHTML("h-wallet");
+    includeHTML("h-wallet").then( () => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 
     $(() => {
         init()

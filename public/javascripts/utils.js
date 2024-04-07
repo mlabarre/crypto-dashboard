@@ -20,28 +20,38 @@ let formatDelim = (value) => {
 }
 
 // From W3schools.com
-function includeHTML(classTag) {
-    let z, i, element, file, xhttp;
-    z = document.getElementsByTagName("*");
-    for (i = 0; i < z.length; i++) {
-        element = z[i];
-        file = element.getAttribute("w3-include-html");
-        if (file) {
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState === 4) {
-                    if (this.status === 200) {
-                        element.innerHTML = this.responseText.replace(classTag, "current")}
-                    if (this.status === 404) {element.innerHTML = "Page not found.";}
-                    element.removeAttribute("w3-include-html");
-                    includeHTML(classTag);
+let includeHTML = async (classTag) => {
+    return new Promise( (resolve) => {
+        let z, i, element, file, xhttp;
+        z = document.getElementsByTagName("*");
+        for (i = 0; i < z.length; i++) {
+            element = z[i];
+            file = element.getAttribute("w3-include-html");
+            if (file) {
+                xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4) {
+                        if (this.status === 200) {
+                            element.innerHTML = this.responseText.replace(classTag, "current")
+                        }
+                        if (this.status === 404) {
+                            element.innerHTML = "Page not found.";
+                        }
+                        element.removeAttribute("w3-include-html");
+                        includeHTML(classTag).then(()=>{
+                            console.log("inner includeHTML", document.getElementById('darkmode'));
+                            resolve('ok');});
+                    }
                 }
+                xhttp.open("GET", file, true);
+                xhttp.send();
+                return resolve;
             }
-            xhttp.open("GET", file, true);
-            xhttp.send();
-            return;
         }
-    }
+        console.log("before resolve and return", document.getElementById('darkmode'));
+        resolve('ok');
+    });
+
 }
 
 let getIconsHtml = (wallet) => {
@@ -80,6 +90,35 @@ const getDateFromDate = (d) => {
 
 const getTimeFromDate = (d) => {
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+const toggleDarkMode = (checked) => {
+    console.log("set theme for", checked)
+    const theme = document.querySelector("#theme");
+    if (checked === true) {
+        theme.href = "/stylesheets/style-dark.css";
+    } else {
+        theme.href = "/stylesheets/style.css";
+    }
+}
+const handleDarkMode = (checkbox) => {
+    console.log('handle')
+    let wls = window.localStorage;
+    let mode = "false";
+    if (wls && wls.getItem("darkmode")) {
+        mode = wls.getItem("darkmode") === 'true';
+        toggleDarkMode(mode);
+        console.log("set to", mode);
+        $('#darkmode').attr('checked', mode);
+    }
+    checkbox.addEventListener('click', () => {
+        console.log('click')
+        let checked = document.getElementById('darkmode').checked;
+        toggleDarkMode(checked);
+        if (wls) {
+            wls.setItem('darkmode', checked);
+        }
+    });
 }
 
 

@@ -5,7 +5,7 @@
     <title>Cryptos</title>
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <style>
          .container {
             display: flex;
@@ -82,7 +82,7 @@
                 <table id="myCryptosTable" class="styled-table">
                     <thead>
                     <th>Id</th>
-                    <th>Symbol</th>
+                    <th>Symbole</th>
                     <th>Nom</th>
                     <th></th>
                     </thead>
@@ -101,7 +101,7 @@
                         <thead>
                         <th></th>
                         <th>Id</th>
-                        <th>Symbol</th>
+                        <th>Symbole</th>
                         <th>Nom</th>
                         </thead>
                         <tbody></tbody>
@@ -287,7 +287,9 @@
         return 1;
     }
 
-    includeHTML("h-cryptos");
+    includeHTML("h-cryptos").then( () => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 
     $(() => { init() })
 

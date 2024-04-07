@@ -5,7 +5,7 @@
     <title>Evolution</title>
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <style>
 
         .container {
@@ -224,7 +224,9 @@
         return 1;
     }
 
-    includeHTML("h-evolution");
+    includeHTML("h-evolution").then( () => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 
 
     $(() => { init() })
