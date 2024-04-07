@@ -58,6 +58,9 @@ a {
     border-bottom: 1px solid cadetblue;
 }
 
+.styled-table tr:hover td {
+    background-color: #202020;
+}
 .button {
     font-size: 18px;
     padding: 3px 10px;
