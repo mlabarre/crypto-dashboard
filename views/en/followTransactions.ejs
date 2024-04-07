@@ -96,11 +96,12 @@
     let returnedToken = "<%= token %>";
     let returnedWallet = "<%= wallet %>";
 
+
     let fill = (data) => {
         $.each(data, (line) => {
             let row = `<tr><td style="display:none">${data[line].id}</td><td>${data[line].msg}</td>`;
-            row += `<td><i onclick="deleteTransaction('${data[line].id}')" class="fa-regular fa-trash-can red"></i></td>`
-            row += `<td><i onclick="editTransaction('${data[line].id}')" class="fas fa-edit green"></i></td>`
+            row += `<td><i onclick="deleteTransaction('${data[line].id}')" class="fa-regular fa-trash-can red" title="Remove this transaction"></i></td>`
+            row += `<td><i onclick="editTransaction('${data[line].id}')" class="fas fa-edit green" title="Modify this transaction"></i></td>`
             row += '</tr>';
             $('#transactions').append(row);
         })

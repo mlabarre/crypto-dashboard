@@ -131,7 +131,7 @@
         return arr.findIndex(crypto => crypto.id === o.id && crypto.symbol === o.symbol && crypto.name === o.name);
     }
     let addMyCryptosRow = (row) => {
-        let r = `<tr><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" onclick="suppressMyCrypto(this)"><span class="indic-moins">-</span></td></tr>`
+        let r = `<tr><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" onclick="suppressMyCrypto(this)"><span class="indic-moins" title="Supprimer de mes cryptos">-</span></td></tr>`
         $('#myCryptosTable').append(r);
     }
 
@@ -170,7 +170,7 @@
         $('#criteria').val("");
     }
     let addAvailableCryptosRow = async (row) => {
-        let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td></tr>`
+        let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus" title="Ajouter à mes cryptos">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td></tr>`
         $('#availableCryptosTable').append(r);
     }
 
