@@ -93,7 +93,7 @@ class MongoHelper {
     findAllMyCryptos = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").find({}).toArray();
+            return await this.dbo.collection("my-cryptos").find({}).sort({symbol:1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
