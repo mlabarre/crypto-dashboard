@@ -102,6 +102,7 @@ a {
 .icon {
   height: 25px;
   vertical-align: middle;
+  margin-right: 2px;
 }
 
 .clickable {
@@ -169,8 +170,9 @@ select {
   bottom: 0;
   left: 0;
   right: 0;
-  background: cadetblue;
+  background: black;
   border-radius: 20px;
+  border: 1px solid cadetblue;
 }
 
 .switch input:checked + span {
@@ -186,7 +188,7 @@ select {
   left: 4px;
   width: 26px;
   height: 26px;
-  background: white;
+  background: cadetblue;
   border-radius: 50%;
   transform: translateY(-50%);
   transition: all .5s;
@@ -194,4 +196,8 @@ select {
 
 .switch input:checked + span:before {
   left: 39px;
+}
+
+.message {
+  color: antiquewhite;
 }

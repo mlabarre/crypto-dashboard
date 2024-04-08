@@ -22,6 +22,7 @@
             flex-direction: column;
             width: 100%;
             min-width: 600px;
+            color: black;
         }
 
         .input {
@@ -68,10 +69,6 @@
 
         .label-top {
             flex-direction: column;
-        }
-
-        body {
-            color: black;
         }
 
         select {
@@ -372,7 +369,7 @@
             </div>
 
             <div>
-                <span id="message"></span>
+                <span id="message" class="message"></span>
             </div>
         </form>
     </div>
@@ -462,6 +459,26 @@
         return msg;
     }
 
+    let coherenceControl = () => {
+        let msg = "";
+        // SWAP : tokens must differ
+        let input = $('#swapInputTokenIdIco').val();
+        if (input === '') {
+            input = $('#swapInputTokenId option:selected').val();
+        }
+        let output = $('#swapOutputTokenIdIco').val();
+        if (output === '') {
+            output = $('#swapOutputTokenId option:selected').val();
+        }
+        if (input.toUpperCase() === output.toUpperCase()) {
+            msg = "Pour un swap, le tokens doivent être différents !"
+        }
+        // SEND : wallet must differ
+        if ($('#sendWallet option:selected').val() === $('#receiveWallet option:selected').val()) {
+            msg = "Les wallets doivent être différents !"
+        }
+        return msg;
+    }
     let validateFields = (prefix) => {
         let formData = document.querySelector(('form'));
         for (let i = 0; i < formData.length; i++) {
@@ -595,8 +612,9 @@
         $('#validation').on('click', () => {
             let type = document.getElementById('type');
             let msg = validateFields(type.value);
-            if (msg !== '') {
-                $('#message').text(msg);
+            let msg2 = coherenceControl();
+            if (msg !== '' || msg2 !== '') {
+                $('#message').text(msg+msg2);
             } else {
                 $('#message').text('');
                 let formData = document.querySelector(('form'));

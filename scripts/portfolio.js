@@ -67,7 +67,8 @@ let getCryptoQuotation = (symbol, cryptos) => {
 
 let valorize = (tokens, mycryptos) => {
     for (let i=0; i<tokens.length; i++) {
-        tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos)).toFixed(2)
+        tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos))
+        //tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos)).toFixed(2)
     }
     return tokens;
 }
@@ -88,7 +89,7 @@ let buildValuePerToken = (tokens) => {
         if (t != null) {
             t.value += parseFloat(tokens[i].value);
             total += parseFloat(tokens[i].value);
-            t.nb += parseFloat(tokens[i].nb);
+            t.nb += parseFloat(tokens[i].nb.toFixed(4));
             if (t.wallets.indexOf(tokens[i].wallet)<0) {
                 t.wallets += ","+tokens[i].wallet;
             }
@@ -96,7 +97,7 @@ let buildValuePerToken = (tokens) => {
             tokensValue.push(
                 {
                     token: tokens[i].token,
-                    nb: tokens[i].nb,
+                    nb: parseFloat(tokens[i].nb.toFixed(4)),
                     value: parseFloat(tokens[i].value),
                     wallets: tokens[i].wallet
                 });
@@ -160,9 +161,9 @@ summary = async () => {
 }
 
 /*
- DETAIL part.
+ EVOLUTION part.
  */
-let handleDetailTransaction = async (wallet, tr) => {
+let handleEvolutionTransaction = async (wallet, tr) => {
     if (tr.type === "purchase") {
         return await wallet.buyToken(tr.wallet, tr.symbol, tr.tokens, tr.date, tr.quotation);
     } else if (tr.type === "sale") {
@@ -176,7 +177,7 @@ let handleDetailTransaction = async (wallet, tr) => {
     }
 }
 
-let buildPortfolioDetails = (walletsTokens) => {
+let buildEvolution = (walletsTokens) => {
     let records = [];
     for (let i = 0; i < walletsTokens.length; i++) {
         let walletTokens = walletsTokens[i];
@@ -188,7 +189,7 @@ let buildPortfolioDetails = (walletsTokens) => {
                     "wallet": walletTokens.wallet,
                     "symbol": token.symbol,
                     "start_price": tokenAmount.purchasePrice,
-                    "tokens": tokenAmount.number,
+                    "tokens": parseFloat(tokenAmount.number).toFixed(4),
                 }
                 if (tokenAmount.number !== 0 && parseFloat(tokenAmount.number.toFixed(6)) > 0) {
                     records.push(record);
@@ -261,9 +262,9 @@ evolution = async (sortField = "symbol", sortDirection = "A") => {
     let wallet = new Wallet();
     let transactions = await new MongoHelper().findAllTransactions();
     for (let i = 0; i < transactions.length; i++) {
-        await handleDetailTransaction(wallet, transactions[i]);
+        await handleEvolutionTransaction(wallet, transactions[i]);
     }
-    let allTokens = buildPortfolioDetails(wallet.walletsTokens);
+    let allTokens = buildEvolution(wallet.walletsTokens);
     return await updateWithCurrentValues(allTokens, sortField, sortDirection);
 }
 
