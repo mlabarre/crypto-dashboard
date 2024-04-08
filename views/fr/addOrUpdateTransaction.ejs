@@ -462,20 +462,24 @@
     let coherenceControl = () => {
         let msg = "";
         // SWAP : tokens must differ
-        let input = $('#swapInputTokenIdIco').val();
-        if (input === '') {
-            input = $('#swapInputTokenId option:selected').val();
-        }
-        let output = $('#swapOutputTokenIdIco').val();
-        if (output === '') {
-            output = $('#swapOutputTokenId option:selected').val();
-        }
-        if (input.toUpperCase() === output.toUpperCase()) {
-            msg = "Pour un swap, le tokens doivent être différents !"
+        if ($('#type').val() === "swap") {
+            let input = $('#swapInputTokenIdIco').val();
+            if (input === '') {
+                input = $('#swapInputTokenId option:selected').val();
+            }
+            let output = $('#swapOutputTokenIdIco').val();
+            if (output === '') {
+                output = $('#swapOutputTokenId option:selected').val();
+            }
+            if (input.toUpperCase() === output.toUpperCase()) {
+                msg = "Pour un swap, le tokens doivent être différents !"
+            }
         }
         // SEND : wallet must differ
-        if ($('#sendWallet option:selected').val() === $('#receiveWallet option:selected').val()) {
-            msg = "Les wallets doivent être différents !"
+        if ($('#type').val() === "send") {
+            if ($('#sendWallet option:selected').val() === $('#receiveWallet option:selected').val()) {
+                msg = "Les wallets doivent être différents !"
+            }
         }
         return msg;
     }
