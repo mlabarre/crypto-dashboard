@@ -53,7 +53,7 @@
 
         .title {
             flex: 1;
-            margin: 20px 20px;
+            font-size: 24px;
         }
 
         .up {
@@ -106,7 +106,7 @@
             margin-right: 10px;
         }
 
-        .title, .text, .text-mini {
+        .text, .text-mini {
             color: cadetblue;
         }
 
@@ -116,10 +116,6 @@
             font-size: 14px;
             margin-left: 15px;
             margin-right: 15px;
-        }
-
-        .title {
-            font-size: 24px;
         }
 
         .cont-border {
@@ -142,6 +138,7 @@
             margin-top: 15px;
             margin-bottom: 15px;
         }
+
     </style>
 </head>
 
@@ -234,7 +231,7 @@
 
     let lastSortField = "variation";
     let lastSortDirection = "D";
-    let fontSize = 16;
+    let fontSize = 14;
     let globalAlert = false;
     let globalAlertValue;
     let allAlerts = [];
@@ -391,9 +388,9 @@
     let buildAlertIconHtml = (token) => {
         let html;
         if (globalAlert === true || findAlertInArray(token) !== undefined) {
-            html = `<i class="fa-solid fa-bell alert clickable" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte"></i>`;
+            html = `<i class="fa-solid fa-bell alert clickable bell" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte"></i>`;
         } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable" onclick="showAlertPanel('${token}')" title="Mettre une alerte""></i>`;
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" title="Mettre une alerte""></i>`;
         }
         return html;
     }
@@ -426,6 +423,7 @@
             }
         })
         setBalance(data.result.balance)
+        changeBellSize();
     }
 
     let sortTable = (sortField) => {
@@ -459,6 +457,13 @@
         setDate();
     }
 
+    let changeBellSize = () => {
+        const bells = document.querySelectorAll('.bell');
+        bells.forEach(bell => {
+            bell.style.fontSize = '16px';
+        });
+    }
+
     let changeFontSize = (direction) => {
         if (direction === "up") {
             fontSize += 1;
@@ -467,7 +472,8 @@
                 fontSize -= 1;
             }
         }
-        document.getElementsByTagName("body")[0].style["font-size"] = fontSize + "px";
+        document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
+        changeBellSize();
     }
 
     let refresh = "<%= refresh %>";
