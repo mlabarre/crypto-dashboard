@@ -33,6 +33,10 @@
             font-weight: bold;
             font-style: italic;
         }
+
+        .pad {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -98,7 +102,7 @@
         for (let i=0; i<wallets.length; i++) {
             images += getIconsHtml(wallets[i]);
         }
-        let row = `<tr><td>${crypto.token} ${images}</td>`+
+        let row = `<tr><td><span class="pad">${crypto.token}</span> ${images}</td>`+
             `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4))}</td>`+
             `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
         $('#cryptosPerToken').append(row);
