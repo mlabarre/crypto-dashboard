@@ -201,3 +201,9 @@ select {
 .message {
   color: antiquewhite;
 }
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

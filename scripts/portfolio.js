@@ -265,8 +265,22 @@ evolution = async (sortField = "symbol", sortDirection = "A") => {
         await handleEvolutionTransaction(wallet, transactions[i]);
     }
     let allTokens = buildEvolution(wallet.walletsTokens);
-    return await updateWithCurrentValues(allTokens, sortField, sortDirection);
+    let alerts = await new MongoHelper().getAlerts();
+    console.log(alerts)
+    let balanceTokensResult = await updateWithCurrentValues(allTokens, sortField, sortDirection);
+    balanceTokensResult.result.alerts = alerts;
+    return balanceTokensResult;
+}
+
+addAlert = async (data) => {
+    return await new MongoHelper().addAlert(data);
+}
+
+removeAlert = async (data) => {
+    return await new MongoHelper().delAlert(data)
 }
 
 exports.summary = summary
 exports.evolution = evolution
+exports.addAlert = addAlert
+exports.removeAlert = removeAlert

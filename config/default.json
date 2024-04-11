@@ -5,5 +5,5 @@
   "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
   "mongodb_database": "crypto",
   "server_port" : 8080,
-  "refresh_in_seconds" : 300
+  "refresh_in_seconds" : 320
 }

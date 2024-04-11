@@ -16,7 +16,8 @@ Associated with the crypto-updater project, it allows:
 * manage the platforms/wallets to use,
 * enter transactions as they occur, view them, delete or modify them,
 * to have a multi-platform/portfolio,
-* to see the evolution of cryptos.
+* to see the evolution of cryptos,
+* define alerts.
 
 To use it, all you need is a machine with docker installed.
 
@@ -70,9 +71,9 @@ It is now necessary to modify two config files:
 Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it according to your environment
 ```
 {
-"language": "fr",
-"fiat_currency" : "EUR",
-"fiat_symbol": "€",
+"language": "en",
+"fiat_currency" : "GBP",
+"fiat_symbol": "£",
 "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
 "mongodb_database": "crypto",
 "server_port" : 8080,
@@ -94,24 +95,29 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 
 ```
 {
-  "fiat_currency" : "EUR",
-  "coingecko_currency" : "eur",
+  "language": "en",
+  "fiat_currency" : "GBP",
+  "coingecko_currency" : "gbp",
   "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
   "mongodb_database": "crypto",
   "coingecko_coins_uri": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_uri": "https://api.coingecko.com/api/v3/simple/price"
+  "coingecko_quotation_uri": "https://api.coingecko.com/api/v3/simple/price",
+  "notification_ntfy_url": "https://ntfy.sh",
+  "notification_ntfy_topic": "KdiLd90OOODO"
 }
 ```
 
 | variable                | Description                                                                                           |
 |:------------------------|:------------------------------------------------------------------------------------------------------|
+| language                | Language used: _**fr**_ (French) or _**en**_ (English) only.                                          |
 | fiat_currency           | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc. |
 | coingecko_currency      | Currency relative to the previous variable. It must be recognized by coingecko: eur, usd, gbp, etc.   |
 | mongodb_uri             | This is the connection URL to the mongodb server. Don't change anything.                              |
 | mongodb_database        | Name you gave in the crypto-dashboard default.json file above.                                        |
 | coingecko_coins_uri     | API to get the list of all cryptos (called once a day)                                                |
 | coingecko_quotation_uri | API to obtain the quotations of the cryptos used (called once every 5 minutes)                        |
-
+| notification_ntfy_url   | ntfy.sh URL for notifications. Don't change anything.                                                 |
+| notification_ntfy_topic | Key/topic that you declared in the NTFY application                                                   |
 
 You now need to specify where the MongoDB database named in the previous two files should be located.
 
@@ -166,6 +172,13 @@ cd <CRYPTO_HOME>/crypto-dashboard
 sudo docker-compose up -d
 ```
 
+## Alertes
+
+It is possible to define alerts on the *Evolution* view.
+
+Notifications are sent to any device where the application open-source [ntfy](https://ntfy.sh) is installed (Android, IOS, desktop).
+The necessary settings were discussed above, in the default.json configuration file of crypto-updater.
+
 ## Screenshots (french version)
 
 The screens below in clear mode. A dark mode is selectable.
@@ -176,6 +189,7 @@ The screens below in clear mode. A dark mode is selectable.
 ![Demo Onglet Wallets](demo/wallets.png?raw=true)
 ![Demo Onglet Ajout de transaction](demo/addtransaction.png?raw=true)
 ![Demo Onglet Transactions](demo/transactions.png?raw=true)
+
 
 
 

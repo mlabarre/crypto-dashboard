@@ -66,8 +66,9 @@ let getIconsHtml = (wallet) => {
     }
 }
 
-let getFormattedDate = () => {
-    return new Date().toLocaleString('fr-FR', {
+let getFormattedDate = (lang) => {
+    if (lang === undefined || lang === '') lang = 'fr-FR';
+    return new Date().toLocaleString(lang, {
         weekday: 'short',
         day: 'numeric',
         month: 'short',
@@ -91,7 +92,6 @@ const getTimeFromDate = (d) => {
 }
 
 const toggleDarkMode = (checked) => {
-    console.log("set theme for", checked)
     const theme = document.querySelector("#theme");
     if (checked === true) {
         theme.href = "/stylesheets/style-dark.css";
@@ -100,17 +100,14 @@ const toggleDarkMode = (checked) => {
     }
 }
 const handleDarkMode = (checkbox) => {
-    console.log('handle')
     let wls = window.localStorage;
     let mode = "false";
     if (wls && wls.getItem("darkmode")) {
         mode = wls.getItem("darkmode") === 'true';
         toggleDarkMode(mode);
-        console.log("set to", mode);
         $('#darkmode').attr('checked', mode);
     }
     checkbox.addEventListener('click', () => {
-        console.log('click')
         let checked = document.getElementById('darkmode').checked;
         toggleDarkMode(checked);
         if (wls) {

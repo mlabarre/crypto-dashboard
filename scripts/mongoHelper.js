@@ -184,6 +184,32 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    getAlerts = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts").find({}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    addAlert = async (doc) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts").findOneAndReplace({token: doc.token}, doc, {upsert: true});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    delAlert = async (token) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts").findOneAndDelete({token: token});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
 }
 
 module.exports = MongoHelper;

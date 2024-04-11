@@ -17,6 +17,7 @@ Associé au projet crypto-updater, il permet :
 * de saisir les transactions au fur et à mesure, de les consulter, de les supprimer ou de les modifier,
 * de disposer d'un portefolio multi plateformes/portefeuilles,
 * de voir l'évolution des cryptos.
+* de définir des alertes
 
 Pour l'utiliser, il suffit d'une machine disposant d'un docker installé.
 
@@ -95,24 +96,29 @@ Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifie
 
 ```
 {
+  "language": "fr",
   "fiat_currency" : "EUR",
   "coingecko_currency" : "eur",
   "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
   "mongodb_database": "crypto",
-  "coingecko_coins_uri": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_uri": "https://api.coingecko.com/api/v3/simple/price"
+  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+  "notification_ntfy_url": "https://ntfy.sh",
+  "notification_ntfy_topic": "KdiLd90OOODO"
 }
 ```
 
 | variable                | Description                                                                                                       |
 |:------------------------|:------------------------------------------------------------------------------------------------------------------|
+| language                | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
 | fiat_currency           | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
 | coingecko_currency      | Monnaie relative à la variable précédente. Elle doit être reconnue de coingecko : eur, usd, gbp, etc.             |
 | mongodb_uri             | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
 | mongodb_database        | Nom que vous avez donné dans le fichier default.json de crypto-dashboard ci-dessus.                               |
-| coingecko_coins_uri     | API pour obtenir la liste de toutes les cryptos (appelée 1 fois par jour)                                         |
-| coingecko_quotation_uri | API pour obtenir les quotations des cryptos utilisées (appelée 1 fois toutes les 5mn)                             |
-
+| coingecko_coins_url     | API pour obtenir la liste de toutes les cryptos (appelée 1 fois par jour)                                         |
+| coingecko_quotation_url | API pour obtenir les quotations des cryptos utilisées (appelée 1 fois toutes les 5mn)                             |
+| notification_ntfy_url   | URL de ntfy.sh pour les notifications. Ne rien changer.                                                           |
+| notification_ntfy_topic | Clef/topic que vous avez déclaré dans l'application NTFY                                                          |
 
 Vous devez maintenant spécifier où doit se trouvera la base de données MongoDB nommée dans les deux fichiers précédents.
 
@@ -167,6 +173,15 @@ Il va de plus récupérer l'image de mongoDB (j'ai mis ic la version 4.4 car la 
 cd <CRYPTO_HOME>/crypto-dashboard
 sudo docker-compose up -d
 ```
+
+## Alertes
+
+Il est possible de définir des alertes sur la vue *Evolution*.
+
+Les notifications sont envoyées sur tout équipement où l'application 
+open-source [ntfy](https://ntfy.sh) est installée (Android, IOS, desktop).
+Les paramètres nécessaires ont été abordés plus haut, dans le fichier de configuration default.json
+de crypto-updater.
 
 ## Screenshots
 

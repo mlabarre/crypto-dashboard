@@ -6,6 +6,7 @@
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
     <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/stylesheets/all.min.css'/>
     <style>
 
         .container {
@@ -50,10 +51,11 @@
             font-size: 18px;
         }
 
-       .title {
+        .title {
             flex: 1;
             margin: 20px 20px;
         }
+
         .up {
             color: #2d9112;
         }
@@ -76,7 +78,70 @@
             cursor: pointer;
         }
 
+        .input {
+            padding: 10px 10px;
+            background-color: cadetblue;
+            margin: 10px 10px;
+            border-radius: 10px;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            justify-content: left;
+            justify-items: center;
+            width: 600px;
+        }
 
+        .alerts {
+            flex-flow: column;
+            color: black;
+        }
+
+        .alert {
+            color: green;
+        }
+
+        .percent {
+            width: 60px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .title, .text, .text-mini {
+            color: cadetblue;
+        }
+
+        .text-mini {
+            font-style: italic;
+            font-weight: lighter;
+            font-size: 14px;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .title {
+            font-size: 24px;
+        }
+
+        .cont-border {
+            border-radius: 10px;
+            border: 1px solid cadetblue;
+            max-width: 800px;
+            padding-bottom: 25px;
+        }
+
+        .button-bloc {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .button {
+            margin: 10px;
+        }
+
+        #checkbox-selector {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
@@ -86,13 +151,13 @@
 
     <div w3-include-html="/html/fr/header.html"></div>
 
-    <div class="sub-container">
+    <div class="sub-container non-alerts">
         <div class="title">
             <span class="title-text">Balance: </span><span id="amount" class="title-data"></span>
             <span class="title-text"> <%= fiat_symbol %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variation: </span>
             <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;
             <span id="sizeup" class="sizeup">A</span>&nbsp;<span id="sizedown" class="sizedown">A</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="date"></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>
         </div>
 
         <table id="cryptos" class="styled-table">
@@ -107,12 +172,60 @@
             <th class="num clickable" onclick="sortTable('value')">Valeur <%= fiat_symbol %></th>
             <th class="clickable" onclick="sortTable('variation')">Evol./achat</th>
             <th class="clickable" onclick="sortTable('variation_on_five_minutes')">Evol./5mn</th>
-            <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1 heure</th>
-            <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24 heures</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1H</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
             <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
+            <th class="clickable"></th>
             </thead>
             <tbody></tbody>
         </table>
+    </div>
+
+    <div class="sub-container cont-border alerts">
+        <div class="title one_token">Alerte pour le token <span id="alert_token"></span></div>
+        <div class="title all_token">Alerte pour tous les tokens</div>
+        <div class="text">
+            <span>Envoyer une alerte si la variation du prix du token :</span>
+        </div>
+        <div class="input">
+            a dépassé <input class="percent" type="number" id="alert_gt_5mn">% et/ou a perdu<input
+                    class="percent" type="number" id="alert_lt_5mn">% en 5 minutes.
+        </div>
+        <div class="input">
+            a dépassé <input class="percent" type="number" id="alert_gt_1h">% et/ou a perdu<input
+                    class="percent" type="number" id="alert_lt_1h">% en 1 heure.
+        </div>
+        <div class="input">
+            a dépassé <input class="percent" type="number" id="alert_gt_24h">% et/ou a perdu <input
+                    class="percent" type="number" id="alert_lt_24h">% en 1 jour.
+        </div>
+        <div class="text-mini">
+            <span><i>Laisser à blanc les champs à ne pas prendre en compte</i></span>
+        </div>
+        <div class="checkbox" id="checkbox-selector">
+            <span class="text">Appliquer à tous les tokens&nbsp;</span>
+            <label class="switch">
+                <input id="alerts_all" type="checkbox"/>
+                <span></span>
+            </label>
+        </div>
+        <div class="text-mini speech-global">
+            <span>Lorsqu'une alerte globale est déclarée, toute alerte liée à un token précédemment déclarée
+            sera ignorée tant que l'alerte globale existe</span>
+        </div>
+        <div class="button-bloc">
+            <div>
+                <input type="button" class="button" id="alertDel" onclick="delAlert();return false;" value="Supprimer">
+            </div>
+            <div>
+                <input type="button" class="button" id="alertCancel" onclick="cancelAlert();return false;"
+                       value="Annuler">
+            </div>
+            <div>
+                <input type="button" class="button" id="alertAdd" onclick="addAlert();return false;"
+                       value="Enregistrer">
+            </div>
+        </div>
     </div>
 </div>
 </body>
@@ -122,9 +235,144 @@
     let lastSortField = "variation";
     let lastSortDirection = "D";
     let fontSize = 16;
+    let globalAlert = false;
+    let globalAlertValue;
+    let allAlerts = [];
+    let tokenAlert = "";
 
     let setDate = () => {
-        document.getElementById('date').innerHTML = getFormattedDate();
+        document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
+    }
+
+    let showAllTokenAlertTitle = () => {
+        $('.all_token').show();
+        $('.one_token').hide();
+    }
+    let showOneTokenAlertTitle = () => {
+        $('.all_token').hide();
+        $('.one_token').show();
+    }
+
+    let initAlertsVariables = () => {
+        $('#alert_gt_5mn').val('');
+        $('#alert_lt_5mn').val('');
+        $('#alert_gt_1h').val('');
+        $('#alert_lt_1h').val('');
+        $('#alert_gt_24h').val('');
+        $('#alert_lt_24h').val('');
+    }
+
+    let setAlertsVariables = (alertToken) => {
+        $('#alert_gt_5mn').val(alertToken.gt5mn);
+        $('#alert_lt_5mn').val(alertToken.lt5mn);
+        $('#alert_gt_1h').val(alertToken.gt1h);
+        $('#alert_lt_1h').val(alertToken.lt1h);
+        $('#alert_gt_24h').val(alertToken.gt24h);
+        $('#alert_lt_24h').val(alertToken.lt24h);
+    }
+
+    let hideAlertPanel = () => {
+        $('.alerts').hide();
+        $('.non-alerts').show();
+    }
+
+    let initAlerts = () => {
+        hideAlertPanel();
+        tokenAlert = "";
+        globalAlert = false;
+        globalAlertValue;
+        allAlerts = [];
+    }
+
+    // Called by icon click.
+    let showAlertPanel = (token) => {
+        tokenAlert = token;
+        $('.alerts').show();
+        $('.non-alerts').hide();
+        $('#alertDel').hide();
+        if (globalAlert === true) {
+            showAllTokenAlertTitle(token);
+            $('#alert_token').text('');
+            setAlertsVariables(globalAlertValue);
+            $('#alerts_all').prop('checked', true);
+            $('#alertDel').show();
+        } else {
+            showOneTokenAlertTitle(token);
+            $('#alert_token').text(token);
+            $('#alerts_all').prop('checked', false);
+            let alertToken = findAlertInArray(token);
+            if (alertToken !== undefined) {
+                $('#alert_token').text(token);
+                setAlertsVariables(alertToken);
+                $('#alertDel').show();
+            } else {
+                initAlertsVariables();
+            }
+        }
+    }
+
+    let findAlertInArray = (token) => {
+        for (let i = 0; i < allAlerts.length; i++) {
+            if (allAlerts[i].token === token) {
+                return allAlerts[i];
+            }
+        }
+    }
+
+    let setAlerts = (alerts) => {
+        allAlerts = alerts;
+        globalAlertValue = findAlertInArray('_all_tokens_');
+        globalAlert = globalAlertValue !== undefined;
+    }
+
+    let delAlert = () => {
+        let tokenToDelete = globalAlert ? "_all_tokens_" : tokenAlert;
+        $.ajax(
+            {
+                url: `/api/alert?token=${tokenToDelete}`,
+                method: "DELETE",
+                dataType: "json",
+                success: (data) => {
+                    getDatas();
+                    hideAlertPanel();
+                },
+                error: (xhr, status, error) => {
+                    console.log(error)
+                }
+            }
+        )
+    }
+
+    let cancelAlert = () => {
+        hideAlertPanel();
+    }
+
+    let addAlert = () => {
+        let json = {
+            token: document.getElementById('alerts_all').checked ? "_all_tokens_" : tokenAlert,
+            gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
+            lt5mn: $('#alert_lt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_lt_5mn').val()),
+            gt1h: $('#alert_gt_1h').val() === '' ? -1.0 : parseFloat($('#alert_gt_1h').val()),
+            lt1h: $('#alert_lt_1h').val() === '' ? -1.0 : parseFloat($('#alert_lt_1h').val()),
+            gt24h: $('#alert_gt_24h').val() === '' ? -1.0 : parseFloat($('#alert_gt_24h').val()),
+            lt24h: $('#alert_lt_24h').val() === '' ? -1.0 : parseFloat($('#alert_lt_24h').val())
+        }
+        console.log(JSON.stringify(json))
+        $.ajax(
+            {
+                url: "/api/alert",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: (data) => {
+                    getDatas();
+                    hideAlertPanel();
+                },
+                error: (xhr, status, error) => {
+                    console.log(error)
+                }
+            }
+        )
     }
 
     let signRate = (rate) => {
@@ -140,7 +388,19 @@
         $('#variation').html(signRate(balance.variation.toFixed(2)));
     }
 
+    let buildAlertIconHtml = (token) => {
+        let html;
+        if (globalAlert === true || findAlertInArray(token) !== undefined) {
+            html = `<i class="fa-solid fa-bell alert clickable" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte"></i>`;
+        } else {
+            html = `<i class="fa-solid fa-bell-slash alert clickable" onclick="showAlertPanel('${token}')" title="Mettre une alerte""></i>`;
+        }
+        return html;
+    }
+
     let fill = (data) => {
+        $('.alerts').hide();
+        setAlerts(data.result.alerts);
         let tokens = data.result.tokens;
         $.each(tokens, (no) => {
             let coin = tokens[no];
@@ -158,13 +418,13 @@
                     '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
+                    '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
                     '</tr>');
             } else {
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td><td colspan="10">` +
-                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td><td class="rate">${getIconsHtml(coin.wallet)}</td></tr>`)
+                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td><td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
             }
         })
-
         setBalance(data.result.balance)
     }
 
@@ -177,7 +437,8 @@
     }
 
     let getDatas = () => {
-        $('#cryptos').find('tbody tr').remove()
+        $('#cryptos').find('tbody tr').remove();
+        initAlerts();
         $.ajax(
             {
                 url: "/api/evolution?sortField=" + lastSortField + "&sortDirection=" + lastSortDirection,
@@ -221,15 +482,26 @@
         $('#sizedown').on('click', () => {
             changeFontSize('down');
         });
+        document.getElementById('alerts_all').addEventListener('click', () => {
+            if (document.getElementById('alerts_all').checked) {
+                showAllTokenAlertTitle();
+                $('.speech-global').show();
+            } else {
+                showOneTokenAlertTitle();
+                $('.speech-global').hide();
+            }
+        });
         return 1;
     }
 
-    includeHTML("h-evolution").then( () => {
+    includeHTML("h-evolution").then(() => {
         handleDarkMode(document.getElementById('darkmode'));
     });
 
 
-    $(() => { init() })
+    $(() => {
+        init()
+    })
 </script>
 
 </html>

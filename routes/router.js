@@ -131,6 +131,17 @@ router
             response.send(data);
         })
     })
+    .post('/api/alert', function (request, response, next) {
+        portFolio.addAlert(request.body).then((res) => {
+            response.send({});
+        })
+    })
+    .delete('/api/alert', function (request, response, next) {
+        portFolio.removeAlert(request.query.token).then((res) => {
+            response.send({});
+
+        })
+    })
 
 
 module.exports = router;
