@@ -51,9 +51,14 @@
             font-size: 18px;
         }
 
-        .title {
+        .title, .title-alerts {
             flex: 1;
             font-size: 24px;
+        }
+
+        .title-alerts {
+            color: cadetblue;
+            margin-top: 10px;
         }
 
         .up {
@@ -122,7 +127,6 @@
             border-radius: 10px;
             border: 1px solid cadetblue;
             max-width: 800px;
-            padding-bottom: 25px;
         }
 
         .button-bloc {
@@ -134,11 +138,9 @@
             margin: 10px;
         }
 
-        #checkbox-selector {
-            margin-top: 15px;
-            margin-bottom: 15px;
+        .orange {
+            color: orange;
         }
-
     </style>
 </head>
 
@@ -172,15 +174,15 @@
             <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
             <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
-            <th class="clickable"></th>
+            <th class="clickable generalAlert"></th>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
     <div class="sub-container cont-border alerts">
-        <div class="title one_token">Alerte pour le token <span id="alert_token"></span></div>
-        <div class="title all_token">Alerte pour tous les tokens</div>
+        <div class="title-alerts one_token">Alerte pour le token <span id="alert_token"></span></div>
+        <div class="title-alerts all_token">Alerte pour tous les tokens</div>
         <div class="text">
             <span>Envoyer une alerte si la variation du prix du token :</span>
         </div>
@@ -199,17 +201,6 @@
         <div class="text-mini">
             <span><i>Laisser à blanc les champs à ne pas prendre en compte</i></span>
         </div>
-        <div class="checkbox" id="checkbox-selector">
-            <span class="text">Appliquer à tous les tokens&nbsp;</span>
-            <label class="switch">
-                <input id="alerts_all" type="checkbox"/>
-                <span></span>
-            </label>
-        </div>
-        <div class="text-mini speech-global">
-            <span>Lorsqu'une alerte globale est déclarée, toute alerte liée à un token précédemment déclarée
-            sera ignorée tant que l'alerte globale existe</span>
-        </div>
         <div class="button-bloc">
             <div>
                 <input type="button" class="button" id="alertDel" onclick="delAlert();return false;" value="Supprimer">
@@ -219,9 +210,12 @@
                        value="Annuler">
             </div>
             <div>
-                <input type="button" class="button" id="alertAdd" onclick="addAlert();return false;"
+                <input type="button" class="button" id="alertAdd" onclick="addOrUpdateAlert();return false;"
                        value="Enregistrer">
             </div>
+        </div>
+        <div class="text-mini">
+            Une alerte sur un token particulier prévaut sur une alerte globale.
         </div>
     </div>
 </div>
@@ -260,12 +254,12 @@
     }
 
     let setAlertsVariables = (alertToken) => {
-        $('#alert_gt_5mn').val(alertToken.gt5mn);
-        $('#alert_lt_5mn').val(alertToken.lt5mn);
-        $('#alert_gt_1h').val(alertToken.gt1h);
-        $('#alert_lt_1h').val(alertToken.lt1h);
-        $('#alert_gt_24h').val(alertToken.gt24h);
-        $('#alert_lt_24h').val(alertToken.lt24h);
+        $('#alert_gt_5mn').val(alertToken.gt5mn < 0 ? '' : alertToken.gt5mn);
+        $('#alert_lt_5mn').val(alertToken.lt5mn < 0 ? '' : alertToken.lt5mn);
+        $('#alert_gt_1h').val(alertToken.gt1h < 0 ? '' : alertToken.gt1h);
+        $('#alert_lt_1h').val(alertToken.lt1h < 0 ? '' : alertToken.lt1h);
+        $('#alert_gt_24h').val(alertToken.gt24h < 0 ? '' : alertToken.gt24h);
+        $('#alert_lt_24h').val(alertToken.lt24h < 0 ? '' : alertToken.lt24h);
     }
 
     let hideAlertPanel = () => {
@@ -287,24 +281,19 @@
         $('.alerts').show();
         $('.non-alerts').hide();
         $('#alertDel').hide();
-        if (globalAlert === true) {
+        if (token === '_all_tokens_') {
             showAllTokenAlertTitle(token);
-            $('#alert_token').text('');
-            setAlertsVariables(globalAlertValue);
-            $('#alerts_all').prop('checked', true);
-            $('#alertDel').show();
         } else {
             showOneTokenAlertTitle(token);
             $('#alert_token').text(token);
-            $('#alerts_all').prop('checked', false);
-            let alertToken = findAlertInArray(token);
-            if (alertToken !== undefined) {
-                $('#alert_token').text(token);
-                setAlertsVariables(alertToken);
-                $('#alertDel').show();
-            } else {
-                initAlertsVariables();
-            }
+        }
+        let alertToken = findAlertInArray(token);
+        if (alertToken !== undefined) {
+            setAlertsVariables(alertToken);
+            $('#alertDel').show();
+        } else {
+            initAlertsVariables();
+            $('#alertDel').hide();
         }
     }
 
@@ -323,10 +312,9 @@
     }
 
     let delAlert = () => {
-        let tokenToDelete = globalAlert ? "_all_tokens_" : tokenAlert;
         $.ajax(
             {
-                url: `/api/alert?token=${tokenToDelete}`,
+                url: `/api/alert?token=${tokenAlert}`,
                 method: "DELETE",
                 dataType: "json",
                 success: (data) => {
@@ -344,9 +332,9 @@
         hideAlertPanel();
     }
 
-    let addAlert = () => {
+    let addOrUpdateAlert = () => {
         let json = {
-            token: document.getElementById('alerts_all').checked ? "_all_tokens_" : tokenAlert,
+            token: tokenAlert,
             gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
             lt5mn: $('#alert_lt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_lt_5mn').val()),
             gt1h: $('#alert_gt_1h').val() === '' ? -1.0 : parseFloat($('#alert_gt_1h').val()),
@@ -385,12 +373,23 @@
         $('#variation').html(signRate(balance.variation.toFixed(2)));
     }
 
+    let setGeneralAlertIconHtml = () => {
+        let html;
+        if (globalAlert === true) {
+            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" title="Voir ou changer l'alerte globale"></i>`;
+        } else {
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" title="Mettre une alerte globale""></i>`;
+        }
+        $('.generalAlert').html(html);
+        return html;
+    }
+
     let buildAlertIconHtml = (token) => {
         let html;
-        if (globalAlert === true || findAlertInArray(token) !== undefined) {
-            html = `<i class="fa-solid fa-bell alert clickable bell" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte"></i>`;
+        if (findAlertInArray(token) !== undefined) {
+            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte sur ${token}"></i>`;
         } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" title="Mettre une alerte""></i>`;
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" title="Mettre une alerte sur ${token}"></i>`;
         }
         return html;
     }
@@ -398,6 +397,7 @@
     let fill = (data) => {
         $('.alerts').hide();
         setAlerts(data.result.alerts);
+        setGeneralAlertIconHtml();
         let tokens = data.result.tokens;
         $.each(tokens, (no) => {
             let coin = tokens[no];
@@ -487,15 +487,6 @@
         });
         $('#sizedown').on('click', () => {
             changeFontSize('down');
-        });
-        document.getElementById('alerts_all').addEventListener('click', () => {
-            if (document.getElementById('alerts_all').checked) {
-                showAllTokenAlertTitle();
-                $('.speech-global').show();
-            } else {
-                showOneTokenAlertTitle();
-                $('.speech-global').hide();
-            }
         });
         return 1;
     }

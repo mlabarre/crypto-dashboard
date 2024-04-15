@@ -119,6 +119,58 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 | notification_ntfy_url   | ntfy.sh URL for notifications. Don't change anything.                                                 |
 | notification_ntfy_topic | Key/topic that you declared in the NTFY application                                                   |
 
+### Wallets icons
+
+You need to specify where wallets icons reside.
+
+You must create the local directory where cons will be stored.
+
+```
+mkdir <CRYPTO_HOME>/icons
+```
+
+You then need to edit the docker-compose.yml file. It should look like this:
+
+```
+version: "3"
+services:
+  dashboard:
+    image: crypto-dashboard
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/icons:/home/node/app/public/images/icons
+  updater:
+    image: crypto-updater
+    build: ../crypto-updater
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:4.4
+    volumes:
+      - /datas/mongodb:/data/db
+    ports:
+      - "27017:27017"
+```
+
+You must replace:
+```
+     volumes:
+       - /datas/dashboard/icons:/home/node/app/public/images/icons
+```
+by
+```
+     volumes:
+       - <CRYPTO_HOME>/icons:/home/node/app/public/images/icons
+```
+
+always replacing <CRYPTO_HOME> by the chosen path, of course.
+
+### mongodb
+
 You now need to specify where the MongoDB database named in the previous two files should be located.
 
 For example, we could design *<CRYPTO_HOME>/mongodb* to put the database in the directory you created above.
@@ -137,12 +189,14 @@ services:
      ports:
        - "8080:8080"
      depends_on:
-       -mongo
+       - mongo
+     volumes:
+       - /datas/dashboard/icons:/home/node/app/public/images/icons
    updater:
      image: crypto-updater
      build: ../crypto-updater
      depends_on:
-       -mongo
+       - mongo
    mongo:
      image: mongo
      volumes:
@@ -161,7 +215,8 @@ by
      volumes:
        - <CRYPTO_HOME>/mongodb:/data/db
 ```
-always replacing <CRYPTO_HOME> by the chosen path, of course.
+always replacing <CRYPTO_HOME> by the chosen path.
+
 
 ## Lancement du docker 
 

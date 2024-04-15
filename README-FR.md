@@ -120,6 +120,58 @@ Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifie
 | notification_ntfy_url   | URL de ntfy.sh pour les notifications. Ne rien changer.                                                           |
 | notification_ntfy_topic | Clef/topic que vous avez déclaré dans l'application NTFY                                                          |
 
+
+### Wallets icons
+
+Vous devez indiquer un répertoire où seront stockées les icônes des wallets.
+
+Créer ce répertoire
+
+```
+mkdir <CRYPTO_HOME>/icons
+```
+
+Vous devez ensuite éditer le fichier docker-compose.yml. Il doit ressembler à cela:
+
+```
+version: "3"
+services:
+  dashboard:
+    image: crypto-dashboard
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/icons:/home/node/app/public/images/icons
+  updater:
+    image: crypto-updater
+    build: ../crypto-updater
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - /datas/mongodb:/data/db
+    ports:
+      - "27017:27017"
+```
+Vous devez remplacer :
+```
+     volumes:
+       - /datas/dashboard/icons:/home/node/app/public/images/icons
+```
+par
+```
+     volumes:
+       - <CRYPTO_HOME>/icons:/home/node/app/public/images/icons
+```
+
+en replaçant toujours <CRYPTO_HOME> par le chemin choisi.
+
+### mongodb
+
 Vous devez maintenant spécifier où doit se trouvera la base de données MongoDB nommée dans les deux fichiers précédents.
 
 On pourrait concevoir par exemple *<CRYPTO_HOME>/mongodb* pour mettre la base de données dans le répertoire que vous avez créé plus haut.
@@ -139,6 +191,8 @@ services:
       - "8080:8080"
     depends_on:
       - mongo
+    volumes:
+      - /datas/dashboard/icons:/home/node/app/public/images/icons
   updater:
     image: crypto-updater
     build: ../crypto-updater
