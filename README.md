@@ -169,6 +169,14 @@ by
 
 always replacing <CRYPTO_HOME> by the chosen path, of course.
 
+To initialize the folder with the icons supplied in project *crypto-dashboard* enter the following command :
+
+```
+cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
+```
+
+replacing <CRYPTO_HOME> by the chosen path.
+
 ### mongodb
 
 You now need to specify where the MongoDB database named in the previous two files should be located.

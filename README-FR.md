@@ -168,7 +168,14 @@ par
        - <CRYPTO_HOME>/icons:/home/node/app/public/images/icons
 ```
 
-en replaçant toujours <CRYPTO_HOME> par le chemin choisi.
+en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
+
+Pour initialiser le répertoire avec les icônes fournies dans le projet *crypto-dashboard* effectuer la commande suivante :
+
+```
+cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
+```
+en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
 
 ### mongodb
 
@@ -216,7 +223,7 @@ par
     volumes:
       - <CRYPTO_HOME>/mongodb:/data/db
 ```
-en replaçant toujours <CRYPTO_HOME> par le chemin choisi, bien entendu.
+en remplaçant toujours <CRYPTO_HOME> par le chemin choisi, bien entendu.
 
 ## Lancement du docker 
 

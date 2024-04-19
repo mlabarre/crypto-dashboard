@@ -143,7 +143,7 @@ class MongoHelper {
     findAllWalletsName = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("wallets").find({}).toArray();
+            return await this.dbo.collection("wallets").find({}).sort({wallet:1}).toArray();
         } finally {
             await this.mongoClient.close();
         }

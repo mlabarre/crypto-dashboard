@@ -21,7 +21,7 @@ let formatDelim = (value) => {
 
 // From W3schools.com
 let includeHTML = async (classTag) => {
-    return new Promise( (resolve) => {
+    return new Promise((resolve) => {
         let z, i, element, file, xhttp;
         z = document.getElementsByTagName("*");
         for (i = 0; i < z.length; i++) {
@@ -38,8 +38,9 @@ let includeHTML = async (classTag) => {
                             element.innerHTML = "Page not found.";
                         }
                         element.removeAttribute("w3-include-html");
-                        includeHTML(classTag).then(()=>{
-                            resolve('ok');});
+                        includeHTML(classTag).then(() => {
+                            resolve('ok');
+                        });
                     }
                 }
                 xhttp.open("GET", file, true);
@@ -80,11 +81,15 @@ let getFormattedDate = (lang) => {
 }
 
 let pad = (o) => {
-    if (o>9) { return o; } else { return "0"+o; }
+    if (o > 9) {
+        return o;
+    } else {
+        return "0" + o;
+    }
 }
 
 const getDateFromDate = (d) => {
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
 const getTimeFromDate = (d) => {
@@ -115,5 +120,16 @@ const handleDarkMode = (checkbox) => {
         }
     });
 }
+const sortArray = (a, b) => {
+    if (a.id < b.id) return -1;
+    else if (a.id > b.id) return 1;
+    else return 0;
+}
+const getIndexInArray = (arr, o) => {
+    return arr.findIndex(crypto => crypto.id === o.id && crypto.symbol === o.symbol && crypto.name === o.name);
+}
+
+
+
 
 
