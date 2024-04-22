@@ -138,9 +138,6 @@
             margin: 10px;
         }
 
-        .orange {
-            color: orange;
-        }
     </style>
 </head>
 
@@ -173,6 +170,7 @@
             <th class="clickable" onclick="sortTable('variation_on_five_minutes')">Evol./5mn</th>
             <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./sem</th>
             <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
             <th class="clickable generalAlert"></th>
             </thead>
@@ -197,6 +195,10 @@
         <div class="input">
             a dépassé <input class="percent" type="number" id="alert_gt_24h">% ou a perdu <input
                     class="percent" type="number" id="alert_lt_24h">% en 1 jour.
+        </div>
+        <div class="input">
+            a dépassé <input class="percent" type="number" id="alert_gt_1w">% ou a perdu <input
+                    class="percent" type="number" id="alert_lt_1w">% en 1 semaine.
         </div>
         <div class="text-mini">
             <span><i>Laisser à blanc les champs à ne pas prendre en compte</i></span>
@@ -239,6 +241,7 @@
         $('.all_token').show();
         $('.one_token').hide();
     }
+
     let showOneTokenAlertTitle = () => {
         $('.all_token').hide();
         $('.one_token').show();
@@ -251,6 +254,8 @@
         $('#alert_lt_1h').val('');
         $('#alert_gt_24h').val('');
         $('#alert_lt_24h').val('');
+        $('#alert_gt_1w').val('');
+        $('#alert_lt_1w').val('');
     }
 
     let setAlertsVariables = (alertToken) => {
@@ -260,6 +265,8 @@
         $('#alert_lt_1h').val(alertToken.lt1h < 0 ? '' : alertToken.lt1h);
         $('#alert_gt_24h').val(alertToken.gt24h < 0 ? '' : alertToken.gt24h);
         $('#alert_lt_24h').val(alertToken.lt24h < 0 ? '' : alertToken.lt24h);
+        $('#alert_gt_1w').val(alertToken.gt1w < 0 ? '' : alertToken.gt1w);
+        $('#alert_lt_1w').val(alertToken.lt1w < 0 ? '' : alertToken.lt1w);
     }
 
     let hideAlertPanel = () => {
@@ -340,7 +347,9 @@
             gt1h: $('#alert_gt_1h').val() === '' ? -1.0 : parseFloat($('#alert_gt_1h').val()),
             lt1h: $('#alert_lt_1h').val() === '' ? -1.0 : parseFloat($('#alert_lt_1h').val()),
             gt24h: $('#alert_gt_24h').val() === '' ? -1.0 : parseFloat($('#alert_gt_24h').val()),
-            lt24h: $('#alert_lt_24h').val() === '' ? -1.0 : parseFloat($('#alert_lt_24h').val())
+            lt24h: $('#alert_lt_24h').val() === '' ? -1.0 : parseFloat($('#alert_lt_24h').val()),
+            gt1w: $('#alert_gt_1w').val() === '' ? -1.0 : parseFloat($('#alert_gt_1w').val()),
+            lt1w: $('#alert_lt_1w').val() === '' ? -1.0 : parseFloat($('#alert_lt_1w').val())
         }
         console.log(JSON.stringify(json))
         $.ajax(
@@ -376,9 +385,11 @@
     let setGeneralAlertIconHtml = () => {
         let html;
         if (globalAlert === true) {
-            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" title="Voir ou changer l'alerte globale"></i>`;
+            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" ` +
+                `title="Voir ou changer l'alerte globale"></i>`;
         } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" title="Mettre une alerte globale""></i>`;
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" ` +
+                `title="Mettre une alerte globale""></i>`;
         }
         $('.generalAlert').html(html);
         return html;
@@ -387,9 +398,11 @@
     let buildAlertIconHtml = (token) => {
         let html;
         if (findAlertInArray(token) !== undefined) {
-            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" title="Voir ou changer l'alerte sur ${token}"></i>`;
+            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" ` +
+                `title="Voir ou changer l'alerte sur ${token}"></i>`;
         } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" title="Mettre une alerte sur ${token}"></i>`;
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" ` +
+                `title="Mettre une alerte sur ${token}"></i>`;
         }
         return html;
     }
@@ -414,12 +427,17 @@
                     '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="rate">' + signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
                     '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
                     '</tr>');
             } else {
-                $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td><td colspan="10">` +
-                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td><td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
+                $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
+                    `<td colspan="4">` +
+                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td>` +
+                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
+                    `<td colspan="6"></td>` +
+                    `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
             }
         })
         setBalance(data.result.balance)

@@ -70,6 +70,11 @@
             margin: 10px 10px;
         }
 
+        .title-table {
+            display: flex;
+            justify-content: center;
+            margin: 5px 5px;
+        }
     </style>
 </head>
 <body>
@@ -78,17 +83,18 @@
     <div id="container" class="container">
         <div w3-include-html="/html/en/header.html"></div>
         <div class="message">
-            <span id="message"> </span>
+            <span id="message">Load of cryptos in progress...</span>
         </div>
         <div class="filter cond">
             <input class="input" type="text" id="criteria" placeholder="Filter">
-            <button type="button" class="button button-filter" onclick="filterAvailable('all');">Filter all</button>
-            <button type="button" class="button button-filter" onclick="filterAvailable('symbol');">Symbol filter</button>
-            <button type="button" class="button button-filter" onclick="resetFilterAvailable();">Remove filter
+            <button type="button" class="button button-filter" onclick="doFilter('all');">Filter all</button>
+            <button type="button" class="button button-filter" onclick="doFilter('symbol');">Symbol filter</button>
+            <button type="button" class="button button-filter" onclick="resetFilter();">Remove filter
             </button>
         </div>
         <div class="subcontainer">
             <div id="myCryptos">
+                <div class="title-table"><span>My cryptos</span></div>
                 <table id="myCryptosTable" class="styled-table">
                     <thead>
                     <th>Id</th>
@@ -104,6 +110,7 @@
                 </div>
             </div>
             <div id="availableCryptos" class="bloc cond">
+                <div class="title-table"><span>Cryptos available</span></div>
                 <div class="bloc">
                     <table id="availableCryptosTable" class="styled-table ctable">
                         <thead>
@@ -150,7 +157,7 @@
         })
     }
 
-    let filterAvailable = (type) => {
+    let doFilter = (type) => {
         let criteria = $('#criteria').val();
         $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
             if (type === "all") {
@@ -167,7 +174,7 @@
         })
     }
 
-    let resetFilterAvailable = () => {
+    let resetFilter = () => {
         $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
             raw.hidden = false;
         })
@@ -189,8 +196,16 @@
         return availableCryptosList;
     }
 
+    let showMessage = () => {
+        $('.message').css('color', 'white');
+    }
+
+    let hideMessage = () => {
+        $('.message').css('color', 'black');
+    }
+
     let buildAvailableCryptos = async () => {
-        $('#message').text("Load of cryptos in progress...");
+        showMessage();
         availableCryptosList = await getAvailableCryptos();
         $('#availableCryptosTable').find('tbody tr').remove();
         await removeMyCryptosFromAvailableCryptos();
@@ -198,9 +213,9 @@
             await addAvailableCryptosRow(availableCryptosList[i]);
         }
         if ($('#criteria').val() !== "") {
-            filterAvailable();
+            doFilter();
         }
-        $('#message').text(" ");
+        hideMessage();
     }
 
     let getAvailableCryptos = async () => {

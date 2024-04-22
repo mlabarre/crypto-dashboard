@@ -145,33 +145,21 @@
 
 <div class="container">
 
-    <div w3-include-html="/html/en/header.html"></div>
+    <div w3-include-html="/html/fr/header.html"></div>
 
     <div class="sub-container non-alerts">
-        <div class="title">
-            <span class="title-text">Balance: </span><span id="amount" class="title-data"></span>
-            <span class="title-text"> <%= fiat_symbol %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variation: </span>
-            <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;
-            <span id="sizeup" class="sizeup">A</span>&nbsp;<span id="sizedown" class="sizedown">A</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>
-        </div>
 
         <table id="cryptos" class="styled-table">
             <thead>
             <th class="title-left clickable" onclick="sortTable('name')">Crypto</th>
-            <th class="title-left clickable" onclick="sortTable('symbol')">Symbol</th>
-            <th class="num clickable" onclick="sortTable('start_price')">Price <%= fiat_symbol %> purchase</th>
-            <th class="num clickable" onclick="sortTable('start_price_usdt')">Price USDT purchase</th>
-            <th class="num clickable" onclick="sortTable('quotation\n')">Quotation <%= fiat_symbol %></th>
-            <th class="num clickable" onclick="sortTable('quotation_usdt\n')">Quotation USDT</th>
-            <th class="num clickable" onclick="sortTable('tokens')">Tokens</th>
-            <th class="num clickable" onclick="sortTable('value')">Value <%= fiat_symbol %></th>
-            <th class="clickable" onclick="sortTable('variation')">Evol./puchase</th>
+            <th class="title-left clickable" onclick="sortTable('symbol')">Symbole</th>
+            <th class="num clickable" onclick="sortTable('quotation\n')">Cours <%= fiat_symbol %></th>
+            <th class="num clickable" onclick="sortTable('quotation_usdt\n')">Cours USDT</th>
+            <th class="clickable" onclick="sortTable('variation')">Evol./achat</th>
             <th class="clickable" onclick="sortTable('variation_on_five_minutes')">Evol./5mn</th>
             <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
-            <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./week</th>
-            <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
+            <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./sem</th>
             <th class="clickable generalAlert"></th>
             </thead>
             <tbody></tbody>
@@ -179,47 +167,39 @@
     </div>
 
     <div class="sub-container cont-border alerts">
-        <div class="title-alerts one_token">Alert for the token <span id="alert_token"></span></div>
-        <div class="title-alerts all_token">Alert for all tokens</div>
+        <div class="title-alerts one_token">Alerte pour le token <span id="alert_token"></span></div>
         <div class="text">
-            <span>Send an alert if the token price changes :</span>
+            <span>Envoyer une alerte si la variation du prix du token :</span>
         </div>
         <div class="input">
-            exceeded <input class="percent" type="number" id="alert_gt_5mn">% or lost<input
-                    class="percent" type="number" id="alert_lt_5mn">% in 5 minutes.
+            a dépassé <input class="percent" type="number" id="alert_gt_5mn">% ou a perdu<input
+                    class="percent" type="number" id="alert_lt_5mn">% en 5 minutes.
         </div>
         <div class="input">
-            exceeded <input class="percent" type="number" id="alert_gt_1h">% or lost<input
-                    class="percent" type="number" id="alert_lt_1h">% in 1 hour.
+            a dépassé <input class="percent" type="number" id="alert_gt_1h">% ou a perdu<input
+                    class="percent" type="number" id="alert_lt_1h">% en 1 heure.
         </div>
         <div class="input">
-            exceeded <input class="percent" type="number" id="alert_gt_24h">% or lost<input
-                    class="percent" type="number" id="alert_lt_24h">% in 1 day.
+            a dépassé <input class="percent" type="number" id="alert_gt_24h">% ou a perdu <input
+                    class="percent" type="number" id="alert_lt_24h">% en 1 jour.
         </div>
         <div class="input">
-            exceeded <input class="percent" type="number" id="alert_gt_1w">% or lost<input
-                    class="percent" type="number" id="alert_lt_1w">% in 1 week.
+            a dépassé <input class="percent" type="number" id="alert_gt_1w">% ou a perdu <input
+                    class="percent" type="number" id="alert_lt_1w">% en 1 semaine.
         </div>
         <div class="text-mini">
-            <span><i>Leave fields not to be taken into account blank</i></span>
+            <span><i>Laisser à blanc les champs à ne pas prendre en compte</i></span>
         </div>
         <div class="button-bloc">
             <div>
-                <input type="button" class="button" id="alertDel" onclick="delAlert();return false;" value="Remove">
-            </div>
-            <div>
                 <input type="button" class="button" id="alertCancel" onclick="cancelAlert();return false;"
-                       value="Cancel">
+                       value="Annuler">
             </div>
             <div>
                 <input type="button" class="button" id="alertAdd" onclick="addOrUpdateAlert();return false;"
-                       value="Save">
+                       value="Enregistrer">
             </div>
         </div>
-        <div class="text-mini">
-            An alert on a particular token takes precedence over a global alert.
-        </div>
-
     </div>
 </div>
 </body>
@@ -242,6 +222,7 @@
         $('.all_token').show();
         $('.one_token').hide();
     }
+
     let showOneTokenAlertTitle = () => {
         $('.all_token').hide();
         $('.one_token').show();
@@ -288,12 +269,7 @@
         $('.alerts').show();
         $('.non-alerts').hide();
         $('#alertDel').hide();
-        if (token === '_all_tokens_') {
-            showAllTokenAlertTitle(token);
-        } else {
-            showOneTokenAlertTitle(token);
-            $('#alert_token').text(token);
-        }
+        showOneTokenAlertTitle(token);
         let alertToken = findAlertInArray(token);
         if (alertToken !== undefined) {
             setAlertsVariables(alertToken);
@@ -316,23 +292,6 @@
         allAlerts = alerts;
         globalAlertValue = findAlertInArray('_all_tokens_');
         globalAlert = globalAlertValue !== undefined;
-    }
-
-    let delAlert = () => {
-        $.ajax(
-            {
-                url: `/api/alert?token=${tokenAlert}`,
-                method: "DELETE",
-                dataType: "json",
-                success: (data) => {
-                    getDatas();
-                    hideAlertPanel();
-                },
-                error: (xhr, status, error) => {
-                    console.log(error)
-                }
-            }
-        )
     }
 
     let cancelAlert = () => {
@@ -386,10 +345,10 @@
         let html;
         if (globalAlert === true) {
             html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" ` +
-            `title="View or change global alert"></i>`;
+                `title="Voir ou changer l'alerte globale"></i>`;
         } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" `+
-            `title="Put a global alert""></i>`;
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" ` +
+                `title="Mettre une alerte globale""></i>`;
         }
         $('.generalAlert').html(html);
         return html;
@@ -399,10 +358,10 @@
         let html;
         if (findAlertInArray(token) !== undefined) {
             html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" ` +
-            `title="View or change alert on ${token}"></i>`;
+                `title="Voir ou changer l'alerte sur ${token}"></i>`;
         } else {
             html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" ` +
-            `title="Put an alert on ${token}"></i>`;
+                `title="Mettre une alerte sur ${token}"></i>`;
         }
         return html;
     }
@@ -417,28 +376,23 @@
             if (coin.id !== "N/A") {
                 $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
                     '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8)) + '</td>' +
                     '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8)) + '</td>' +
                     '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
-                    '<td class="num">' + formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
                     '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
                     '</tr>');
             } else {
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
                     `<td colspan="4">` +
-                    `ICO or not yet listed or not declared in the Cryptos tab</td>` +
+                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td>` +
                     '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
-                    `<td colspan="6"></td>` +
+                    `<td colspan="5"></td>` +
                     `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
-             }
+            }
         })
         setBalance(data.result.balance)
         changeBellSize();

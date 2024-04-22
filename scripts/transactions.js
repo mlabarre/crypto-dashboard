@@ -100,7 +100,7 @@ let prepareSwapData = (body) => {
         "inputTokenQuotation": parseFloat(body.swapInputTokenQuotation),
         "inputTokenQuotationCurrency": body.swapInputTokenQuotationCurrency,
         "fee": parseFloat(body.swapFee),
-        "feeCurrency": body.swapFeeCurrencyOpt,
+        "feeCurrency": body.swapFeeCurrencyOpt.toUpperCase(),
         "wallet": body.swapWallet,
         "comment": body.comment
     }
@@ -135,7 +135,7 @@ let prepareSendData = (body) => {
         "receiveTokens": parseFloat(body.receiveTokenNumber),
         "receiveWallet": body.receiveWallet,
         "fee": parseFloat(body.sendFee),
-        "feeCurrency": body.sendFeeCurrencyOpt,
+        "feeCurrency": body.sendFeeCurrencyOpt.toUpperCase(),
         "feeInFiat": parseFloat(body.sendCounterpart),
         "comment": body.comment
     }
@@ -252,7 +252,7 @@ let updateFieldForTransactionUpdateSwap = (t, b) => {
     b.swapInputTokenQuotation= t.inputTokenQuotation;
     b.swapInputTokenQuotationCurrency= t.inputTokenQuotationCurrency;
     b.swapFee= t.fee;
-    b.swapFeeCurrencyOpt= t.feeCurrency;
+    b.swapFeeCurrencyOpt= t.feeCurrency.toUpperCase();
     b.swapWallet= t.wallet;
     b.comment= t.comment;
     return b;
@@ -268,7 +268,7 @@ let updateFieldForTransactionUpdateSend = (t, b) => {
     b.receiveTokenNumber = t.receiveTokens;
     b.receiveWallet = t.receiveWallet;
     b.sendFee= t.fee;
-    b.sendFeeCurrencyOpt = t.feeCurrency;
+    b.sendFeeCurrencyOpt = t.feeCurrency.toUpperCase();
     b.sendCounterpart= t.feeInFiat;
     b.comment = t.comment;
     return b;

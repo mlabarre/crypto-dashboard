@@ -15,18 +15,22 @@ let handleSummarySaleTransaction = async (tr) => {
 }
 
 let handleSummarySwapTransaction = async (tr, fees) => {
-    if (tr.fee > 0 && tr.feeCurrency !== config.get('fiat_currency').toUpperCase() && tr.feeCurrency !== tr.outputSymbol) {
-        fees.push({symbol: tr.feeCurrency, nb: tr.fee});
+    if (tr.fee > 0 && tr.feeCurrency !== config.get('fiat_currency').toUpperCase() &&
+        tr.feeCurrency !== tr.outputSymbol) {
+        fees.push({symbol: tr.feeCurrency, nb: tr.fee, wallet: tr.wallet});
     }
     return [{"token": tr.outputSymbol, "wallet": tr.wallet, "nb": tr.outputTokens * -1},
         {"token": tr.inputSymbol, "wallet": tr.wallet, "nb": tr.inputTokens}]
 }
 
-let handleSummarySendTransaction = async (tr) => {
+let handleSummarySendTransaction = async (tr, fees) => {
+    if (tr.fee > 0 && tr.feeCurrency !== config.get('fiat_currency').toUpperCase() &&
+        tr.feeCurrency !== tr.symbol) {
+        fees.push({symbol: tr.feeCurrency, nb: tr.fee, wallet: tr.sendWallet});
+    }
     return [{"token": tr.symbol, "wallet": tr.sendWallet, "nb": tr.sendTokens * -1},
         {"token": tr.symbol, "wallet": tr.receiveWallet, "nb": tr.receiveTokens}]
 }
-
 
 let handleSummaryTransaction = async (transaction, stock, fees) => {
     if (transaction.type === "purchase") {
@@ -39,7 +43,7 @@ let handleSummaryTransaction = async (transaction, stock, fees) => {
         let result = await handleSummarySwapTransaction(transaction, fees);
         stock.addOrUpdateDouble(result);
     } else if (transaction.type === "send") {
-        let result = await handleSummarySendTransaction(transaction);
+        let result = await handleSummarySendTransaction(transaction, fees);
         stock.addOrUpdateDouble(result);
     }
 }
@@ -68,7 +72,6 @@ let getCryptoQuotation = (symbol, cryptos) => {
 let valorize = (tokens, mycryptos) => {
     for (let i=0; i<tokens.length; i++) {
         tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos))
-        //tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos)).toFixed(2)
     }
     return tokens;
 }
@@ -81,6 +84,7 @@ let findTokenInValuesPerToken = (tokensValue, token) => {
         return null;
     }
 }
+
 let buildValuePerToken = (tokens) => {
     let tokensValue = [];
     let total = 0.00;
@@ -113,7 +117,7 @@ let buildValuePerToken = (tokens) => {
 let handleFees = (stock, fees) => {
     let tokens = stock.getTokens();
     for (let i=0; i<fees.length; i++) {
-        let index = tokens.findIndex(x => x.token === fees[i].symbol);
+        let index = tokens.findIndex(x => x.token === fees[i].symbol && x.wallet === fees[i].wallet);
         if (index >= 0) {
             tokens[index].nb -= fees[i].nb;
         }
@@ -173,7 +177,7 @@ let handleEvolutionTransaction = async (wallet, tr) => {
             tr.inputTokens, tr.inputTokenQuotation, tr.date, tr.fee, tr.feeCurrency);
     } else if (tr.type === "send") {
         return await wallet.sendToken(tr.symbol, tr.sendWallet, tr.receiveWallet, tr.sendTokens,
-            tr.receiveTokens, tr.date);
+            tr.receiveTokens, tr.date, tr.fee, tr.feeCurrency);
     }
 }
 
@@ -241,6 +245,8 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
                 values.last_one_hour_quotation) * 100 / values.last_one_hour_quotation
             token.variation_on_one_day = (values.quotation -
                 values.last_day_quotation) * 100 / values.last_day_quotation
+            token.variation_on_one_week = (values.quotation -
+                values.last_week_quotation) * 100 / values.last_week_quotation
             total_start += token.start_price * token.tokens;
             total_current += token.quotation * token.tokens;
         } else {

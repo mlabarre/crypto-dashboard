@@ -221,3 +221,7 @@ select {
     justify-content: center;
 }
 
+.orange {
+    color: orange !important;
+}
+

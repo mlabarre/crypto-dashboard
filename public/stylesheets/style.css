@@ -207,3 +207,7 @@ select {
   align-items: center;
   justify-content: center;
 }
+
+.orange {
+  color: orange !important;
+}

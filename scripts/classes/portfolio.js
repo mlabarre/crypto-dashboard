@@ -89,6 +89,7 @@ class Wallet {
         // WalletToken object array.
         this.walletsTokens = [];
     }
+
     getTokensOfWallet = async (wallet) => {
         for (let i=0; i<this.walletsTokens.length; i++) {
             if (this.walletsTokens[i].wallet === wallet) {
@@ -99,6 +100,7 @@ class Wallet {
         this.walletsTokens.push(walletToken);
         return walletToken;
     }
+
     getTokenOfWallet = async (wallet, symbol) => {
         let walletToken = await this.getTokensOfWallet(wallet);
         if (walletToken.tokens.length > 0) {
@@ -117,6 +119,7 @@ class Wallet {
         let token = await this.getTokenOfWallet(wallet, symbol);
         token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb));
     }
+
     addOrUpdateToken = async (wallet, symbol, tokensNb, opDate, price) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
         let tokenAmount = token.findTokenAmountFromPrice(price);
@@ -126,6 +129,7 @@ class Wallet {
             token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb));
         }
     }
+
     saleToken = async (wallet, symbol, tokensNb) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
         let tokensAmount = token.getTokenAmountsSortedByDate();
@@ -140,14 +144,19 @@ class Wallet {
             }
         }
     }
-    swapToken = async (wallet, outputSymbol, inputSymbol, outputTokens, inputTokens, inputPrice, swapDate, fee, feeCurrency) => {
+
+    swapToken = async (wallet, outputSymbol, inputSymbol, outputTokens,
+                       inputTokens, inputPrice, swapDate, fee,
+                       feeCurrency) => {
         await this.saleToken(wallet, outputSymbol, outputTokens);
         await this.addOrUpdateToken(wallet, inputSymbol, inputTokens, swapDate, inputPrice);
         if (fee > 0 && feeCurrency !== config.get('fiat_currency').toUpperCase() && feeCurrency !== outputSymbol) {
             await this.saleToken(wallet, feeCurrency, fee); // Simulate sale to substract fee
         }
     }
-    sendToken = async (symbol, sendWallet, receiveWallet, sendTokens, receiveTokens, opDate) => {
+
+    sendToken = async (symbol, sendWallet, receiveWallet, sendTokens,
+                       receiveTokens, opDate, fee, feeCurrency) => {
         // Find source tokens from sendWallet;
         let token = await this.getTokenOfWallet(sendWallet, symbol);
         let tokensAmount = token.getTokenAmountsSortedByDate();
@@ -174,6 +183,9 @@ class Wallet {
                 await this.addOrUpdateToken(receiveWallet, symbol, priceForReceive.nb, opDate, priceForReceive.price);
                 receiveTokens -= priceForReceive.nb;
             }
+        }
+        if (fee > 0 && feeCurrency !== config.get('fiat_currency').toUpperCase() && feeCurrency !== symbol) {
+            await this.saleToken(sendWallet, feeCurrency, fee); // Simulate sale to substract fee
         }
     }
 
