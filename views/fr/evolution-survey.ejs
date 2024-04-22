@@ -147,7 +147,7 @@
 
     <div w3-include-html="/html/fr/header.html"></div>
 
-    <div class="sub-container non-alerts">
+    <div class="sub-container evolution">
 
         <table id="cryptos" class="styled-table">
             <thead>
@@ -200,6 +200,9 @@
                        value="Enregistrer">
             </div>
         </div>
+    </div>
+    <div class="sub-container cryptos">
+
     </div>
 </div>
 </body>
@@ -389,8 +392,8 @@
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
                     `<td colspan="4">` +
                     `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td>` +
-                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
-                    `<td colspan="5"></td>` +
+                    `<td class="num">${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4))}</td>` +
+                    `<td colspan="5">${formatDelim(((coin.quotation * 100) / 100).toFixed(8))}</td>` +
                     `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
             }
         })

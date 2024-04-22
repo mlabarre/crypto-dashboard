@@ -433,10 +433,11 @@
                     '</tr>');
             } else {
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
-                    `<td colspan="4">` +
-                    `ICO or not yet listed or not declared in the Cryptos tab</td>` +
-                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
-                    `<td colspan="6"></td>` +
+                    `<td colspan="11">` +
+                    `ICO or not yet listed or not declared in the Cryptos tab : ` +
+                    `${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4))} tokens at ` +
+                    `${formatDelim(((coin.start_price * 100) / 100).toFixed(8))}` +
+                    ` ${coin.currency}</td>` +
                     `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
              }
         })

@@ -174,7 +174,7 @@ let handleEvolutionTransaction = async (wallet, tr) => {
         return await wallet.saleToken(tr.wallet, tr.symbol, tr.tokens);
     } else if (tr.type === "swap") {
         return await wallet.swapToken(tr.wallet, tr.outputSymbol, tr.inputSymbol, tr.outputTokens,
-            tr.inputTokens, tr.inputTokenQuotation, tr.date, tr.fee, tr.feeCurrency);
+            tr.inputTokens, tr.inputTokenQuotation, tr.date, tr.fee, tr.feeCurrency, tr.inputTokenQuotationCurrency);
     } else if (tr.type === "send") {
         return await wallet.sendToken(tr.symbol, tr.sendWallet, tr.receiveWallet, tr.sendTokens,
             tr.receiveTokens, tr.date, tr.fee, tr.feeCurrency);
@@ -194,6 +194,7 @@ let buildEvolution = (walletsTokens) => {
                     "symbol": token.symbol,
                     "start_price": tokenAmount.purchasePrice,
                     "tokens": parseFloat(tokenAmount.number).toFixed(4),
+                    "currency": tokenAmount.currency
                 }
                 if (tokenAmount.number !== 0 && parseFloat(tokenAmount.number.toFixed(6)) > 0) {
                     records.push(record);
@@ -250,7 +251,7 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
             total_start += token.start_price * token.tokens;
             total_current += token.quotation * token.tokens;
         } else {
-            token.id = "N/A"
+            token.id = "N/A";
         }
     }
     let sortParam = sortDirection === "D" ? "-"+sortField : sortField;

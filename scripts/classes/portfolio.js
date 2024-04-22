@@ -37,10 +37,12 @@ class TokenAmount {
     purchaseDate;
     purchasePrice;
     number;
-    constructor(date, price, nb) {
+    currency;
+    constructor(date, price, nb, currency) {
         this.purchaseDate = date;
         this.purchasePrice = price;
         this.number = nb;
+        this.currency = currency;
     }
 }
 
@@ -117,16 +119,16 @@ class Wallet {
 
     buyToken = async (wallet, symbol, tokensNb, opDate, price) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
-        token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb));
+        token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb, config.get('fiat_currency')));
     }
 
-    addOrUpdateToken = async (wallet, symbol, tokensNb, opDate, price) => {
+    addOrUpdateToken = async (wallet, symbol, tokensNb, opDate, price, currency) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
         let tokenAmount = token.findTokenAmountFromPrice(price);
         if (tokenAmount != null){
             tokenAmount.number += tokensNb;
         } else {
-            token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb));
+            token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb, currency));
         }
     }
 
@@ -147,9 +149,9 @@ class Wallet {
 
     swapToken = async (wallet, outputSymbol, inputSymbol, outputTokens,
                        inputTokens, inputPrice, swapDate, fee,
-                       feeCurrency) => {
+                       feeCurrency, currency) => {
         await this.saleToken(wallet, outputSymbol, outputTokens);
-        await this.addOrUpdateToken(wallet, inputSymbol, inputTokens, swapDate, inputPrice);
+        await this.addOrUpdateToken(wallet, inputSymbol, inputTokens, swapDate, inputPrice, currency);
         if (fee > 0 && feeCurrency !== config.get('fiat_currency').toUpperCase() && feeCurrency !== outputSymbol) {
             await this.saleToken(wallet, feeCurrency, fee); // Simulate sale to substract fee
         }
@@ -177,10 +179,10 @@ class Wallet {
         for (let i=0; i<pricesForReceive.length; i++) {
             let priceForReceive = pricesForReceive[i];
             if (priceForReceive.nb >= receiveTokens) {
-                await this.addOrUpdateToken(receiveWallet, symbol, receiveTokens, opDate, priceForReceive.price);
+                await this.addOrUpdateToken(receiveWallet, symbol, receiveTokens, opDate, priceForReceive.price, '');
                 break;
             } else {
-                await this.addOrUpdateToken(receiveWallet, symbol, priceForReceive.nb, opDate, priceForReceive.price);
+                await this.addOrUpdateToken(receiveWallet, symbol, priceForReceive.nb, opDate, priceForReceive.price, '');
                 receiveTokens -= priceForReceive.nb;
             }
         }
