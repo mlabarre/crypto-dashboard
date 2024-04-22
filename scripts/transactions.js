@@ -1,5 +1,5 @@
 const config = require('config');
-const MongoHelper = require('../scripts/mongoHelper');
+const MongoHelper = require('./mongo-helper');
 const utils = require('../scripts/utils');
 
 let buildDate = (date, time) => {

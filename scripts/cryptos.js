@@ -1,4 +1,4 @@
-const MongoHelper = require('../scripts/mongoHelper');
+const MongoHelper = require('./mongo-helper');
 
 let getMyCryptos = async () => {
     return await new MongoHelper().findAllMyCryptos();

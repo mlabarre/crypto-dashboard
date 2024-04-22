@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-const MongoHelper = require('./scripts/mongoHelper');
+const MongoHelper = require('./scripts/mongo-helper');
 const favicon = require('serve-favicon');
 const router = require('./routes/router');
 

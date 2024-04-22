@@ -1,5 +1,5 @@
 const config = require('config');
-const MongoHelper = require('../scripts/mongoHelper');
+const MongoHelper = require('./mongo-helper');
 
 let getAllTransactionsOnDate = async (direction) => {
     return await new MongoHelper().findAllTransactionsSortedOnDate(direction);

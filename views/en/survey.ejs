@@ -73,16 +73,6 @@
             height: 25px
         }
 
-        .sizeup {
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .sizedown {
-            font-size: 10px;
-            cursor: pointer;
-        }
-
         .input {
             padding: 10px 10px;
             background-color: cadetblue;
@@ -173,6 +163,18 @@
             cursor: pointer;
         }
 
+        .bloc {
+            height: 1000px;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+
+        .ctable {
+            overflow-y: scroll;
+            height: 1000px;
+            display: block;
+        }
+
     </style>
 </head>
 
@@ -199,7 +201,7 @@
             <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./week</th>
             <th class="clickable generalAlert"></th>
-            <th class="clickable"><span onclick="addCrypto()">+</span></th>
+            <th class="clickable" title="Add cryptos to survey"><span onclick="addCrypto()">+</span></th>
             </thead>
             <tbody></tbody>
         </table>
@@ -255,14 +257,13 @@
         <div class="filter cond">
             <input class="input-filter" type="text" id="criteria" placeholder="Filtre">
             <button type="button" class="button button-filter" onclick="doFilter('all');">Filter all</button>
-            <button type="button" class="button button-filter" onclick="doFilter('symbol');">Symbol filter
-            </button>
-            <button type="button" class="button button-filter" onclick="resetFilter();">Remove filter
-            </button>
+            <button type="button" class="button button-filter" onclick="doFilter('symbol');">Symbol filter</button>
+            <button type="button" class="button button-filter" onclick="resetFilter();">Remove filter</button>
+            <button type="button" class="button button-filter" onclick="closeCryptos();">Close</button>
         </div>
         <div class="subcontainer">
             <div id="availableCryptos" class="bloc cond">
-                <div class="title-table"><span>Select a new crypto to survey</span></div>
+                <div class="title-table"><span>Select new cryptos to survey</span></div>
                 <div class="bloc">
                     <table id="availableCryptosTable" class="styled-table ctable">
                         <thead>
@@ -585,11 +586,16 @@
         hideMessage();
     }
 
+    let closeCryptos = () => {
+        getDatas();
+    }
+
     let addSurveyCrypto = (o) => {
-        let children = o.closest("tr").children;
+        let tr = o.closest("tr");
+        let children = tr.children;
         let crypto = {"id": children[0].innerText, "symbol": children[1].innerText, "name": children[2].innerText}
         addToCollection(JSON.stringify(crypto)).then((data) => {
-            getDatas();
+            tr.hidden = true;
             alert(`Crypto ${crypto.name} monitored`)
         })
 

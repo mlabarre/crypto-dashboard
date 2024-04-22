@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp')
 const path = require('path')
-const MongoHelper = require('../scripts/mongoHelper')
+const MongoHelper = require('./mongo-helper')
 
 /**
  * @param request HTTP request

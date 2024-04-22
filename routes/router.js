@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const transactionHandler = require('../scripts/transactions');
 const portFolio = require('../scripts/portfolio');
-const followTransactions = require('../scripts/followTransactions')
+const followTransactions = require('../scripts/follow-transactions')
 const cryptos = require('../scripts/cryptos')
 const wallets = require('../scripts/wallets')
 const survey = require('../scripts/survey')
@@ -20,13 +20,13 @@ router
     })
     .get('/addTransaction', function (request, response, next) {
         prepareTransactionCreation().then( (options) => {
-            response.render(config.get('language')+'/addOrUpdateTransaction', options);
+            response.render(config.get('language')+'/add-or-update-transaction', options);
         })
     })
     .get('/updateTransaction', function (request, response, next) {
         prepareTransactionUpdate(request.query.id, request.query.sortDirection,
             request.query.token, request.query.wallet, request.query.lang).then( (options) => {
-            response.render(config.get('language')+'/addOrUpdateTransaction', options);
+            response.render(config.get('language')+'/add-or-update-transaction', options);
         })
     })
     .get('/portfolio', function (request, response, next) {
@@ -37,13 +37,13 @@ router
     })
     .get('/followTransactions', function (request, response, next) {
         if (request.query.lang !== undefined && request.query.lang !== '') {
-            response.render(request.query.lang + '/followTransactions', {
+            response.render(request.query.lang + '/follow-transactions', {
                 sortDirection: request.query.sortDirection,
                 token: request.query.token,
                 wallet: request.query.wallet
             });
         } else {
-            response.render(config.get('language') + '/followTransactions', {
+            response.render(config.get('language') + '/follow-transactions', {
                 sortDirection: "",
                 token: "",
                 wallet: ""
