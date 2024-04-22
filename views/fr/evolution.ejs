@@ -225,18 +225,14 @@
 
 <script type="text/javascript">
 
-    let lastSortField = "variation";
-    let lastSortDirection = "D";
-    let fontSize = 14;
     let globalAlert = false;
     let globalAlertValue;
     let allAlerts = [];
     let tokenAlert = "";
 
-    let setDate = () => {
-        document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
-    }
-
+    //
+    // ALERTS
+    //
     let showAllTokenAlertTitle = () => {
         $('.all_token').show();
         $('.one_token').hide();
@@ -289,9 +285,9 @@
         $('.non-alerts').hide();
         $('#alertDel').hide();
         if (token === '_all_tokens_') {
-            showAllTokenAlertTitle(token);
+            showAllTokenAlertTitle();
         } else {
-            showOneTokenAlertTitle(token);
+            showOneTokenAlertTitle();
             $('#alert_token').text(token);
         }
         let alertToken = findAlertInArray(token);
@@ -369,19 +365,6 @@
         )
     }
 
-    let signRate = (rate) => {
-        if (rate.indexOf("-") >= 0) {
-            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ",") + ' %' + '</span>';
-        } else {
-            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ",") + ' %' + '</span>';
-        }
-    }
-
-    let setBalance = (balance) => {
-        $('#amount').text(formatDelim(balance.amount.toFixed(2)));
-        $('#variation').html(signRate(balance.variation.toFixed(2)));
-    }
-
     let setGeneralAlertIconHtml = () => {
         let html;
         if (globalAlert === true) {
@@ -405,6 +388,31 @@
                 `title="Mettre une alerte sur ${token}"></i>`;
         }
         return html;
+    }
+
+    //
+    // EVOLUTION
+    //
+
+    let lastSortField = "variation";
+    let lastSortDirection = "D";
+    let fontSize = 14;
+
+    let setDate = () => {
+        document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
+    }
+
+    let signRate = (rate) => {
+        if (rate.indexOf("-") >= 0) {
+            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ",") + ' %' + '</span>';
+        } else {
+            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ",") + ' %' + '</span>';
+        }
+    }
+
+    let setBalance = (balance) => {
+        $('#amount').text(formatDelim(balance.amount.toFixed(2)));
+        $('#variation').html(signRate(balance.variation.toFixed(2)));
     }
 
     let fill = (data) => {
@@ -471,11 +479,6 @@
         )
     }
 
-    let reload = () => {
-        getDatas();
-        setDate();
-    }
-
     let changeBellSize = () => {
         const bells = document.querySelectorAll('.bell');
         bells.forEach(bell => {
@@ -493,6 +496,11 @@
         }
         document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
         changeBellSize();
+    }
+
+    let reload = () => {
+        getDatas();
+        setDate();
     }
 
     let refresh = "<%= refresh %>";

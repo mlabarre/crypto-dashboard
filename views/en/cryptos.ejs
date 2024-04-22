@@ -157,19 +157,18 @@
         })
     }
 
+    let findInFields = (criteria, child) => {
+        let from = `${child[1].textContent} ${child[2].textContent} ${child[3].textContent}`;
+        return from.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
+    }
+
     let doFilter = (type) => {
         let criteria = $('#criteria').val();
         $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
             if (type === "all") {
-                if (raw.children[1].textContent.indexOf(criteria) < 0 &&
-                    raw.children[2].textContent.indexOf(criteria) < 0 &&
-                    raw.children[3].textContent.indexOf(criteria) < 0) {
-                    raw.hidden = true;
-                }
+                raw.hidden = findInFields(criteria, raw.children) === true;
             } else {
-                if (raw.children[2].textContent.indexOf(criteria) < 0 ) {
-                    raw.hidden = true;
-                }
+                raw.hidden = raw.children[2].textContent.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
             }
         })
     }

@@ -210,6 +210,54 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+    addAlertSurvey = async (doc) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts-survey").findOneAndReplace({token: doc.token}, doc, {upsert: true});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    delAlertSurvey = async (token) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts-survey").findOneAndDelete({token: token});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    getAlertsSurvey = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection("alerts-survey").find({}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    getCryptosSurvey = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection("cryptos-survey").find({}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    addCryptoSurvey = async (doc) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("cryptos-survey").insertOne(doc);
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    delCryptoSurvey = async (id) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("cryptos-survey").findOneAndDelete({id: id});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
 }
 
 module.exports = MongoHelper;

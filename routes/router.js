@@ -6,6 +6,7 @@ const portFolio = require('../scripts/portfolio');
 const followTransactions = require('../scripts/followTransactions')
 const cryptos = require('../scripts/cryptos')
 const wallets = require('../scripts/wallets')
+const survey = require('../scripts/survey')
 const {prepareTransactionCreation, prepareTransactionUpdate} = require("../scripts/transactions");
 
 /* GET home page. */
@@ -54,6 +55,9 @@ router
     })
     .get('/wallets', function (request, response, next) {
         response.render(config.get('language')+'/wallets', {});
+    })
+    .get('/survey', function (request, response, next) {
+        response.render(config.get('language')+'/survey', {fiat_symbol: config.get('fiat_symbol'), refresh: config.get('refresh_in_seconds')});
     })
     /* Ajax calls */
     .post('/api/add-transaction', function (request, response, next) {
@@ -142,6 +146,30 @@ router
 
         })
     })
-
+    .post('/api/alert-survey', function (request, response, next) {
+        survey.addAlert(request.body).then((res) => {
+            response.send({});
+        })
+    })
+    .delete('/api/alert-survey', function (request, response, next) {
+        survey.removeAlert(request.query.token).then((res) => {
+            response.send({});
+        })
+    })
+    .get('/api/evolution-survey', function (request, response, next) {
+        survey.evolution(request.query.sortField, request.query.sortDirection).then((data) => {
+            response.send(JSON.stringify(data));
+        })
+    })
+    .post('/api/add-to-cryptos-survey', function (request, response, next) {
+        survey.addCrypto(request.body).then((res) => {
+            response.send({});
+        })
+    })
+    .delete('/api/delete-crypto-survey', function (request, response, next) {
+        survey.removeCrypto(request.query.id).then((res) => {
+            response.send({});
+        })
+    })
 
 module.exports = router;

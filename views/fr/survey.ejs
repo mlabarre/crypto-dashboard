@@ -138,6 +138,41 @@
             margin: 10px;
         }
 
+        .filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .button-filter {
+            margin-top: 0;
+            margin-right: 30px;
+        }
+
+        .message {
+            display: flex;
+            margin: 10px 10px;
+            color: black;
+        }
+
+        .title-table {
+            display: flex;
+            justify-content: center;
+            margin: 5px 5px;
+        }
+
+        .input-filter {
+            border-radius: 10px;
+            display: flex;
+            margin-right: 30px;
+            height: 30px;
+        }
+
+        .action {
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -148,19 +183,23 @@
     <div w3-include-html="/html/fr/header.html"></div>
 
     <div class="sub-container evolution">
+        <div class="title">
+            <span class="title-text" id="date"></span>
+        </div>
 
         <table id="cryptos" class="styled-table">
             <thead>
-            <th class="title-left clickable" onclick="sortTable('name')">Crypto</th>
+            <th class="title-left clickable" onclick="sortTable('id')">Id</th>
             <th class="title-left clickable" onclick="sortTable('symbol')">Symbole</th>
+            <th class="title-left clickable" onclick="sortTable('name')">Nom</th>
             <th class="num clickable" onclick="sortTable('quotation\n')">Cours <%= fiat_symbol %></th>
             <th class="num clickable" onclick="sortTable('quotation_usdt\n')">Cours USDT</th>
-            <th class="clickable" onclick="sortTable('variation')">Evol./achat</th>
             <th class="clickable" onclick="sortTable('variation_on_five_minutes')">Evol./5mn</th>
             <th class="clickable" onclick="sortTable('variation_on_one_hour')">Evol./1H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_day')">Evol./24H</th>
             <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./sem</th>
             <th class="clickable generalAlert"></th>
+            <th class="clickable"><span onclick="addCrypto()">+</span></th>
             </thead>
             <tbody></tbody>
         </table>
@@ -168,6 +207,7 @@
 
     <div class="sub-container cont-border alerts">
         <div class="title-alerts one_token">Alerte pour le token <span id="alert_token"></span></div>
+        <div class="title-alerts all_token">Alerte pour tous les tokens</div>
         <div class="text">
             <span>Envoyer une alerte si la variation du prix du token :</span>
         </div>
@@ -192,6 +232,9 @@
         </div>
         <div class="button-bloc">
             <div>
+                <input type="button" class="button" id="alertDel" onclick="delAlert();return false;" value="Supprimer">
+            </div>
+            <div>
                 <input type="button" class="button" id="alertCancel" onclick="cancelAlert();return false;"
                        value="Annuler">
             </div>
@@ -200,26 +243,52 @@
                        value="Enregistrer">
             </div>
         </div>
+        <div class="text-mini">
+            Une alerte sur un token particulier prévaut sur une alerte globale.
+        </div>
     </div>
-    <div class="sub-container cryptos">
 
+    <div class="container cryptos">
+        <div class="message">
+            <span id="message">Chargement des cryptos en cours...</span>
+        </div>
+        <div class="filter cond">
+            <input class="input-filter" type="text" id="criteria" placeholder="Filtre">
+            <button type="button" class="button button-filter" onclick="doFilter('all');">Filtrer sur tout</button>
+            <button type="button" class="button button-filter" onclick="doFilter('symbol');">Filtrer sur le symbole
+            </button>
+            <button type="button" class="button button-filter" onclick="resetFilter();">Supprimer le filtre
+            </button>
+        </div>
+        <div class="subcontainer">
+            <div id="availableCryptos" class="bloc cond">
+                <div class="title-table"><span>Sélection d'une nouvelle crypto à surveiller</span></div>
+                <div class="bloc">
+                    <table id="availableCryptosTable" class="styled-table ctable">
+                        <thead>
+                        <th>Id</th>
+                        <th>Symbole</th>
+                        <th>Nom</th>
+                        <th></th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
 
 <script type="text/javascript">
 
-    let lastSortField = "variation";
-    let lastSortDirection = "D";
-    let fontSize = 14;
+    //
+    // ALERTS
+    //
     let globalAlert = false;
     let globalAlertValue;
     let allAlerts = [];
     let tokenAlert = "";
-
-    let setDate = () => {
-        document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
-    }
 
     let showAllTokenAlertTitle = () => {
         $('.all_token').show();
@@ -253,13 +322,14 @@
         $('#alert_lt_1w').val(alertToken.lt1w < 0 ? '' : alertToken.lt1w);
     }
 
-    let hideAlertPanel = () => {
-        $('.alerts').hide();
-        $('.non-alerts').show();
+    let showAlertPanel = () => {
+        $('.alerts').show();
+        $('.evolution').hide();
+        $('.cryptos').hide();
     }
 
     let initAlerts = () => {
-        hideAlertPanel();
+        showEvolutionPanel();
         tokenAlert = "";
         globalAlert = false;
         globalAlertValue;
@@ -267,19 +337,30 @@
     }
 
     // Called by icon click.
-    let showAlertPanel = (token) => {
+    let handleAlertPanel = (token) => {
         tokenAlert = token;
-        $('.alerts').show();
-        $('.non-alerts').hide();
+        showAlertPanel();
         $('#alertDel').hide();
-        showOneTokenAlertTitle(token);
+        if (token === '_all_tokens_') {
+            showAllTokenAlertTitle();
+        } else {
+            showOneTokenAlertTitle();
+            $('#alert_token').text(token);
+        }
         let alertToken = findAlertInArray(token);
         if (alertToken !== undefined) {
             setAlertsVariables(alertToken);
-            $('#alertDel').show();
+            if (token === '_all_tokens_') {
+                $('#alertDel').hide();
+            } else {
+                $('#alertDel').show();
+            }
         } else {
             initAlertsVariables();
             $('#alertDel').hide();
+            if (allAlerts.length === 0) {
+                $('#alertCancel').hide();
+            }
         }
     }
 
@@ -297,8 +378,25 @@
         globalAlert = globalAlertValue !== undefined;
     }
 
+    let delAlert = () => {
+        $.ajax(
+            {
+                url: `/api/alert-survey?token=${tokenAlert}`,
+                method: "DELETE",
+                dataType: "json",
+                success: (data) => {
+                    getDatas();
+                    showEvolutionPanel();
+                },
+                error: (xhr, status, error) => {
+                    console.log(error)
+                }
+            }
+        )
+    }
+
     let cancelAlert = () => {
-        hideAlertPanel();
+        showEvolutionPanel();
     }
 
     let addOrUpdateAlert = () => {
@@ -316,19 +414,56 @@
         console.log(JSON.stringify(json))
         $.ajax(
             {
-                url: "/api/alert",
+                url: "/api/alert-survey",
                 method: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(json),
                 success: (data) => {
                     getDatas();
-                    hideAlertPanel();
+                    showEvolutionPanel();
                 },
                 error: (xhr, status, error) => {
                     console.log(error)
                 }
             }
         )
+    }
+
+    let setGeneralAlertIconHtml = () => {
+        let html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="handleAlertPanel('_all_tokens_')" ` +
+            `title="Voir ou changer l'alerte globale"></i>`;
+        $('.generalAlert').html(html);
+        return html;
+    }
+
+    let buildAlertIconHtml = (token) => {
+        let html;
+        if (findAlertInArray(token) !== undefined) {
+            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="handleAlertPanel('${token}')" ` +
+                `title="Voir ou changer l'alerte sur ${token}"></i>`;
+        } else {
+            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="handleAlertPanel('${token}')" ` +
+                `title="Mettre une alerte sur ${token}"></i>`;
+        }
+        return html;
+    }
+
+    //
+    // EVOLUTION
+    //
+
+    let lastSortField = "variation";
+    let lastSortDirection = "D";
+    let fontSize = 14;
+
+    let showEvolutionPanel = () => {
+        $('.alerts').hide();
+        $('.evolution').show();
+        $('.cryptos').hide();
+    }
+
+    let setDate = () => {
+        document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
     }
 
     let signRate = (rate) => {
@@ -339,66 +474,38 @@
         }
     }
 
-    let setBalance = (balance) => {
-        $('#amount').text(formatDelim(balance.amount.toFixed(2)));
-        $('#variation').html(signRate(balance.variation.toFixed(2)));
-    }
-
-    let setGeneralAlertIconHtml = () => {
-        let html;
-        if (globalAlert === true) {
-            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" ` +
-                `title="Voir ou changer l'alerte globale"></i>`;
-        } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('_all_tokens_')" ` +
-                `title="Mettre une alerte globale""></i>`;
-        }
-        $('.generalAlert').html(html);
-        return html;
-    }
-
-    let buildAlertIconHtml = (token) => {
-        let html;
-        if (findAlertInArray(token) !== undefined) {
-            html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" ` +
-                `title="Voir ou changer l'alerte sur ${token}"></i>`;
-        } else {
-            html = `<i class="fa-solid fa-bell-slash alert clickable bell" onclick="showAlertPanel('${token}')" ` +
-                `title="Mettre une alerte sur ${token}"></i>`;
-        }
-        return html;
-    }
-
     let fill = (data) => {
         $('.alerts').hide();
         setAlerts(data.result.alerts);
+        surveyCryptosList = data.result.tokens;
+        if (allAlerts.length === 0) {
+            // Require a global alert before working
+            showAlertPanel();
+            handleAlertPanel('_all_tokens_');
+            return;
+        }
+        showEvolutionPanel();
         setGeneralAlertIconHtml();
         let tokens = data.result.tokens;
         $.each(tokens, (no) => {
             let coin = tokens[no];
-            if (coin.id !== "N/A") {
-                $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
-                    '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="rate">' + signRate(((coin.variation * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2)) + '</td>' +
-                    '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
-                    '</tr>');
+            let html = `<tr><td>${coin.id}</td>` +
+                `<td class="rate">${coin.symbol.toUpperCase()}</td><td>${coin.name}</td>`;
+            if (coin.quotation !== undefined && coin.quotation !== '') {
+                html += `<td class="num">${formatDelim(((coin.quotation * 100) / 100).toFixed(8))}</td>` +
+                    `<td class="num">${formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8))}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2))}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2))}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2))}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2))}</td>`;
             } else {
-                $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
-                    `<td colspan="4">` +
-                    `ICO ou pas encore listé ou non déclaré dans l'onglet Cryptos</td>` +
-                    `<td class="num">${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4))}</td>` +
-                    `<td colspan="5">${formatDelim(((coin.quotation * 100) / 100).toFixed(8))}</td>` +
-                    `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
+                html += `<td colspan="6">En attente de valorisation par crypto-updater</td>`
             }
+            html += `<td class="rate">${buildAlertIconHtml(coin.symbol.toUpperCase())}</td>` +
+                `<td class="action indic-moins"><span onclick="delCrypto('${coin.id}')" title="Enlever de la surveillance">-` +
+                `</span></td></tr>`
+            $('#cryptos').append(html);
         })
-        setBalance(data.result.balance)
-        changeBellSize();
     }
 
     let sortTable = (sortField) => {
@@ -414,7 +521,7 @@
         initAlerts();
         $.ajax(
             {
-                url: "/api/evolution?sortField=" + lastSortField + "&sortDirection=" + lastSortDirection,
+                url: "/api/evolution-survey?sortField=" + lastSortField + "&sortDirection=" + lastSortDirection,
                 method: "GET",
                 dataType: "json",
                 success: (data) => {
@@ -427,28 +534,131 @@
         )
     }
 
+    //
+    // CRYPTOS
+    //
+
+    let availableCryptoShown = false;
+    let surveyCryptosList = null;
+    let availableCryptosList = null;
+
+    let showMessage = () => {
+        $('.message').css('color', 'white');
+    }
+
+    let hideMessage = () => {
+        $('.message').css('color', 'black');
+    }
+
+    let showCryptosPanel = () => {
+        $('.alerts').hide();
+        $('.evolution').hide();
+        $('.cryptos').show();
+    }
+
+    let addAvailableCryptosRow = async (row) => {
+        let r = `<tr><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td>` +
+            `<td class="action" onclick="addSurveyCrypto(this)">` +
+            `<span class="indic-plus" title="Surveiller cette crypto">+</span></td></tr>`
+        $('#availableCryptosTable').append(r);
+    }
+
+    let removeSurveyCryptosFromAvailableCryptos = async () => {
+        for (let i = 0; i < surveyCryptosList.length; i++) {
+            let index = getIndexInArray(availableCryptosList, surveyCryptosList[i]);
+            availableCryptosList.splice(index, 1);
+        }
+        return availableCryptosList;
+    }
+
+    let buildAvailableCryptos = async () => {
+        showMessage();
+        $('#availableCryptosTable').find('tbody tr').remove();
+        availableCryptosList = await getAvailableCryptos();
+        await removeSurveyCryptosFromAvailableCryptos();
+        for (let i = 0; i < availableCryptosList.length; i++) {
+            await addAvailableCryptosRow(availableCryptosList[i]);
+        }
+        if ($('#criteria').val() !== "") {
+            doFilter();
+        }
+        hideMessage();
+    }
+
+    let addSurveyCrypto = (o) => {
+        let children = o.closest("tr").children;
+        let crypto = {"id": children[0].innerText, "symbol": children[1].innerText, "name": children[2].innerText}
+        addToCollection(JSON.stringify(crypto)).then((data) => {
+            getDatas();
+            alert(`Crypto ${crypto.name} surveillée`)
+        })
+
+    }
+
+    let addToCollection = (crypto) => {
+        return $.ajax({
+            type: "POST",
+            url: "/api/add-to-cryptos-survey",
+            contentType: "application/json; charset=utf-8",
+            data: crypto
+        })
+    }
+
+    let getAvailableCryptos = async () => {
+        return $.ajax({
+            type: "GET",
+            url: "/api/get-available-cryptos",
+            contentType: "application/json; charset=utf-8"
+        })
+    }
+
+    let addCrypto = () => {
+        showCryptosPanel();
+        buildAvailableCryptos().then(() => {
+            hideMessage();
+        })
+    }
+
+    let delCrypto = (id) => {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/delete-crypto-survey?id=${id}`,
+            contentType: "application/json; charset=utf-8"
+        }).then((res) => {
+            getDatas();
+        })
+    }
+
+    let findInFields = (criteria, child) => {
+        let from = `${child[0].textContent} ${child[1].textContent} ${child[2].textContent}`;
+        return from.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
+    }
+
+    let doFilter = (type) => {
+        let criteria = $('#criteria').val();
+        $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
+            if (type === "all") {
+                raw.hidden = findInFields(criteria, raw.children) === true;
+            } else {
+                raw.hidden = raw.children[1].textContent.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
+            }
+        })
+    }
+
+    let resetFilter = () => {
+        $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
+            raw.hidden = false;
+        })
+        $('#criteria').val("");
+    }
+
+    //
+    // GLOBAL
+    //
+
     let reload = () => {
         getDatas();
         setDate();
-    }
-
-    let changeBellSize = () => {
-        const bells = document.querySelectorAll('.bell');
-        bells.forEach(bell => {
-            bell.style.fontSize = '16px';
-        });
-    }
-
-    let changeFontSize = (direction) => {
-        if (direction === "up") {
-            fontSize += 1;
-        } else {
-            if (fontSize >= 6) {
-                fontSize -= 1;
-            }
-        }
-        document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
-        changeBellSize();
     }
 
     let refresh = "<%= refresh %>";
@@ -456,17 +666,10 @@
     let init = () => {
         reload();
         setInterval(reload, parseInt(refresh) * 1000);
-
-        $('#sizeup').on('click', () => {
-            changeFontSize('up');
-        });
-        $('#sizedown').on('click', () => {
-            changeFontSize('down');
-        });
         return 1;
     }
 
-    includeHTML("h-evolution").then(() => {
+    includeHTML("h-survey").then(() => {
         handleDarkMode(document.getElementById('darkmode'));
     });
 
