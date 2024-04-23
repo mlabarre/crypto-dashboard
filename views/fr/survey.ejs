@@ -589,6 +589,7 @@
     }
 
     let closeCryptos = () => {
+        stopRefresh();
         getDatas();
     }
 
@@ -622,6 +623,7 @@
 
     let addCrypto = () => {
         showCryptosPanel();
+        stopRefresh();
         buildAvailableCryptos().then(() => {
             hideMessage();
         })
@@ -670,10 +672,21 @@
     }
 
     let refresh = "<%= refresh %>";
+    let intervalId = null;
+
+    let startRefresh = () => {
+        intervalId = setInterval(reload, parseInt(refresh) * 1000);
+    }
+
+    let stopRefresh = () => {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+
 
     let init = () => {
         reload();
-        setInterval(reload, parseInt(refresh) * 1000);
+        startRefresh();
         return 1;
     }
 
