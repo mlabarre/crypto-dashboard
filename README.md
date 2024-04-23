@@ -248,6 +248,11 @@ The necessary settings were discussed above, in the default.json configuration f
 
 If your installed host is *myhost*, the dashboard is accessible from the URL : http://myhost:8080
 
+## To start
+
+Start by adding the missing *wallets* if necessary using the *wallets* tab. Then, using the *Cryptos* tab, select the cryptos you have.
+Then all you have to do is enter your past transactions.
+
 ## Support
 
 If you encounter any problems you can send me a quick email to [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).

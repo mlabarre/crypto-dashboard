@@ -250,6 +250,11 @@ de crypto-updater.
 
 Si la machine installée est *myhost*, le dashboard est accessible à partir de l'URL : http://myhost:8080
 
+## Pour commencer
+
+Commencer par ajouter les *wallets* manquants s'il y a lieu en utilisant l'onglet *wallets*. Ensuite, au moyen de l'onglet *Cryptos* sélectionner les cryptos dont vous disposer.
+Ensuite, il ne vous reste qu'à saisir vos transactions passées.
+
 ## Support
 
 Si vous rencontrez quelques soucis vous pouvez m'envoyer un petit mail à [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
