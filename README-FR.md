@@ -61,8 +61,8 @@ Créer un répertoire pour recevoir les archives. Par exemple */Users/moi/crypto
 ```
 mkdir <CRYPTO_HOME>
 cd <CRYPTO_HOME>
-git clone https://github.com/.../crypto-dashboard
-git clone https://github.com/.../crypto-updater
+git clone https://github.com/mlabarre/crypto-dashboard.git
+git clone https://github.com/mlabarre/crypto-updater.git
 ```
 
 Vous devriez maintenant voir deux répertores *crypto-dashboard* et *crypto-updater*
