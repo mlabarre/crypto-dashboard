@@ -12,12 +12,14 @@ In addition to this project, my other crypto-updater project will be necessary t
 
 In addition, no data such as the address of your wallets is entered.
 
-Associated with the crypto-updater project, it allows:
+Associated with the crypto-updater project, crypto-dashboard allows:
+
 * manage the platforms/wallets to use,
 * enter transactions as they occur, view them, delete or modify them,
 * to have a multi-platform/portfolio,
-* to see the evolution of cryptos,
-* define alerts.
+* to see the evolution of cryptos (at 5mn, 1h, 1 day et 1 week),
+* define alerts,
+* to monitor cryptos that you have not yet purchased.
 
 To use it, all you need is a machine with docker installed.
 
@@ -229,7 +231,7 @@ always replacing <CRYPTO_HOME> by the chosen path.
 ## Lancement du docker 
 
 Docker will build the images for crypto-dashboard and crypto-updater.
-It will also download the mongoDB image (I put version 4.4 here because version 5 can cause problems with certain processors).
+It will also download the mongoDB image (I put version 4.4 here because version 5 can cause problems with some processors).
 ```
 cd <CRYPTO_HOME>/crypto-dashboard
 sudo docker-compose up -d
@@ -241,6 +243,15 @@ It is possible to define alerts on the *Evolution* view.
 
 Notifications are sent to any device where the application open-source [ntfy](https://ntfy.sh) is installed (Android, IOS, desktop).
 The necessary settings were discussed above, in the default.json configuration file of crypto-updater.
+
+## Run
+
+If your installed host is *myhost*, the dashboard is accessible from the URL : http://myhost:8080
+
+## Support
+
+If you encounter any problems you can send me a quick email to [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
+I will do my best to answer you.
 
 ## Screenshots (french version)
 
