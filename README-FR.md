@@ -236,6 +236,8 @@ cd <CRYPTO_HOME>/crypto-dashboard
 sudo docker compose up -d
 ```
 
+Sur MACOS, si la commande docker compose se plante, essayer sans le *sudo*.
+
 ## Alertes
 
 Il est possible de définir des alertes sur la vue *Evolution*.
