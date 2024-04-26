@@ -51,7 +51,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 ```
 
-### crypto-dasboard
+### crypto-dashboard
 
 Les commandes *docker* et *docker-compose* devraient maintenant être disponibles.
 
@@ -233,7 +233,7 @@ Il va de plus récupérer l'image de mongoDB (j'ai mis ici la version 4.4 car la
 
 ```
 cd <CRYPTO_HOME>/crypto-dashboard
-sudo docker-compose up -d
+sudo docker compose up -d
 ```
 
 ## Alertes

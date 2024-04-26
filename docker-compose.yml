@@ -9,15 +9,17 @@ services:
       - mongo
     volumes:
       - /datas/dashboard/icons:/home/node/app/public/images/icons
+    restart: unless-stopped
   updater:
     image: crypto-updater
     build: ../crypto-updater
     depends_on:
       - mongo
+    restart: unless-stopped
   mongo:
     image: mongo:4.4
     volumes:
       - /datas/mongodb:/data/db
     ports:
       - "27017:27017"
-
+    restart: unless-stopped

@@ -36,8 +36,8 @@
         .title {
             font-size: 18px;
         }
-        .pad {
-            margin-right: 10px;
+        .icon {
+            margin-right: 5px !important;
         }
     </style>
 </head>
@@ -68,6 +68,7 @@
             <table id="cryptosPerToken" class="styled-table">
                 <thead>
                     <th>Token</th>
+                    <th>Wallet(s)</th>
                     <th class="num"># tokens</th>
                     <th class="num">Valeur <%= fiat_symbol %></th>
                 </thead>
@@ -90,6 +91,7 @@
             row = `<tr><td></td><td></td><td class="num total">Total</td>`+
                 `<td class="num total">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
         } else {
+            console.log(crypto)
             let wallet = first ? getIconsHtml(crypto.wallet) + '&nbsp;&nbsp;<span>' + crypto.wallet : '';
             row = `<tr><td>${wallet}</span></td><td>${crypto.token}</td>` +
                 `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4))}</td>`+
@@ -104,7 +106,7 @@
         for (let i=0; i<wallets.length; i++) {
             images += getIconsHtml(wallets[i]);
         }
-        let row = `<tr><td><span class="pad">${crypto.token}</span> ${images}</td>`+
+        let row = `<tr><td><span>${crypto.token}</span></td><td>${images}</td>`+
             `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4))}</td>`+
             `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2))}</td></tr>`;
         $('#cryptosPerToken').append(row);
