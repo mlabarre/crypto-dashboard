@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs/promises");
 
 
 const fieldSorter = (fields) => (a, b) => fields.map(o => {
@@ -26,8 +28,22 @@ const getTimeFromDate = (d) => {
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
+const buildIconsDir = async () => {
+    let srcIcons = path.join(__dirname, '../demo/icons/');
+    let destIcons = path.join(__dirname, '../public/images/icons/');
+    let files = await fs.readdir(destIcons);
+    if (files.length === 0) {
+        return await fs.cp(srcIcons, destIcons, {recursive:true}, (error) => {
+            if (error) {
+                console.log(`Unable to copy icons : ${error}`)
+            }
+        })
+    }
+
+}
 
 exports.fieldSorter = fieldSorter
 exports.dateSorter = dateSorter
 exports.getDateFromDate = getDateFromDate
 exports.getTimeFromDate = getTimeFromDate
+exports.buildIconsDir = buildIconsDir

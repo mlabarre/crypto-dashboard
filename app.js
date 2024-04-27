@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const MongoHelper = require('./scripts/mongo-helper');
 const favicon = require('serve-favicon');
 const router = require('./routes/router');
-
+const utils = require('./scripts/utils')
 const app = express();
 
 
@@ -28,9 +28,12 @@ app.use(function(request, response, next) {
   next(createError(404));
 });
 
-new MongoHelper().walletsInitialize().then( (nb) => {
-  console.log(`${nb} wallets initialisées`)
+utils.buildIconsDir().then( () => {
+  new MongoHelper().walletsInitialize().then( (nb) => {
+    console.log(`${nb} wallets initialisées`)
+  })
 })
+
 
 // error handler
 app.use(function(error, request, response, next) {

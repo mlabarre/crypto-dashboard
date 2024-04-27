@@ -1,0 +1,25 @@
+services:
+  dashboard:
+    image: labarrem/crypto-dashboard-ui:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/icons:/home/node/app/public/images/icons
+      - /datas/dashboard/config:/home/node/app/config
+    restart: unless-stopped
+  updater:
+    image: labarrem/crypto-dashboard-data:latest
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/config:/home/node/app/config
+    restart: unless-stopped
+  mongo:
+    image: mongo:4.4
+    volumes:
+      - /datas/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    restart: unless-stopped

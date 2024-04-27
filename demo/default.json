@@ -1,0 +1,14 @@
+{
+  "language": "fr",
+  "fiat_currency" : "EUR",
+  "fiat_symbol": "€",
+  "coingecko_currency" : "eur",
+  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+  "mongodb_database": "crypto",
+  "server_port" : 8080,
+  "refresh_in_seconds" : 120,
+  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+  "notification_ntfy_url": "https://ntfy.sh",
+  "notification_ntfy_topic": "......"
+}

@@ -52,7 +52,79 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 ```
 
-### crypto-dashboard
+### Automatic installation from Docker Hub
+
+This is the simplest installation.
+
+The first thing to do is to choose the base directory for the installation. Let's call it *CRYPTO_HOME*.
+
+In a terminal, enter the following commands:
+```
+CRYPTO_HOME=<directory that was chosen>
+mkdir -p $CRYPTO_HOME/dashboard
+mkdir -p $CRYPTO_HOME/dashboard/icons
+mkdir -p $CRYPTO_HOME/dashboard/mongodb
+mkdir -p $CRYPTO_HOME/dashboard/config
+```
+
+In <CRYPTO_HOME>/config create a file named *default.json* with the following content (content visible in this project in demo/default.json):
+```
+{
+  "language": "fr",
+  "fiat_currency" : "EUR",
+  "fiat_symbol": "€",
+  "coingecko_currency" : "eur",
+  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+  "mongodb_database": "crypto",
+  "server_port" : 8080,
+  "refresh_in_seconds" : 120,
+  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+  "notification_ntfy_url": "https://ntfy.sh",
+  "notification_ntfy_topic": "......."
+}
+```
+Refer to the description of the values in the *Manual installation* chapter below for dashboard and updater.
+
+Here the configurations are common.
+
+You create (or copy from this Github project) the docker-compose-images.yml file:
+```
+services:
+  dashboard:
+    image: labarrem/crypto-dashboard-ui:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/icons:/home/node/app/public/images/icons
+      - /datas/dashboard/config:/home/node/app/config
+    restart: unless-stopped
+  updater:
+    image: labarrem/crypto-dashboard-data:latest
+    depends_on:
+      - mongo
+    volumes:
+      - /datas/dashboard/config:/home/node/app/config
+    restart: unless-stopped
+  mongo:
+    image: mongo:4.4
+    volumes:
+      - /datas/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+```
+by replacing all the strings '/datas/dashboard' with the chosen directory (<CRYPTO_HOME>) above.
+To launch, place the order and access the dashboard by http://localhost:8080
+```
+  docker compose -f ./docker-compose-images.yml up -d
+```
+
+### Manual installation from Git Hub
+
+#### crypto-dashboard
 
 The *docker* and *docker-compose* commands should now be available.
 
@@ -121,7 +193,7 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 | notification_ntfy_url   | ntfy.sh URL for notifications. Don't change anything.                                                 |
 | notification_ntfy_topic | Key/topic that you declared in the NTFY application                                                   |
 
-### Wallets icons
+#### Wallets icons
 
 You need to specify where wallets icons reside.
 
@@ -179,7 +251,7 @@ cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
 
 replacing <CRYPTO_HOME> by the chosen path.
 
-### mongodb
+#### mongodb
 
 You now need to specify where the MongoDB database named in the previous two files should be located.
 
@@ -228,7 +300,7 @@ by
 always replacing <CRYPTO_HOME> by the chosen path.
 
 
-## Lancement du docker 
+### Lancement du docker 
 
 Docker will build the images for crypto-dashboard and crypto-updater.
 It will also download the mongoDB image (I put version 4.4 here because version 5 can cause problems with some processors).
@@ -246,7 +318,7 @@ It is possible to define alerts on the *Evolution* view.
 Notifications are sent to any device where the application open-source [ntfy](https://ntfy.sh) is installed (Android, IOS, desktop).
 The necessary settings were discussed above, in the default.json configuration file of crypto-updater.
 
-## Run
+## Access
 
 If your installed host is *myhost*, the dashboard is accessible from the URL : http://myhost:8080
 
