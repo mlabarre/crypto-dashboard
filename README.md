@@ -29,12 +29,12 @@ To use it, all you need is a machine with docker installed.
 
 #### Docker
 
-##### MacOS
+###### MacOS
 
 To install it, go to https://www.docker.com/products/docker-desktop/ and choose the version for macOS.
 Click on the .dmg file to install Docker.
 
-##### Linux
+###### Linux
 
 Refer to the official guide. Here for Ubuntu, run the following commands in a shell:
 
@@ -52,7 +52,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 ```
 
-### Automatic installation from Docker Hub
+### Simplest installation from Docker Hub
 
 This is the simplest installation.
 
@@ -70,18 +70,18 @@ mkdir -p $CRYPTO_HOME/dashboard/config
 In <CRYPTO_HOME>/config create a file named *default.json* with the following content (content visible in this project in demo/default.json):
 ```
 {
-  "language": "fr",
-  "fiat_currency" : "EUR",
-  "fiat_symbol": "€",
-  "coingecko_currency" : "eur",
-  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-  "mongodb_database": "crypto",
-  "server_port" : 8080,
-  "refresh_in_seconds" : 120,
-  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
-  "notification_ntfy_url": "https://ntfy.sh",
-  "notification_ntfy_topic": "......."
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "fiat_symbol": "€",
+    "coingecko_currency" : "eur",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "server_port" : 8080,
+    "refresh_in_seconds" : 120,
+    "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+    "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "notification_ntfy_url": "https://ntfy.sh",
+    "notification_ntfy_topic": "......."
 }
 ```
 Refer to the description of the values in the *Manual installation* chapter below for dashboard and updater.
@@ -145,13 +145,13 @@ It is now necessary to modify two config files:
 Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it according to your environment
 ```
 {
-"language": "en",
-"fiat_currency" : "GBP",
-"fiat_symbol": "£",
-"mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-"mongodb_database": "crypto",
-"server_port" : 8080,
-"refresh_in_seconds" : 300
+    "language": "en",
+    "fiat_currency" : "GBP",
+    "fiat_symbol": "£",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "server_port" : 8080,
+    "refresh_in_seconds" : 300
 }
 ```
 
@@ -169,15 +169,15 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 
 ```
 {
-  "language": "en",
-  "fiat_currency" : "GBP",
-  "coingecko_currency" : "gbp",
-  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-  "mongodb_database": "crypto",
-  "coingecko_coins_uri": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_uri": "https://api.coingecko.com/api/v3/simple/price",
-  "notification_ntfy_url": "https://ntfy.sh",
-  "notification_ntfy_topic": "KdiLd90OOODO"
+    "language": "en",
+    "fiat_currency" : "GBP",
+    "coingecko_currency" : "gbp",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "coingecko_coins_uri": "https://api.coingecko.com/api/v3/coins/list",
+    "coingecko_quotation_uri": "https://api.coingecko.com/api/v3/simple/price",
+    "notification_ntfy_url": "https://ntfy.sh",
+    "notification_ntfy_topic": "KdiLd90OOODO"
 }
 ```
 
@@ -193,7 +193,7 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 | notification_ntfy_url   | ntfy.sh URL for notifications. Don't change anything.                                                 |
 | notification_ntfy_topic | Key/topic that you declared in the NTFY application                                                   |
 
-#### Wallets icons
+###### Wallets icons
 
 You need to specify where wallets icons reside.
 
@@ -251,7 +251,7 @@ cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
 
 replacing <CRYPTO_HOME> by the chosen path.
 
-#### mongodb
+###### mongodb
 
 You now need to specify where the MongoDB database named in the previous two files should be located.
 

@@ -28,12 +28,12 @@ Pour l'utiliser, il suffit d'une machine disposant d'un docker installé.
 
 #### Docker
 
-##### MacOS
+###### MacOS
 
 Pour l'installer se rendre sur https://www.docker.com/products/docker-desktop/ et choisir la version pour macOS.
 Cliquer sur le fichier .dmg pour installer Docker.
 
-##### Linux
+###### Linux
 
 Se reporter au guide officiel. Ici pour Ubuntu, lancer les commandes suivantes dans un shell :
 
@@ -50,7 +50,7 @@ echo \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 ```
-### Installation automatique à partir de Docker Hub
+### Installation simple à partir de Docker Hub
 
 C'est l'installation la plus simple.
 
@@ -68,18 +68,18 @@ mkdir -p $CRYPTO_HOME/dashboard/config
 Dans <CRYPTO_HOME>/config créer un fichier nommé *default.json* avec le contenu suivant (contenu visible dans ce projet dans demo/default.json):
 ```
 {
-  "language": "fr",
-  "fiat_currency" : "EUR",
-  "fiat_symbol": "€",
-  "coingecko_currency" : "eur",
-  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-  "mongodb_database": "crypto",
-  "server_port" : 8080,
-  "refresh_in_seconds" : 120,
-  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
-  "notification_ntfy_url": "https://ntfy.sh",
-  "notification_ntfy_topic": "......."
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "fiat_symbol": "€",
+    "coingecko_currency" : "eur",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "server_port" : 8080,
+    "refresh_in_seconds" : 120,
+    "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+    "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "notification_ntfy_url": "https://ntfy.sh",
+    "notification_ntfy_topic": "......."
 }
 ```
 Se référer à la description des valeurs dans le chapitre *Installation manuelle* ci-dessous pour dashboard et updater.
@@ -145,13 +145,13 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
 
 ```
 {
-"language": "fr",
-"fiat_currency" : "EUR",
-"fiat_symbol": "€",
-"mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-"mongodb_database": "crypto",
-"server_port" : 8080,
-"refresh_in_seconds" : 300
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "fiat_symbol": "€",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "server_port" : 8080,
+    "refresh_in_seconds" : 300
 }
 ```
 
@@ -169,15 +169,15 @@ Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifie
 
 ```
 {
-  "language": "fr",
-  "fiat_currency" : "EUR",
-  "coingecko_currency" : "eur",
-  "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
-  "mongodb_database": "crypto",
-  "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
-  "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
-  "notification_ntfy_url": "https://ntfy.sh",
-  "notification_ntfy_topic": "KdiLd90OOODO"
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "coingecko_currency" : "eur",
+    "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
+    "mongodb_database": "crypto",
+    "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
+    "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "notification_ntfy_url": "https://ntfy.sh",
+    "notification_ntfy_topic": "KdiLd90OOODO"
 }
 ```
 
@@ -194,7 +194,7 @@ Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifie
 | notification_ntfy_topic | Clef/topic que vous avez déclaré dans l'application NTFY                                                          |
 
 
-#### Wallets icons
+###### Wallets icons
 
 Vous devez indiquer un répertoire où seront stockées les icônes des wallets.
 
@@ -250,7 +250,7 @@ cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
 ```
 en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
 
-#### mongodb
+###### mongodb
 
 Vous devez maintenant spécifier où doit se trouvera la base de données MongoDB nommée dans les deux fichiers précédents.
 
