@@ -1,4 +1,3 @@
-version: "3"
 services:
   dashboard:
     image: crypto-dashboard
