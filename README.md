@@ -117,7 +117,7 @@ services:
     restart: unless-stopped
 ```
 by replacing all the strings '/datas/dashboard' with the chosen directory (<CRYPTO_HOME>) above.
-To launch, place the order and access the dashboard by http://localhost:8080
+To launch, submit the following command and access the dashboard by http://localhost:8080
 ```
   docker compose -f ./docker-compose-images.yml up -d
 ```
@@ -197,7 +197,7 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 
 You need to specify where wallets icons reside.
 
-You must create the local directory where cons will be stored.
+You must create the local directory where icons will be stored.
 
 ```
 mkdir <CRYPTO_HOME>/icons

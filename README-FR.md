@@ -10,7 +10,7 @@ C'est vraiment un outil sans prétention mais s'il peut aider autrui....
 
 En plus de ce projet, mon autre projet crypto-updater sera nécessaire pour obtenir les derniers cours des cryptos en utilisant les API de coingecko.Se sont les seuls accès à internet.
 
-De plus aucune donnée comme l'adrese de vos portefeuilles n'est saisie.
+De plus aucune donnée comme l'adresse de vos portefeuilles n'est saisie.
 
 Associé au projet crypto-updater, crypto-dashboard permet :
 * de gérer les plateformes/portefeuilles à utiliser,
@@ -137,7 +137,7 @@ git clone https://github.com/mlabarre/crypto-dashboard.git
 git clone https://github.com/mlabarre/crypto-updater.git
 ```
 
-Vous devriez maintenant voir deux répertores *crypto-dashboard* et *crypto-updater*
+Vous devriez maintenant voir deux répertoires *crypto-dashboard* et *crypto-updater*
 Il convient maintenant de modifier deux fichiers de config:
 
 
