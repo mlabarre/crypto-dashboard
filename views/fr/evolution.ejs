@@ -173,6 +173,7 @@
             <th class="clickable" onclick="sortTable('variation_on_one_week')">Evol./sem</th>
             <th class="clickable" onclick="sortTable('wallet')">Wallet</th>
             <th class="clickable generalAlert"></th>
+            <th></th>
             </thead>
             <tbody></tbody>
         </table>
@@ -438,6 +439,7 @@
                     '<td class="rate">' + signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
                     '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
+                    '<td class="rate">' + getInfoIconHtml(coin) + '</td>' +
                     '</tr>');
             } else {
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
@@ -446,7 +448,7 @@
                     `${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4))} tokens à ` +
                     `${formatDelim(((coin.start_price * 100) / 100).toFixed(8))}` +
                     ` ${coin.currency}</td>` +
-                    `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td></tr>`)
+                    `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td><td></td></tr>`)
             }
         })
         setBalance(data.result.balance)
@@ -459,6 +461,10 @@
         }
         lastSortField = sortField;
         getDatas();
+    }
+
+    let showInfo = (coinId) => {
+        window.location = `/showTokenInfo?id=${coinId}&returnUrl=/evolution&header=h-evolution`;
     }
 
     let getDatas = () => {

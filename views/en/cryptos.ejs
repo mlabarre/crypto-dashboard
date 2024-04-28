@@ -141,9 +141,14 @@
     let availableCryptosList = null;
 
     let addMyCryptosRow = (row) => {
-        let r = `<tr><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
+        let infoHtml = getInfoIconHtml(row);
+        let r = `<tr><td>${infoHtml} ${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
             `onclick="suppressMyCrypto(this)"><span class="indic-moins" title="Remove from my cryptos">-</span></td></tr>`
         $('#myCryptosTable').append(r);
+    }
+
+    let showInfo = (coinId) => {
+        window.location = `/showTokenInfo?id=${coinId}&returnUrl=/cryptos&header=h-cryptos`;
     }
 
     let buildMyCryptos = () => {

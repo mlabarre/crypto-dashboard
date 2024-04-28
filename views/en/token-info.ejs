@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Wallets</title>
+    <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/utils.js"></script>
+    <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+        .subcontainer {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .icon2 {
+            height: 35px !important;
+        }
+    </style>
+</head>
+<body>
+<div id="container" class="container">
+
+    <div w3-include-html="/html/fr/header.html"></div>
+
+    <div class="subcontainer">
+
+        <table id="tokenInfoTable" class="styled-table">
+            <tbody>
+            <tr>
+                <td colspan="2"><img src="<%= data.info.image %>" class="icon2"></td>
+            </tr>
+            <tr>
+                <td>Identifier</td>
+                <td><%= data.info.id %></td>
+            </tr>
+            <tr>
+                <td>Symbol</td>
+                <td><%= data.info.symbol %></td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td><%= data.info.name %></td>
+            </tr>
+            <tr>
+                <td>Current price</td>
+                <td><%= data.info.current_price %></td>
+            </tr>
+            <tr>
+                <td>Market Cap (MC)</td>
+                <td><%= data.info.market_cap %></td>
+            </tr>
+            <tr>
+                <td>Market Cap rank</td>
+                <td><%= data.info.market_cap_rank %></td>
+            </tr>
+            <tr>
+                <td>Fully Diluted Valuation (FDV)</td>
+                <td><%= data.info.fully_diluted_valuation %></td>
+            </tr>
+            <tr>
+                <td>Total volume</td>
+                <td><%= data.info.total_volume %></td>
+            </tr>
+            <tr>
+                <td>Most high in 24h</td>
+                <td><%= data.info.high_24h %></td>
+            </tr>
+            <tr>
+                <td>Most low in 24h</td>
+                <td><%= data.info.low_24h %></td>
+            </tr>
+            <tr>
+                <td>Price change in 24h</td>
+                <td><%= data.info.price_change_24h %></td>
+            </tr>
+            <tr>
+                <td>Price change in 24h (%)</td>
+                <td><%= data.info.price_change_percentage_24h %></td>
+            </tr>
+            <tr>
+                <td>Market Cap change in 24h</td>
+                <td><%= data.info.market_cap_change_24h %></td>
+            </tr>
+            <tr>
+                <td>Market Cap change in 24h (%)</td>
+                <td><%= data.info.market_cap_change_percentage_24h %></td>
+            </tr>
+            <tr>
+                <td>Circulating supply</td>
+                <td><%= data.info.circulating_supply %></td>
+            </tr>
+            <tr>
+                <td>Total supply</td>
+                <td><%= data.info.total_supply %></td>
+            </tr>
+            <tr>
+                <td>Max supply</td>
+                <td><%= data.info.max_supply %></td>
+            </tr>
+            <tr>
+                <td>ATH</td>
+                <td><%= data.info.ath %></td>
+            </tr>
+            <tr>
+                <td>ATH (%)</td>
+                <td><%= data.info.ath_change_percentage %></td>
+            </tr>
+            <tr>
+                <td>ATH date</td>
+                <td><%= data.info.ath_date %></td>
+            </tr>
+            <tr>
+                <td>ATL</td>
+                <td><%= data.info.atl %></td>
+            </tr>
+            <tr>
+                <td>ATL (%)</td>
+                <td><%= data.info.atl_change_percentage %></td>
+            </tr>
+            <tr>
+                <td>ATL date</td>
+                <td><%= data.info.atl_date %></td>
+            </tr>
+            <tr>
+                <td>Return on Investments (ROI)</td>
+                <td><%= data.info.roi %></td>
+            </tr>
+            <tr>
+                <td>Last updated</td>
+                <td><%= data.info.last_updated %></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="button" class="button" id="returnButton" value="Return">
+    </div>
+</div>
+<script>
+
+    let returnUrl = "<%= data.returnUrl %>";
+
+    let init = () => {
+        $('#returnButton').on('click', () => {
+            window.location = returnUrl;
+        })
+    }
+
+    includeHTML("<%= data.header %>").then(() => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
+
+    $(() => {
+        init()
+    })
+
+</script>
+</body>

@@ -492,7 +492,8 @@
         let tokens = data.result.tokens;
         $.each(tokens, (no) => {
             let coin = tokens[no];
-            let html = `<tr><td>${coin.id}</td>` +
+            let infoHtml = getInfoIconHtml(coin);
+            let html = `<tr><td>${infoHtml} ${coin.id}</td>` +
                 `<td class="rate">${coin.symbol.toUpperCase()}</td><td>${coin.name}</td>`;
             if (coin.quotation !== undefined && coin.quotation !== '') {
                 html += `<td class="num">${formatDelim(((coin.quotation * 100) / 100).toFixed(8))}</td>` +
@@ -509,6 +510,10 @@
                 `</span></td></tr>`
             $('#cryptos').append(html);
         })
+    }
+
+    let showInfo = (coinId) => {
+        window.location = `/showTokenInfo?id=${coinId}&returnUrl=/survey&header=h-survey`;
     }
 
     let sortTable = (sortField) => {

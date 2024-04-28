@@ -7,6 +7,7 @@ const followTransactions = require('../scripts/follow-transactions')
 const cryptos = require('../scripts/cryptos')
 const wallets = require('../scripts/wallets')
 const survey = require('../scripts/survey')
+const coinInfo = require('../scripts/coin-info')
 const {prepareTransactionCreation, prepareTransactionUpdate} = require("../scripts/transactions");
 
 /* GET home page. */
@@ -58,6 +59,12 @@ router
     })
     .get('/survey', function (request, response, next) {
         response.render(config.get('language')+'/survey', {fiat_symbol: config.get('fiat_symbol'), refresh: config.get('refresh_in_seconds')});
+    })
+    .get('/showTokenInfo', function (request, response, next) {
+        coinInfo.getCoinInfo(request).then( (data) => {
+            response.render(config.get('language')+'/token-info', data);
+        })
+
     })
     /* Ajax calls */
     .post('/api/add-transaction', function (request, response, next) {

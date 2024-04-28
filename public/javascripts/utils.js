@@ -58,10 +58,20 @@ let getIconsHtml = (wallet) => {
         let icons = wallet.split(",");
         let result = "";
         for (let i = 0; i < icons.length; i++) {
-            result += '<img class="icon" title="' + icons[i] +
-                '" src="images/icons/' + icons[i] + '.png" alt="' + icons[i] + '">';
+            result += `<img class="icon" title="${icons[i]}" ` +
+                ` src="images/icons/${icons[i]}.png" alt="${icons[i]}">`;
         }
         return result;
+    } else {
+        return "";
+    }
+}
+
+let getInfoIconHtml = (coin) => {
+    if (coin) {
+        return `<img class="icon" title="Info ${coin.name}" ` +
+            ` src="images/rond-info.png" alt="Info ${coin.name}" ` +
+            `onclick="showInfo('${coin.id}')">`;
     } else {
         return "";
     }

@@ -99,6 +99,15 @@ class MongoHelper {
         }
     }
 
+    findMyCrypto = async (id) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("my-cryptos").findOne({id: id});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
     addToMyCryptos = async (crypto) => {
         try {
             await this.init();
@@ -238,6 +247,14 @@ class MongoHelper {
         try {
             await this.init();
             return await this.dbo.collection("cryptos-survey").find({}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    findCryptoSurvey = async (id) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("cryptos-survey").findOne({id: id});
         } finally {
             await this.mongoClient.close();
         }
