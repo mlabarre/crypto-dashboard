@@ -16,7 +16,8 @@ let formatDelim = (value, decimalSeparator) => {
     }
     if (deb === 1) chain = "-" + chain;
     if (fin >= 0) chain = chain + mantissa;
-    return chain.replace(".", decimalSeparator)
+    chain = chain.replace(".", decimalSeparator)
+    return decimalSeparator === '.' ? chain.replaceAll(' ', ',') : chain;
 }
 
 // From W3schools.com
