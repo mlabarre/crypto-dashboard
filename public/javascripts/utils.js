@@ -143,7 +143,7 @@ const getIndexInArray = (arr, o) => {
 
 const getEvolutionFontSize = () => {
     let wls = window.localStorage;
-    return wls && wls.getItem("evolutionFontSize") ? wls.getItem("evolutionFontSize") : 14;
+    return wls && wls.getItem("evolutionFontSize") ? parseInt(wls.getItem("evolutionFontSize")) : 14;
 }
 
 const setEvolutionFontSize = (fontSize) => {

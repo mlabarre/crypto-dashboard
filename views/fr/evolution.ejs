@@ -516,8 +516,8 @@
     let init = () => {
         reload();
         fontSize = getEvolutionFontSize();
+        changeTableFontSize();
         setInterval(reload, parseInt(refresh) * 1000);
-
         $('#sizeup').on('click', () => {
             changeFontSize('up');
         });
