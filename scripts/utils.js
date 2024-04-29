@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs/promises");
 
 let formatDelim = (value, decimalSeparator) => {
+    let md = decimalSeparator === '.' ? ',' : ' ';
     let i, j, chain, c, deb, fin, mantissa;
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;
@@ -17,7 +18,8 @@ let formatDelim = (value, decimalSeparator) => {
     }
     if (deb === 1) chain = "-" + chain;
     if (fin >= 0) chain = chain + mantissa;
-    return chain.replace(".", decimalSeparator)
+    chain = chain.replace(".", decimalSeparator)
+    return decimalSeparator === '.' ? chain.replaceAll(' ', ',') : chain;
 }
 
 const fieldSorter = (fields) => (a, b) => fields.map(o => {
