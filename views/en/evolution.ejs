@@ -69,10 +69,6 @@
             color: red;
         }
 
-        .icon {
-            height: 25px
-        }
-
         .sizeup {
             font-size: 14px;
             cursor: pointer;
@@ -399,6 +395,7 @@
     let lastSortField = "variation";
     let lastSortDirection = "D";
     let fontSize = 14;
+    let ds = "<%= decimal_separator %>"
 
     let setDate = () => {
         document.getElementById('date').innerHTML = getFormattedDate('fr-FR');
@@ -406,14 +403,14 @@
 
     let signRate = (rate) => {
         if (rate.indexOf("-") >= 0) {
-            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ",") + ' %' + '</span>';
+            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ds) + ' %' + '</span>';
         } else {
-            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ",") + ' %' + '</span>';
+            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ds) + ' %' + '</span>';
         }
     }
 
     let setBalance = (balance) => {
-        $('#amount').text(formatDelim(balance.amount.toFixed(2)));
+        $('#amount').text(formatDelim(balance.amount.toFixed(2), ds));
         $('#variation').html(signRate(balance.variation.toFixed(2)));
     }
 
@@ -427,12 +424,12 @@
             if (coin.id !== "N/A") {
                 $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
                     '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8)) + '</td>' +
-                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4)) + '</td>' +
-                    '<td class="num">' + formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2)) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8), ds) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8), ds) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8), ds) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8), ds) + '</td>' +
+                    '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4), ds) + '</td>' +
+                    '<td class="num">' + formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2), ds) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2)) + '</td>' +
                     '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2)) + '</td>' +
@@ -446,8 +443,8 @@
                 $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
                     `<td colspan="11">` +
                     `ICO or not yet listed or not declared in the Cryptos tab : ` +
-                    `${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4))} tokens at ` +
-                    `${formatDelim(((coin.start_price * 100) / 100).toFixed(8))}` +
+                    `${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4), ds)} tokens at ` +
+                    `${formatDelim(((coin.start_price * 100) / 100).toFixed(8), ds)}` +
                     ` ${coin.currency}</td>` +
                     `<td class="rate">${getIconsHtml(coin.wallet)}</td><td></td><td></td></tr>`)
              }
@@ -493,6 +490,10 @@
         });
     }
 
+    let changeTableFontSize = () => {
+        document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
+    }
+
     let changeFontSize = (direction) => {
         if (direction === "up") {
             fontSize += 1;
@@ -501,7 +502,8 @@
                 fontSize -= 1;
             }
         }
-        document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
+        setEvolutionFontSize(fontSize);
+        changeTableFontSize();
         changeBellSize();
     }
 
@@ -514,6 +516,7 @@
 
     let init = () => {
         reload();
+        fontSize = getEvolutionFontSize();
         setInterval(reload, parseInt(refresh) * 1000);
 
         $('#sizeup').on('click', () => {

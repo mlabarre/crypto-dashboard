@@ -1,6 +1,24 @@
 const path = require("path");
 const fs = require("fs/promises");
 
+let formatDelim = (value, decimalSeparator) => {
+    let i, j, chain, c, deb, fin, mantissa;
+    fin = value.indexOf(".");
+    if (fin < 0) fin = value.length;
+    else mantissa = value.substring(fin, value.length);
+    fin--;
+    deb = value.indexOf("-");
+    deb++;
+    chain = "";
+    for (i = fin, j = 0; i >= deb; i--, j++) {
+        c = value.charAt(i);
+        if (j % 3 === 0 && j !== 0) chain = c + " " + chain;
+        else chain = c + chain;
+    }
+    if (deb === 1) chain = "-" + chain;
+    if (fin >= 0) chain = chain + mantissa;
+    return chain.replace(".", decimalSeparator)
+}
 
 const fieldSorter = (fields) => (a, b) => fields.map(o => {
     let dir = 1;
@@ -18,6 +36,20 @@ let pad = (o) => {
     } else {
         return "0"+o;
     }
+}
+
+let getFormattedDate = (lang, dateAsString) => {
+    if (lang === undefined || lang === '') lang = 'fr-FR';
+    let date = (dateAsString === undefined) ? new Date() : new Date(dateAsString);
+    return date.toLocaleString(lang, {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: '2-digit',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    });
 }
 
 const getDateFromDate = (d) => {
@@ -47,3 +79,5 @@ exports.dateSorter = dateSorter
 exports.getDateFromDate = getDateFromDate
 exports.getTimeFromDate = getTimeFromDate
 exports.buildIconsDir = buildIconsDir
+exports.getFormattedDate = getFormattedDate
+exports.formatDelim = formatDelim

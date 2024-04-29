@@ -2,6 +2,7 @@
   "language": "fr",
   "fiat_currency" : "EUR",
   "fiat_symbol": "€",
+  "decimal_separator": ",",
   "coingecko_currency" : "eur",
   "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
   "mongodb_database": "crypto",

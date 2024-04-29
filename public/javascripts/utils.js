@@ -1,6 +1,6 @@
 // Utils functions.
 
-let formatDelim = (value) => {
+let formatDelim = (value, decimalSeparator) => {
     let i, j, chain, c, deb, fin, mantissa;
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;
@@ -16,7 +16,7 @@ let formatDelim = (value) => {
     }
     if (deb === 1) chain = "-" + chain;
     if (fin >= 0) chain = chain + mantissa;
-    return chain.replace(".", ",")
+    return chain.replace(".", decimalSeparator)
 }
 
 // From W3schools.com
@@ -77,9 +77,10 @@ let getInfoIconHtml = (coin) => {
     }
 }
 
-let getFormattedDate = (lang) => {
+let getFormattedDate = (lang, dateAsString) => {
     if (lang === undefined || lang === '') lang = 'fr-FR';
-    return new Date().toLocaleString(lang, {
+    let date = (dateAsString === undefined) ? new Date() : new Date(dateAsString);
+    return date.toLocaleString(lang, {
         weekday: 'short',
         day: 'numeric',
         month: 'short',
@@ -137,6 +138,18 @@ const sortArray = (a, b) => {
 }
 const getIndexInArray = (arr, o) => {
     return arr.findIndex(crypto => crypto.id === o.id && crypto.symbol === o.symbol && crypto.name === o.name);
+}
+
+const getEvolutionFontSize = () => {
+    let wls = window.localStorage;
+    return wls && wls.getItem("evolutionFontSize") ? wls.getItem("evolutionFontSize") : 14;
+}
+
+const setEvolutionFontSize = (fontSize) => {
+    let wls = window.localStorage;
+    if (wls) {
+        wls.setItem('evolutionFontSize', fontSize);
+    }
 }
 
 

@@ -458,6 +458,7 @@
     let lastSortField = "variation";
     let lastSortDirection = "D";
     let fontSize = 14;
+    let ds = "<%= decimal_separator %>";
 
     let showEvolutionPanel = () => {
         $('.alerts').hide();
@@ -471,9 +472,9 @@
 
     let signRate = (rate) => {
         if (rate.indexOf("-") >= 0) {
-            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ",") + ' %' + '</span>';
+            return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ds) + ' %' + '</span>';
         } else {
-            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ",") + ' %' + '</span>';
+            return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ds) + ' %' + '</span>';
         }
     }
 
@@ -496,12 +497,12 @@
             let html = `<tr><td>${infoHtml} ${coin.id}</td>` +
                 `<td class="rate">${coin.symbol.toUpperCase()}</td><td>${coin.name}</td>`;
             if (coin.quotation !== undefined && coin.quotation !== '') {
-                html += `<td class="num">${formatDelim(((coin.quotation * 100) / 100).toFixed(8))}</td>` +
-                    `<td class="num">${formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8))}</td>` +
-                    `<td class="rate">${signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2))}</td>` +
-                    `<td class="rate">${signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2))}</td>` +
-                    `<td class="rate">${signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2))}</td>` +
-                    `<td class="rate">${signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2))}</td>`;
+                html += `<td class="num">${formatDelim(((coin.quotation * 100) / 100).toFixed(8), ds)}</td>` +
+                    `<td class="num">${formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8), ds)}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2), ds)}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2), ds)}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2), ds)}</td>` +
+                    `<td class="rate">${signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2), ds)}</td>`;
             } else {
                 html += `<td colspan="6">En attente de valorisation par crypto-updater</td>`
             }

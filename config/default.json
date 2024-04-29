@@ -2,6 +2,7 @@
   "language": "fr",
   "fiat_currency" : "EUR",
   "fiat_symbol": "€",
+  "decimal_separator": ",",
   "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
   "mongodb_database": "crypto",
   "server_port" : 8080,

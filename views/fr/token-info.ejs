@@ -79,20 +79,12 @@
                 <td><%= data.info.low_24h %></td>
             </tr>
             <tr>
-                <td>variation sur 24h</td>
-                <td><%= data.info.price_change_24h %></td>
-            </tr>
-            <tr>
-                <td>variation sur 24h (%)</td>
-                <td><%= data.info.price_change_percentage_24h %></td>
+                <td>Variation sur 24h</td>
+                <td><%= data.info.price_change_24h %> (<%= data.info.price_change_percentage_24h %> %)</td>
             </tr>
             <tr>
                 <td>Variation de la capitalisation de marché sur 24h</td>
-                <td><%= data.info.market_cap_change_24h %></td>
-            </tr>
-            <tr>
-                <td>Variation de la capitalisation de marché sur 24h (%)</td>
-                <td><%= data.info.market_cap_change_percentage_24h %></td>
+                <td><%= data.info.market_cap_change_24h %> (<%= data.info.market_cap_change_percentage_24h %> %)</td>
             </tr>
             <tr>
                 <td>Offre en circulation</td>
@@ -108,11 +100,7 @@
             </tr>
             <tr>
                 <td>Maximum atteint ATH</td>
-                <td><%= data.info.ath %></td>
-            </tr>
-            <tr>
-                <td>Maximum atteint ATH (%)</td>
-                <td><%= data.info.ath_change_percentage %></td>
+                <td><%= data.info.ath %> (<%= data.info.ath_change_percentage %> %)</td>
             </tr>
             <tr>
                 <td>Date du maximum atteint</td>
@@ -120,19 +108,11 @@
             </tr>
             <tr>
                 <td>Minimum atteint ATL</td>
-                <td><%= data.info.atl %></td>
-            </tr>
-            <tr>
-                <td>Minimum atteint ATL (%)</td>
-                <td><%= data.info.atl_change_percentage %></td>
+                <td><%= data.info.atl %> (<%= data.info.atl_change_percentage %> %)</td>
             </tr>
             <tr>
                 <td>Date du minimum atteint</td>
                 <td><%= data.info.atl_date %></td>
-            </tr>
-            <tr>
-                <td>Retour sur investissement (ROI)</td>
-                <td><%= data.info.roi %></td>
             </tr>
             <tr>
                 <td>Dernière mise à jour</td>

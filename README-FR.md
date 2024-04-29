@@ -71,6 +71,7 @@ Dans <CRYPTO_HOME>/config créer un fichier nommé *default.json* avec le conten
     "language": "fr",
     "fiat_currency" : "EUR",
     "fiat_symbol": "€",
+    "decimal_separator": ",",
     "coingecko_currency" : "eur",
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
@@ -148,6 +149,7 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
     "language": "fr",
     "fiat_currency" : "EUR",
     "fiat_symbol": "€",
+    "decimal_separator": ",",
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
     "server_port" : 8080,
@@ -160,6 +162,7 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
 | language           | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
 | fiat_currency      | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
 | fiat_symbol        | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
+| decimal_separator  | Caractère séparateur de décimales.                                                                                |
 | mongodb_uri        | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
 | mongodb_database   | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
 | server_port        | Port d'écoute du serveur node. Ici 8080                                                                           |

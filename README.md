@@ -73,6 +73,7 @@ In <CRYPTO_HOME>/config create a file named *default.json* with the following co
     "language": "fr",
     "fiat_currency" : "EUR",
     "fiat_symbol": "€",
+    "decimal_separator": ",",
     "coingecko_currency" : "eur",
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
@@ -145,9 +146,10 @@ It is now necessary to modify two config files:
 Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it according to your environment
 ```
 {
-    "language": "en",
-    "fiat_currency" : "GBP",
-    "fiat_symbol": "£",
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "fiat_symbol": "€",
+    "decimal_separator": ",",
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
     "server_port" : 8080,
@@ -155,23 +157,24 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 }
 ```
 
-| variable           | Description                                                                                              |
-|:-------------------|:---------------------------------------------------------------------------------------------------------|
-| language           | Language used: _**fr**_ (French) or _**en**_ (English) only.                                             |
-| fiat_currency      | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.    |
-| fiat_symbol        | Currency of symbol above. This can be €, $, £, etc...                                                    |
-| mongodb_uri        | This is the connection URL to the mongodb server. Don't change anything.                                 |
-| mongodb_database   | Name you want to give to the mongo database. Here it is _**crypto**_.                                    |
-| server_port        | Node server listening port. Here 8080.                                                                   |
-| refresh_in_seconds | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes  |
+| variable           | Description                                                                                             |
+|:-------------------|:--------------------------------------------------------------------------------------------------------|
+| language           | Language used: _**fr**_ (French) or _**en**_ (English) only.                                            |
+| fiat_currency      | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.   |
+| fiat_symbol        | Currency of symbol above. This can be €, $, £, etc...                                                   |
+| decimal_separator  | Decimal separator charcater                                                                             |
+| mongodb_uri        | This is the connection URL to the mongodb server. Don't change anything.                                |
+| mongodb_database   | Name you want to give to the mongo database. Here it is _**crypto**_.                                   |
+| server_port        | Node server listening port. Here 8080.                                                                  |
+| refresh_in_seconds | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes |
 
 Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it according to your environment
 
 ```
 {
-    "language": "en",
-    "fiat_currency" : "GBP",
-    "coingecko_currency" : "gbp",
+    "language": "fr",
+    "fiat_currency" : "EUR",
+    "coingecko_currency" : "eur",
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
     "coingecko_coins_uri": "https://api.coingecko.com/api/v3/coins/list",

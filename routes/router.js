@@ -14,55 +14,70 @@ const {prepareTransactionCreation, prepareTransactionUpdate} = require("../scrip
 router
     /* View rending */
     .get('/', function (request, response, next) {
-        response.render(config.get('language')+'/index', {title: 'Express'});
+        response.render(config.get('language') + '/index', {title: 'Cryptos'});
     })
     .get('/home', function (request, response, next) {
-        response.render(config.get('language')+'/index', {title: 'Express'});
+        response.render(config.get('language') + '/index', {title: 'Cryptos'});
     })
     .get('/addTransaction', function (request, response, next) {
-        prepareTransactionCreation().then( (options) => {
-            response.render(config.get('language')+'/add-or-update-transaction', options);
+        prepareTransactionCreation().then((options) => {
+            response.render(config.get('language') + '/add-or-update-transaction', options);
         })
     })
     .get('/updateTransaction', function (request, response, next) {
         prepareTransactionUpdate(request.query.id, request.query.sortDirection,
-            request.query.token, request.query.wallet, request.query.lang).then( (options) => {
-            response.render(config.get('language')+'/add-or-update-transaction', options);
+            request.query.token, request.query.wallet, request.query.lang).then((options) => {
+            response.render(config.get('language') + '/add-or-update-transaction', options);
         })
     })
     .get('/portfolio', function (request, response, next) {
-        response.render(config.get('language')+'/portfolio', {fiat_symbol: config.get('fiat_symbol'), refresh: config.get('refresh_in_seconds')});
+        response.render(config.get('language') + '/portfolio',
+            {
+                fiat_symbol: config.get('fiat_symbol'),
+                decimal_separator: config.get('decimal_separator'),
+                refresh: config.get('refresh_in_seconds')
+            });
     })
     .get('/evolution', function (request, response, next) {
-        response.render(config.get('language')+'/evolution', {fiat_symbol: config.get('fiat_symbol'), refresh: config.get('refresh_in_seconds')});
+        response.render(config.get('language') + '/evolution', {
+            fiat_symbol: config.get('fiat_symbol'),
+            decimal_separator: config.get('decimal_separator'),
+            refresh: config.get('refresh_in_seconds')
+        });
     })
     .get('/followTransactions', function (request, response, next) {
         if (request.query.lang !== undefined && request.query.lang !== '') {
             response.render(request.query.lang + '/follow-transactions', {
                 sortDirection: request.query.sortDirection,
                 token: request.query.token,
+                decimal_separator: config.get('decimal_separator'),
                 wallet: request.query.wallet
             });
         } else {
             response.render(config.get('language') + '/follow-transactions', {
                 sortDirection: "",
                 token: "",
+                decimal_separator: config.get('decimal_separator'),
                 wallet: ""
             });
         }
     })
     .get('/cryptos', function (request, response, next) {
-        response.render(config.get('language')+'/cryptos', {});
+        response.render(config.get('language') + '/cryptos', {});
     })
     .get('/wallets', function (request, response, next) {
-        response.render(config.get('language')+'/wallets', {});
+        response.render(config.get('language') + '/wallets', {});
     })
     .get('/survey', function (request, response, next) {
-        response.render(config.get('language')+'/survey', {fiat_symbol: config.get('fiat_symbol'), refresh: config.get('refresh_in_seconds')});
+        response.render(config.get('language') + '/survey', {
+            fiat_symbol: config.get('fiat_symbol'),
+            decimal_separator: config.get('decimal_separator'),
+            refresh: config.get('refresh_in_seconds')
+        });
     })
     .get('/showTokenInfo', function (request, response, next) {
-        coinInfo.getCoinInfo(request).then( (data) => {
-            response.render(config.get('language')+'/token-info', data);
+        coinInfo.getCoinInfo(request).then((data) => {
+            response.render(config.get('language') + '/token-info', data);
         })
 
     })
@@ -80,7 +95,7 @@ router
         })
     })
     .delete('/api/delete-transaction', function (request, response, next) {
-        transactionHandler.handleTransactionSuppression(request.query.id).then( (data) => {
+        transactionHandler.handleTransactionSuppression(request.query.id).then((data) => {
             response.send("ok")
         })
     })
@@ -127,7 +142,7 @@ router
         })
     })
     .delete('/api/delete-from-my-cryptos', function (request, response, next) {
-        let crypto = { "id": request.query.id, "symbol": request.query.symbol, "name": request.query.name, }
+        let crypto = {"id": request.query.id, "symbol": request.query.symbol, "name": request.query.name,}
         cryptos.removeFromMyCrypto(crypto).then((data) => {
             response.sendStatus(200);
         }).catch((error) => {
