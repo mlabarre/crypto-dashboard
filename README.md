@@ -118,6 +118,14 @@ services:
     restart: unless-stopped
 ```
 by replacing all the strings '/datas/dashboard' with the chosen directory (<CRYPTO_HOME>) above.
+
+Note: the dashboard service listen port depends on the information coded in this *docker-compose-images.yml* file but
+also in the *default.json* configuration file.
+The port indicated in *docker-compose-images.yml* is 8080:8080. This indicates that you will be able to connect
+on the server via port 8080 (first 8080 before ':') at http://localhost:8080. The second 8080 (after the ':')
+must match the port specified in the *default.json* file. You can only change the port number
+before the ':' character.
+
 To launch, submit the following command and access the dashboard by http://localhost:8080
 ```
   docker compose -f ./docker-compose-images.yml up -d
@@ -245,6 +253,13 @@ by
 ```
 
 always replacing <CRYPTO_HOME> by the chosen path, of course.
+
+Note: the dashboard service listen port depends on the information coded in this *docker-compose.yml* file but
+also in the *default.json* configuration file.
+The port indicated in *docker-compose.yml* is 8080:8080. This indicates that you will be able to connect
+on the server via port 8080 (first 8080 before ':') at http://localhost:8080. The second 8080 (after the ':')
+must match the port specified in the *default.json* file. You can only change the port number
+before the ':' character.
 
 To initialize the folder with the icons supplied in project *crypto-dashboard* enter the following command :
 

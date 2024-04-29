@@ -117,6 +117,13 @@ services:
 ```
 en remplaçant toutes les chaines '/datas/dashboard' par le répertoire choisi (<CRYPTO_HOME>) ci-dessus.
 
+Note: le port d'écoute du service dashboard dépend des informations codées dans ce fichier *docker-compose-images.yml* mais
+aussi dans le fichier de configuration *default.json*.
+Le port indiqué dans *docker-compose-images.yml* est 8080:8080. Cela indique que vous pourrez vous connecter
+sur le serveur par le port 8080 (premier 8080 avant ':') en http://localhost:8080. Le second 8080 (après le ':')
+doit correspondre au port indiqué dans le fichier *default.json*. Vous ne pouvez changer que le numéro de port
+avant le caractère ':'.
+
 Pour le lancement, passer la commande et accéder au dashboard par http://localhost:8080
 ```
   docker compose -f ./docker-compose-images.yml up -d
@@ -300,6 +307,14 @@ par
       - <CRYPTO_HOME>/mongodb:/data/db
 ```
 en remplaçant toujours <CRYPTO_HOME> par le chemin choisi, bien entendu.
+
+Note: le port d'écoute du service dashboard dépend des informations codées dans ce fichier *docker-compose.yml* mais 
+aussi dans le fichier de configuration *default.json*.
+Le port indiqué dans *docker-compose.yml* est 8080:8080. Cela indique que vous pourrez vous connecter
+sur le serveur par le port 8080 (premier 8080 avant ':') en http://localhost:8080. Le second 8080 (après le ':') 
+doit correspondre au port indiqué dans le fichier *default.json*. Vous ne pouvez changer que le numéro de port 
+avant le caractère ':'.
+                                                               
 
 ### Lancement du docker 
 
