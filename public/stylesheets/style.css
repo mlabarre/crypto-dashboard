@@ -16,6 +16,14 @@ a {
   color: #00B7FF;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
 .styled-table {
   border-collapse: collapse;
   margin: auto auto;
@@ -145,6 +153,11 @@ select {
 .button {
   font-weight: lighter;
   padding: 10px 10px;
+}
+
+.button-box {
+  display: flex;
+  justify-content: center;
 }
 
 .switch {

@@ -1,0 +1,157 @@
+.sub-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    min-width: 600px;
+}
+
+.num {
+    text-align: right;
+}
+
+.rate {
+    text-align: center;
+}
+
+.title-left {
+    text-align: left
+}
+
+* {
+    font-family: Helvetica, sans-serif;
+}
+
+.title-data {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.title-text {
+    font-size: 18px;
+}
+
+.title, .title-alerts {
+    flex: 1;
+    font-size: 24px;
+}
+
+.title-alerts {
+    color: cadetblue;
+    margin-top: 10px;
+}
+
+.up {
+    color: #2d9112;
+}
+
+.down {
+    color: red;
+}
+
+.icon {
+    height: 25px
+}
+
+.input {
+    padding: 10px 10px;
+    background-color: cadetblue;
+    margin: 10px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: left;
+    justify-items: center;
+    width: 600px;
+}
+
+.alerts {
+    flex-flow: column;
+    color: black;
+}
+
+.alert {
+    color: green;
+}
+
+.percent {
+    width: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.text, .text-mini {
+    color: cadetblue;
+}
+
+.text-mini {
+    font-style: italic;
+    font-weight: lighter;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.cont-border {
+    border-radius: 10px;
+    border: 1px solid cadetblue;
+    max-width: 800px;
+}
+
+.button-bloc {
+    display: flex;
+    flex-direction: row;
+}
+
+.button {
+    margin: 10px;
+}
+
+.filter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.button-filter {
+    margin-top: 0;
+    margin-right: 30px;
+}
+
+.message {
+    display: flex;
+    margin: 10px 10px;
+    color: black;
+}
+
+.title-table {
+    display: flex;
+    justify-content: center;
+    margin: 5px 5px;
+}
+
+.input-filter {
+    border-radius: 10px;
+    display: flex;
+    margin-right: 30px;
+    height: 30px;
+}
+
+.action {
+    cursor: pointer;
+}
+
+.bloc {
+    height: 1000px;
+    overflow: hidden;
+    margin-left: 20px;
+}
+
+.ctable {
+    overflow-y: scroll;
+    height: 1000px;
+    display: block;
+}

@@ -6,25 +6,7 @@
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
     <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
-    <style>
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-content: center;
-            align-items: center;
-            justify-content: center;
-        }
-        .subcontainer {
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: column;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .icon2 {
-            height: 35px !important;
-        }
-    </style>
+    <link rel='stylesheet' href='/stylesheets/token-info.css'/>
 </head>
 <body>
 <div id="container" class="container">
@@ -121,7 +103,9 @@
             </tbody>
         </table>
 
-        <input type="button" class="button" id="returnButton" value="Retour">
+        <div class="button-box">
+            <input type="button" class="button" id="returnButton" value="Retour">
+        </div>
     </div>
 </div>
 <script>

@@ -1,0 +1,26 @@
+.subcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.input {
+    border-radius: 10px;
+    display: flex;
+    margin-right: 30px;
+    height: 30px;
+}
+
+.label-top {
+    flex-direction: column;
+}
+
+.form {
+    margin-top:30px;
+}
+
+tr td:nth-of-type(2), tr th:nth-of-type(2) {
+    text-align: center;
+}

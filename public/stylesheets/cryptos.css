@@ -1,0 +1,58 @@
+.subcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    flex-flow: row;
+    justify-content: center;
+}
+
+.bloc {
+    height: 1000px;
+    overflow: hidden;
+    margin-left: 20px;
+}
+
+.ctable {
+    overflow-y: scroll;
+    height: 1000px;
+    display: block;
+}
+
+.action {
+    cursor: pointer;
+}
+
+.filter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.input {
+    border-radius: 10px;
+    display: flex;
+    margin-right: 30px;
+    height: 30px;
+}
+
+.button-filter {
+    margin-top: 0;
+    margin-right: 30px;
+}
+
+.message {
+    display: flex;
+    color: black;
+}
+
+.title-table {
+    display: flex;
+    justify-content: center;
+    margin: 5px 5px;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 4px 4px !important;
+}

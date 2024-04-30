@@ -7,47 +7,7 @@
     <script type="text/javascript" src="/javascripts/utils.js"></script>
     <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <link rel='stylesheet' href='/stylesheets/all.min.css'/>
-    <style>
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-content: center;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .title-left {
-            text-align: left
-        }
-
-        .fields {
-            display: flex;
-            margin: 10px 20px;
-            align-content: center;
-            align-items: center;
-        }
-
-        .field {
-            flex: 1;
-            margin: 20px 20px;
-            align-content: center;
-            align-items: center;
-        }
-
-        .title {
-            flex: 1;
-        }
-
-        .button-box {
-            display: flex;
-            justify-content: center;
-        }
-
-        tr:hover {
-            background-color: antiquewhite;
-        }
-
-    </style>
+    <link rel='stylesheet' href='/stylesheets/follow-transactions.css'/>
 </head>
 
 <body>
@@ -146,23 +106,23 @@
     let getDatas = () => {
         $('#transactions').find('tbody tr').remove()
         $.ajax(
-                {
-                    type: "GET",
-                    url: `/api/follow-token-on-wallet?lang=fr&sortDirection=${sortDirection}&token=${document.getElementById("token").value}` +
-                        `&wallet=${document.getElementById("wallet").value}`,
-                    contentType: "application/json; charset=utf-8"
-                })
-                .done((data) => {
-                    $('#headerCol').text(`${data.length} transactions`);
-                    fill(data);
-                })
-                .fail((error) => {
-                    $('#message').text('error');
-                })
+            {
+                type: "GET",
+                url: `/api/follow-token-on-wallet?lang=fr&sortDirection=${sortDirection}&token=${document.getElementById("token").value}` +
+                    `&wallet=${document.getElementById("wallet").value}`,
+                contentType: "application/json; charset=utf-8"
+            })
+            .done((data) => {
+                $('#headerCol').text(`${data.length} transactions`);
+                fill(data);
+            })
+            .fail((error) => {
+                $('#message').text('error');
+            })
     }
 
     let fillCombo = (id, data) => {
-        let select = document.querySelector('#'+id);
+        let select = document.querySelector('#' + id);
         for (let i = 0; i < data.length; i++) {
             let option = document.createElement("option");
             option.text = data[i];
@@ -223,11 +183,13 @@
         setWallets();
     }
 
-    includeHTML("h-follow").then( () => {
+    includeHTML("h-follow").then(() => {
         handleDarkMode(document.getElementById('darkmode'));
     });
 
-    $(() => { init() });
+    $(() => {
+        init()
+    });
 
 </script>
 

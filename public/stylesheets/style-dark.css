@@ -3,7 +3,6 @@
     font-family: Helvetica, sans-serif;
 }
 
-
 body {
     font: 14px Helvetica, Arial, sans-serif;
     background-color: black;
@@ -14,6 +13,14 @@ body {
 
 a {
     color: #00B7FF;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .styled-table {
@@ -72,6 +79,11 @@ a {
     color: cadetblue;
     margin-top: 20px;
     cursor: pointer;
+}
+
+.button-box {
+    display: flex;
+    justify-content: center;
 }
 
 .return-button {

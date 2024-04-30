@@ -2,25 +2,6 @@ const config = require('config');
 const MongoHelper = require('./mongo-helper')
 const utils = require('./utils')
 
-let formatDelim = (value) => {
-    let i, j, chain, c, deb, fin, mantissa;
-    fin = value.indexOf(".");
-    if (fin < 0) fin = value.length;
-    else mantissa = value.substring(fin, value.length);
-    fin--;
-    deb = value.indexOf("-");
-    deb++;
-    chain = "";
-    for (i = fin, j = 0; i >= deb; i--, j++) {
-        c = value.charAt(i);
-        if (j % 3 === 0 && j !== 0) chain = c + " " + chain;
-        else chain = c + chain;
-    }
-    if (deb === 1) chain = "-" + chain;
-    if (fin >= 0) chain = chain + mantissa;
-    return chain.replace(".", ",")
-}
-
 let formatDate = (dateAsString) => {
     if (dateAsString) {
         return utils.getFormattedDate(config.get('language'), dateAsString);
@@ -30,7 +11,8 @@ let formatDate = (dateAsString) => {
 }
 
 let fd = (v, unit) => {
-    return v === null || v === undefined ? "N/A" : `${utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))} ${unit}`;
+    return v === null || v === undefined ? "N/A" :
+        `${utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))} ${unit}`;
 }
 
 let getCoinInfo = async (request) => {

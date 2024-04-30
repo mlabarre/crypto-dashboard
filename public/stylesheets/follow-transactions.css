@@ -1,0 +1,25 @@
+.title-left {
+    text-align: left
+}
+
+.fields {
+    display: flex;
+    margin: 10px 20px;
+    align-content: center;
+    align-items: center;
+}
+
+.field {
+    flex: 1;
+    margin: 20px 20px;
+    align-content: center;
+    align-items: center;
+}
+
+.title {
+    flex: 1;
+}
+
+tr:hover {
+    background-color: antiquewhite;
+}

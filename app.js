@@ -7,44 +7,33 @@ const cookieParser = require('cookie-parser');
 const MongoHelper = require('./scripts/mongo-helper');
 const favicon = require('serve-favicon');
 const router = require('./routes/router');
-const utils = require('./scripts/utils')
-const app = express();
+const {buildIconsDir} = require('./scripts/utils')
 
+const app = express()
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs')
+    .use(logger('dev'))
+    .use(express.json())
+    .use(express.urlencoded({extended: false}))
+    .use(cookieParser())
+    .use(express.static(path.join(__dirname, 'public')))
+    .use('/', router)
+    .use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+    .use((request, response, next) => {
+        next(createError(404));
+    })
+    .use((error, request, response, next) => {
+        response.locals.message = error.message;
+        response.locals.error = request.app.get('env') === 'development' ? error : {};
+        response.status(error.status || 500);
+        response.render('error');
+    });
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', router);
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
-// catch 404 and forward to error handler
-app.use(function(request, response, next) {
-  next(createError(404));
-});
-
-utils.buildIconsDir().then( () => {
-  new MongoHelper().walletsInitialize().then( (nb) => {
-    console.log(`${nb} wallets initialisées`)
-  })
+buildIconsDir().then(() => {
+    new MongoHelper().walletsInitialize().then((nb) => {
+        console.log(`${nb} wallets initialisées`)
+    })
 })
-
-
-// error handler
-app.use(function(error, request, response, next) {
-  // set locals, only providing error in development
-  response.locals.message = error.message;
-  response.locals.error = request.app.get('env') === 'development' ? error : {};
-
-  // render the error page
-  response.status(error.status || 500);
-  response.render('error');
-});
 
 app.listen(config.get('server_port'),
     () => console.log(`tracking app is listening on port ${config.get('server_port')}.`));
