@@ -30,8 +30,12 @@
       "url": "https://etherscan.io/tx/"
     },
     {
+      "name": "Optimism",
+      "url": "https://optimistic.etherscan.io/tx/"
+    },
+    {
       "name": "Polygon",
-      "url": "https://polygonscan.com/tx"
+      "url": "https://polygonscan.com/tx/"
     },
     {
       "name": "Solana",

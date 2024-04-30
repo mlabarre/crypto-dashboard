@@ -103,8 +103,12 @@ In <CRYPTO_HOME>/config create a file named *default.json* with the following co
       "url": "https://etherscan.io/tx/"
     },
     {
+      "name": "Optimism",
+      "url": "https://optimistic.etherscan.io/tx/"
+    },
+    {
       "name": "Polygon",
-      "url": "https://polygonscan.com/tx"
+      "url": "https://polygonscan.com/tx/"
     },
     {
       "name": "Solana",
@@ -212,8 +216,12 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
       "url": "https://etherscan.io/tx/"
     },
     {
+      "name": "Optimism",
+      "url": "https://optimistic.etherscan.io/tx/"
+    },
+    {
       "name": "Polygon",
-      "url": "https://polygonscan.com/tx"
+      "url": "https://polygonscan.com/tx/"
     },
     {
       "name": "Solana",
