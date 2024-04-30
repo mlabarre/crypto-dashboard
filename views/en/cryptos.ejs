@@ -62,72 +62,14 @@
 
 <script>
 
-    let addMyCryptosRow = (row) => {
-        let infoHtml = getInfoIconHtml(row);
-        let r = `<tr><td>${infoHtml}</td><td>${getTokenIconHtml(row)}</td><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
-            `onclick="suppressMyCrypto(this)"><span class="indic-moins" title="Remove from my cryptos">-</span></td></tr>`
-        $('#myCryptosTable').append(r);
-    }
-
-    let addAvailableCryptosRow = async (row) => {
-        let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus" ` +
-            `title="Add to my cryptos">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td>` +
-            `<td id="name">${row.name}</td></tr>`
-        $('#availableCryptosTable').append(r);
-    }
-
-    let changeButtonList = (o) => {
-        if (availableCryptoShown === true) {
-            o.value = "Show available cryptos";
-            availableCryptoShown = false;
-            $('.cond').hide();
-        } else {
-            buildAvailableCryptos(true).then(() => {
-                o.value = "Hide available cryptos";
-                availableCryptoShown = true;
-                $('.cond').show();
-            })
-        }
-    }
-
-    let addMyCrypto = (o) => {
-        let children = o.closest("tr").children;
-        let crypto = {"id": children[1].innerText, "symbol": children[2].innerText, "name": children[3].innerText}
-        let index = getIndexInArray(availableCryptosList, crypto);
-        if (index >= 0) {
-            availableCryptosList.splice(index, 1);
-            myCryptosList.push(crypto);
-            addToCollection(JSON.stringify(crypto)).then((data) => {
-                buildAvailableCryptos(false).then(() => {
-                    buildMyCryptos();
-                    alert(`Crypto ${crypto.name} added`)
-                })
-            }).fail((error) => {
-                console.log(error)
-            });
-        } else {
-            alert("Error. Item does not exists in availableCryptos")
-        }
-    }
-
-    let suppressMyCrypto = (o) => {
-        let children = o.closest("tr").children;
-        let crypto = {"id": children[0].innerText, "symbol": children[1].innerText, "name": children[2].innerText}
-        let indexAvailable = getIndexInArray(availableCryptosList, crypto);
-        let indexMy = getIndexInArray(myCryptosList, crypto);
-        if (indexAvailable >= 0) {
-            alert("Error. Item already exists in myCryptos : " + JSON.stringify(availableCryptosList[indexAvailable]));
-        } else {
-            myCryptosList.splice(indexMy, 1);
-            removeFromCollection(crypto).then((data) => {
-                buildAvailableCryptos(true).then(() => {
-                    buildMyCryptos();
-                })
-            }).fail((error) => {
-                console.log(error)
-            });
-        }
-    }
+    let titleMinusAdd = "Remove from my cryptos";
+    let titleAvailableAdd = "Add to my cryptos";
+    let titleButtonShow = "Show available cryptos";
+    let titleButtonHide = "Hide available cryptos";
+    let wordAdd = "added"
+    let wordDel = "removed"
+    let errorAdd = "Error. Item does not exists in availableCryptos"
+    let errorDel = "Error. Item already exists in availableCryptos"
 
     $(() => {
         init()

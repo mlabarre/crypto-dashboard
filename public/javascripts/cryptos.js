@@ -126,4 +126,74 @@ includeHTML("h-cryptos").then(() => {
     handleDarkMode(document.getElementById('darkmode'));
 });
 
+let addMyCryptosRow = (row) => {
+    let infoHtml = getInfoIconHtml(row);
+    let r = `<tr><td>${infoHtml}</td><td>${getTokenIconHtml(row)}</td><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
+        `onclick="suppressMyCrypto(this)"><span class="indic-moins" title="${titleMinusAdd}">-</span></td></tr>`
+    $('#myCryptosTable').append(r);
+}
+
+let addAvailableCryptosRow = async (row) => {
+    let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus" ` +
+        `title="${titleAvailableAdd}">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td>` +
+        `<td id="name">${row.name}</td></tr>`
+    $('#availableCryptosTable').append(r);
+}
+
+let changeButtonList = (o) => {
+    if (availableCryptoShown === true) {
+        o.value = titleButtonShow;
+        availableCryptoShown = false;
+        $('.cond').hide();
+    } else {
+        buildAvailableCryptos(true).then(() => {
+            o.value = titleButtonHide;
+            availableCryptoShown = true;
+            $('.cond').show();
+        })
+    }
+}
+
+let addMyCrypto = (o) => {
+    let children = o.closest("tr").children;
+    let crypto = {"id": children[1].innerText, "symbol": children[2].innerText, "name": children[3].innerText}
+    let index = getIndexInArray(availableCryptosList, crypto);
+    if (index >= 0) {
+        availableCryptosList.splice(index, 1);
+        myCryptosList.push(crypto);
+        addToCollection(JSON.stringify(crypto)).then((data) => {
+            buildAvailableCryptos(false).then(() => {
+                buildMyCryptos();
+                alert(`Crypto ${crypto.name} ${wordAdd}`)
+            })
+        }).fail((error) => {
+            console.log(error)
+        });
+    } else {
+        alert(errorAdd)
+    }
+}
+
+let suppressMyCrypto = (o) => {
+    let children = o.closest("tr").children;
+    let crypto = {"id": children[2].innerText, "symbol": children[3].innerText, "name": children[4].innerText}
+    let indexAvailable = getIndexInArray(availableCryptosList, crypto);
+    let indexMy = getIndexInArray(myCryptosList, crypto);
+    if (indexAvailable >= 0 && availableCryptoShown === true) {
+        alert(`${errorDel} : ` + JSON.stringify(availableCryptosList[indexAvailable]));
+    } else {
+        myCryptosList.splice(indexMy, 1);
+        removeFromCollection(crypto).then((data) => {
+            buildAvailableCryptos(true).then(() => {
+                alert(`Crypto ${crypto.name} ${wordDel}`)
+                buildMyCryptos();
+            })
+        }).fail((error) => {
+            console.log(error)
+        });
+    }
+}
+
+
+
 
