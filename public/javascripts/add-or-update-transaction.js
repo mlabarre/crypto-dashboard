@@ -138,3 +138,133 @@ let initializeCombosToken = () => {
         setSelectedInComboSymbols("sendTokenId", sendTokenId, "sendTokenIdIco");
     }
 }
+
+let validateTokenId = (prefix) => {
+    let msg = '';
+    let res = false;
+    if (prefix === "purchase" || prefix === "sale" || prefix === "send") {
+        let tid = $('#' + prefix + 'TokenId').val();
+        let tidico = $('#' + prefix + 'TokenIdIco').val();
+        res = !((tid === '' && tidico === '') || (tid !== '' && tidico !== ''));
+    } else {
+        let outputtid = $('#' + prefix + 'OutputTokenId').val();
+        let outputtidico = $('#' + prefix + 'OutputTokenIdIco').val();
+        let inputtid = $('#' + prefix + 'InputTokenId').val();
+        let inputtidico = $('#' + prefix + 'InputTokenIdIco').val();
+        res = !((outputtid === '' && outputtidico === '') || (outputtid !== '' && outputtidico !== '') ||
+            (inputtid === '' && inputtidico === '') || (inputtid !== '' && inputtidico !== ''));
+    }
+    if (!res) {
+        msg = validateMsg;
+    }
+    return msg;
+}
+
+let coherenceControl = () => {
+    let msg = "";
+    // SWAP : tokens must differ
+    if ($('#type').val() === "swap") {
+        let input = $('#swapInputTokenIdIco').val();
+        if (input === '') {
+            input = $('#swapInputTokenId option:selected').val();
+        }
+        let output = $('#swapOutputTokenIdIco').val();
+        if (output === '') {
+            output = $('#swapOutputTokenId option:selected').val();
+        }
+        if (input.toUpperCase() === output.toUpperCase()) {
+            msg = coherenceMsg1;
+        }
+    }
+    // SEND : wallet must differ
+    if ($('#type').val() === "send") {
+        if ($('#sendWallet option:selected').val() === $('#receiveWallet option:selected').val()) {
+            msg = coherenceMsg2;
+        }
+    }
+    return msg;
+}
+
+let validateFields = (prefix) => {
+    let formData = document.querySelector(('form'));
+    for (let i = 0; i < formData.length; i++) {
+        if (formData[i].name.startsWith(prefix) && !formData[i].name.endsWith('Opt')) {
+            if (formData[i].value === '' && formData[i].name.indexOf('TokenId') < 0) {
+                return validateFieldsMsg;
+            }
+        }
+    }
+    return validateTokenId(prefix);
+}
+
+let init = () => {
+    document.querySelector('#type').addEventListener("change", (e) => {
+        hideAll();
+        let selectionType = document.querySelector('#type').value;
+        if (selectionType === "purchase") {
+            $('#purchaseContainer').show();
+        } else if (selectionType === "sale") {
+            $('#saleContainer').show();
+        } else if (selectionType === "swap") {
+            $('#swapContainer').show();
+        } else if (selectionType === "send") {
+            $('#sendContainer').show();
+        }
+    });
+    if (trid === '') {
+        $('#cancel').hide();
+    }
+    $('#cancel').on('click', () => {
+        history.back();
+    });
+    $('#validation').on('click', () => {
+        let type = document.getElementById('type');
+        let msg = validateFields(type.value);
+        let msg2 = coherenceControl();
+        if (msg !== '' || msg2 !== '') {
+            $('#message').text(msg+msg2);
+        } else {
+            $('#message').text('');
+            let formData = document.querySelector(('form'));
+            let fields = {};
+            for (let i = 0; i < formData.length; i++) {
+                fields[formData[i].name] = formData[i].value;
+            }
+            let json = JSON.stringify(fields);
+            if (trid === "") {
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/api/add-transaction",
+                        contentType: "application/json; charset=utf-8",
+                        data: json
+                    })
+                    .done((data) => {
+                        alert(data);
+                    })
+                    .fail((error) => {
+                        $('#message').text(error);
+                    })
+            } else {
+                $.ajax(
+                    {
+                        type: "PUT",
+                        url: `/api/update-transaction?id=${trid}`,
+                        contentType: "application/json; charset=utf-8",
+                        data: json
+                    })
+                    .done((data) => {
+                        // Updated : returns to transactions list
+                        document.location.href = `/followTransactions?lang=fr&sortDirection=${sortDirection}&token=${token}` +
+                            `&wallet=${wallet}`;
+                    })
+                    .fail((error) => {
+                        $('#message').text(error);
+                    })
+            }
+        }
+    });
+    getWalletsName();
+    getMySymbols();
+    selectType();
+}
