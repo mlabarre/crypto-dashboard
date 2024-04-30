@@ -8,7 +8,8 @@ Je l'ai développé en moins d'une semaine pour mes besoins personnels et le cod
 
 C'est vraiment un outil sans prétention mais s'il peut aider autrui....
 
-En plus de ce projet, mon autre projet crypto-updater sera nécessaire pour obtenir les derniers cours des cryptos en utilisant les API de coingecko.Se sont les seuls accès à internet.
+En plus de ce projet, mon autre projet crypto-updater sera nécessaire pour obtenir les derniers cours des cryptos en utilisant les API de coingecko.
+Ce sont les seuls accès à internet.
 
 De plus aucune donnée comme l'adresse de vos portefeuilles n'est saisie. Par contre vous avez la possibilité lors de la création d'une transaction 
 de fournir l'identifiant de transaction et ainsi avoir la possibilité d'y accéder via la blockchain adéquate.
