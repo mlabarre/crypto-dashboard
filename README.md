@@ -10,7 +10,8 @@ It's really an unpretentious tool but if it can help others....
 
 In addition to this project, my other crypto-updater project will be necessary to obtain the latest crypto prices using the coingecko APIs. These are the only internet access.
 
-In addition, no data such as the address of your wallets is entered.
+In addition, no data such as the address of your wallets is entered. On the other hand, you have the possibility when creating a transaction
+to provide the transaction identifier and thus have the possibility of accessing it via the appropriate blockchain.
 
 Associated with the crypto-updater project, crypto-dashboard allows:
 
@@ -82,7 +83,37 @@ In <CRYPTO_HOME>/config create a file named *default.json* with the following co
     "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
     "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
     "notification_ntfy_url": "https://ntfy.sh",
-    "notification_ntfy_topic": "......."
+    "notification_ntfy_topic": ".......",
+    "chain_explorers": [
+    {
+      "name": "Binance BSC",
+      "url": "https://bscscan.com/tx/"
+    },
+    {
+      "name": "Bitcoin",
+      "url": "https://blockstream.info/tx/"
+    },
+    {
+      "name": "Cosmos",
+      "url": "https://www.mintscan.io/cosmos/tx/"
+    },
+    {
+      "name": "Ethereum",
+      "url": "https://etherscan.io/tx/"
+    },
+    {
+      "name": "Polygon",
+      "url": "https://polygonscan.com/tx"
+    },
+    {
+      "name": "Solana",
+      "url": "https://solscan.io/tx/"
+    },
+    {
+      "name": "XRP",
+      "url": "https://bithomp.com/explorer/"
+    }
+  ]
 }
 ```
 Refer to the description of the values in the *Manual installation* chapter below for dashboard and updater.
@@ -161,7 +192,37 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
     "mongodb_uri" : "mongodb://mongo:27017/?serverSelectionTimeoutMS=3000&directConnection=true",
     "mongodb_database": "crypto",
     "server_port" : 8080,
-    "refresh_in_seconds" : 300
+    "refresh_in_seconds" : 300,
+    "chain_explorers": [
+    {
+      "name": "Binance BSC",
+      "url": "https://bscscan.com/tx/"
+    },
+    {
+      "name": "Bitcoin",
+      "url": "https://blockstream.info/tx/"
+    },
+    {
+      "name": "Cosmos",
+      "url": "https://www.mintscan.io/cosmos/tx/"
+    },
+    {
+      "name": "Ethereum",
+      "url": "https://etherscan.io/tx/"
+    },
+    {
+      "name": "Polygon",
+      "url": "https://polygonscan.com/tx"
+    },
+    {
+      "name": "Solana",
+      "url": "https://solscan.io/tx/"
+    },
+    {
+      "name": "XRP",
+      "url": "https://bithomp.com/explorer/"
+    }
+  ]
 }
 ```
 
@@ -175,6 +236,8 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 | mongodb_database   | Name you want to give to the mongo database. Here it is _**crypto**_.                                   |
 | server_port        | Node server listening port. Here 8080.                                                                  |
 | refresh_in_seconds | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes |
+| chain_explorers    | URLs of major blockchain explorers. You can add more.                                                   |
+
 
 Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it according to your environment
 

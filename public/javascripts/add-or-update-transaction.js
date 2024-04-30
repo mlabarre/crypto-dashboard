@@ -1,4 +1,3 @@
-
 let setCurrentDate = (type) => {
     let d = new Date();
     if (type === "purchase") {
@@ -182,6 +181,12 @@ let coherenceControl = () => {
             msg = coherenceMsg2;
         }
     }
+    // Transaction chain
+    let hasChain = $('#chainExplorerOpt').val() !== "";
+    let hasTxId = $('#txIdOpt').val() !== "";
+    if ((hasChain && !hasTxId) || (!hasChain && hasTxId)) {
+        msg = coherenceMsg3;
+    }
     return msg;
 }
 
@@ -222,7 +227,7 @@ let init = () => {
         let msg = validateFields(type.value);
         let msg2 = coherenceControl();
         if (msg !== '' || msg2 !== '') {
-            $('#message').text(msg+msg2);
+            $('#message').text(msg + msg2);
         } else {
             $('#message').text('');
             let formData = document.querySelector(('form'));
@@ -267,4 +272,5 @@ let init = () => {
     getWalletsName();
     getMySymbols();
     selectType();
+
 }

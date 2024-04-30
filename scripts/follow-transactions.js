@@ -27,12 +27,27 @@ let handleTransaction = async (transaction, token, wallet) => {
     return false;
 }
 
-let interpretFlow = (lang, t, wallet) => {
-    if (lang === "en") {
-        return interpretFlowEn(t, wallet)
+let getExplorerUrl = (chainName, tx) => {
+    let chainIndex = config.get('chain_explorers').findIndex(chain => chain.name === chainName);
+    if (chainIndex >= 0) {
+        return `${config.get('chain_explorers')[chainIndex].url}${tx}`;
     } else {
-        return interpretFlowFr(t, wallet)
+        return null;
     }
+}
+
+let interpretFlow = (lang, t, wallet) => {
+    let flow;
+    if (lang === "en") {
+        flow = interpretFlowEn(t, wallet)
+    } else {
+        flow = interpretFlowFr(t, wallet)
+    }
+    flow.chainUrl = null;
+    if (t.txIdOpt !== null && t.txIdOpt !== undefined) {
+        flow.chainUrl = getExplorerUrl(t.chainExplorerOpt, t.txIdOpt);
+    }
+    return flow;
 }
 
 let fd = (v) => {

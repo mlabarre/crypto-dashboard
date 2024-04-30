@@ -22,6 +22,8 @@ let buildDate = (date, time) => {
  * @param body.purchaseFeeInFiat Purchase fee in Fiat currency.
  * @param body.purchaseWallet Purchase wallet.
  * @param body.comment Purchase comment.
+ * @param body.chainExplorerOpt Chain explorer if any.
+ * @param body.txIdOpt Transaction id if any.
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
 let preparePurchaseData = (body) => {
@@ -34,7 +36,9 @@ let preparePurchaseData = (body) => {
         "quotation": parseFloat(body.purchaseTokenQuotationInFiat),
         "feeInFiat": parseFloat(body.purchaseFeeInFiat),
         "wallet": body.purchaseWallet,
-        "comment": body.comment
+        "comment": body.comment,
+        "chainExplorerOpt": body.chainExplorerOpt,
+        "txIdOpt": body.txIdOpt,
     }
 }
 
@@ -49,6 +53,8 @@ let preparePurchaseData = (body) => {
  * @param body.saleFeeInFiat Sale fee in Fiat currency.
  * @param body.saleWallet Sale wallet.
  * @param body.comment Purchase comment.
+ * @param body.chainExplorerOpt Chain explorer if any.
+ * @param body.txIdOpt Transaction id if any.
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
 let prepareSaleData = (body) => {
@@ -61,7 +67,9 @@ let prepareSaleData = (body) => {
         "quotation": parseFloat(body.saleTokenQuotationInFiat),
         "feeInFiat": parseFloat(body.saleFeeInFiat),
         "wallet": body.saleWallet,
-        "comment": body.comment
+        "comment": body.comment,
+        "chainExplorerOpt": body.chainExplorerOpt,
+        "txIdOpt": body.txIdOpt,
     }
 }
 
@@ -83,7 +91,10 @@ let prepareSaleData = (body) => {
  * @param body.swapFee Swap fee.
  * @param body.swapFeeCurrencyOpt Swap fee currency.
  * @param body.swapWallet Swap wallet.
- * @param body.comment Purchase comment. * @returns {{date: Date, wallet: *, inputSymbol: string, inputTokenQuotation: number, outputSymbol: string, fee: number, feeCurrency: *, inputTokens: number, type, outputTokenQuotationCurrency: *, inputTokenQuotationCurrency: *, comment, outputTokenQuotation: number, outputTokens: number}}
+ * @param body.comment Purchase comment.
+ * @param body.chainExplorerOpt Chain explorer if any.
+ * @param body.txIdOpt Transaction id if any.
+ * @returns {{date: Date, wallet: *, inputSymbol: string, inputTokenQuotation: number, outputSymbol: string, fee: number, feeCurrency: *, inputTokens: number, type, outputTokenQuotationCurrency: *, inputTokenQuotationCurrency: *, comment, outputTokenQuotation: number, outputTokens: number}}
  */
 let prepareSwapData = (body) => {
     let outputTokenId = body.swapOutputTokenId === '' ? body.swapOutputTokenIdIco : body.swapOutputTokenId;
@@ -102,7 +113,9 @@ let prepareSwapData = (body) => {
         "fee": parseFloat(body.swapFee),
         "feeCurrency": body.swapFeeCurrencyOpt.toUpperCase(),
         "wallet": body.swapWallet,
-        "comment": body.comment
+        "comment": body.comment,
+        "chainExplorerOpt": body.chainExplorerOpt,
+        "txIdOpt": body.txIdOpt
     }
 }
 
@@ -121,6 +134,8 @@ let prepareSwapData = (body) => {
  * @param body.sendFeeCurrencyOpt Fee currency.
  * @param body.sendCounterpart Fiat counterpart.
  * @param body.comment Comment.
+ * @param body.chainExplorerOpt Chain explorer if any.
+ * @param body.txIdOpt Transaction id if any.
  * @param body
  * @returns {{date: Date, symbol: string, sendTokens: number, receiveWallet: (number|*), fee: number, feeCurrency: *, feeInFiat: number, comment, type, sendWallet: (number|*), receiveTokens: number}}
  */
@@ -137,7 +152,9 @@ let prepareSendData = (body) => {
         "fee": parseFloat(body.sendFee),
         "feeCurrency": body.sendFeeCurrencyOpt.toUpperCase(),
         "feeInFiat": parseFloat(body.sendCounterpart),
-        "comment": body.comment
+        "comment": body.comment,
+        "chainExplorerOpt": body.chainExplorerOpt,
+        "txIdOpt": body.txIdOpt,
     }
 }
 
@@ -209,7 +226,9 @@ let getBodyValuesForCreation = () => {
         sendFee: "",
         sendFeeCurrencyOpt: "",
         sendCounterpart: "",
-        comment: ""
+        comment: "",
+        chainExplorerOpt: "",
+        txIdOpt: ""
     }
 }
 
@@ -223,6 +242,8 @@ let updateFieldForTransactionUpdatePurchase = (t, b) => {
     b.purchaseFeeInFiat = t.feeInFiat;
     b.purchaseWallet = t.wallet;
     b.comment= t.comment;
+    b.chainExplorerOpt = t.chainExplorerOpt;
+    b.txIdOpt = t.txIdOpt;
     return b;
 }
 
@@ -236,6 +257,8 @@ let updateFieldForTransactionUpdateSale = (t, b) => {
     b.saleFeeInFiat = t.feeInFiat;
     b.saleWallet = t.wallet;
     b.comment= t.comment;
+    b.chainExplorerOpt = t.chainExplorerOpt;
+    b.txIdOpt = t.txIdOpt;
     return b;
 }
 
@@ -255,6 +278,8 @@ let updateFieldForTransactionUpdateSwap = (t, b) => {
     b.swapFeeCurrencyOpt= t.feeCurrency.toUpperCase();
     b.swapWallet= t.wallet;
     b.comment= t.comment;
+    b.chainExplorerOpt = t.chainExplorerOpt;
+    b.txIdOpt = t.txIdOpt;
     return b;
 }
 
@@ -271,6 +296,8 @@ let updateFieldForTransactionUpdateSend = (t, b) => {
     b.sendFeeCurrencyOpt = t.feeCurrency.toUpperCase();
     b.sendCounterpart= t.feeInFiat;
     b.comment = t.comment;
+    b.chainExplorerOpt = t.chainExplorerOpt;
+    b.txIdOpt = t.txIdOpt;
     return b;
 }
 let updateFieldForTransactionUpdate = (transaction, dataForBody) => {
@@ -294,6 +321,7 @@ let prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) =>
     initData.token = token;
     initData.wallet = wallet;
     initData.lang = lang;
+    initData.chainExplorers = config.get('chain_explorers');
     return initData;
 }
 
@@ -305,6 +333,7 @@ let prepareTransactionCreation = async () => {
     initData.token = "";
     initData.wallet = "";
     initData.lang = "";
+    initData.chainExplorers = config.get('chain_explorers');
     return initData;
 }
 

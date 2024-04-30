@@ -277,6 +277,23 @@
             </div>
 
             <div class="input label-top">
+                <span class="tx-comm">If you know the ID of this transaction, you can enter it here depending on the token blockchain</span>
+                <div>
+                    <label for="chainExplorer">Chain </label>
+                    <select id="chainExplorerOpt" name="chainExplorerOpt" class="tx-sel">
+                        <option value="">Select</option>
+                        <% chainExplorers.forEach( function (chain) { %>
+                            <option value="<%= chain.name %>">
+                                <%= chain.name %>
+                            </option>
+                        <% });%>
+                    </select>
+                    <label for="txId">Transaction # </label>
+                    <input class="tx-chain-tx" type="text" id="txIdOpt" name="txIdOpt" value="<%= txIdOpt %>">
+                </div>
+            </div>
+
+            <div class="input label-top">
                 <label for="comment">Comment</label>
                 <textarea id="comment" name="comment" rows="3" cols="60"><%= comment %></textarea>
                 <input type="hidden" id="trid" name="trid">
@@ -326,12 +343,14 @@
     let validateMsg = "Selection of token is invalid. One of the two fields must not be filled in";
     let coherenceMsg1 = "For swap, tokens must differ !";
     let coherenceMsg2 = "Wallets must differ !";
+    let coherenceMsg3 = "If a blockchain is selected you must enter a transaction number and vice versa";
     let validateFieldsMsg = "At least one value is missing or invalid...";
 
 
 
     $(() => {
         init();
+        document.querySelector('#chainExplorerOpt').value = "<%= chainExplorerOpt %>";
     })
 
 </script>

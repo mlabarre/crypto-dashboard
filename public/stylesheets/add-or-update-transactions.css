@@ -65,3 +65,16 @@ select {
     color: antiquewhite;
     font-weight: lighter;
 }
+
+.tx-chain-tx {
+    width: 300px;
+    margin-left: 10px;
+}
+
+.tx-comm {
+    margin: 5px 0;
+}
+
+.tx-sel {
+    margin-right: 15px;
+}
