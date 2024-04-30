@@ -128,7 +128,7 @@ Pour le lancement, passer la commande et accéder au dashboard par http://localh
 ```
   docker compose -f ./docker-compose-images.yml up -d
 ```
-
+ 
 ### Installation manuelle à partir de Git Hub
 
 #### crypto-dashboard

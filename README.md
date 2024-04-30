@@ -1,6 +1,6 @@
 ![Demo Onglet Evolution](demo/evolution-dark.png?raw=true)
 
-# crypto-dashboard
+# crypto-dashboard 
 
 This project helps me manage my cryptocurrency transactions a little more efficiently.
 
