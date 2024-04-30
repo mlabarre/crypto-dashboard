@@ -5,6 +5,7 @@
 This project helps me manage my cryptocurrency transactions a little more efficiently.
 
 I developed it in less than a week for my personal needs and the code certainly shows :)
+I have since enhanced it with other features.
 
 It's really an unpretentious tool but if it can help others....
 
