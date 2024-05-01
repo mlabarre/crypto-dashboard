@@ -1,6 +1,6 @@
 const config = require('config');
 const MongoClient = require('mongodb').MongoClient;
-const { ObjectId } = require('mongodb');
+const {ObjectId} = require('mongodb');
 const fs = require('fs/promises');
 
 const path = require('path');
@@ -93,7 +93,7 @@ class MongoHelper {
     findAllMyCryptos = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").find({}).sort({symbol:1}).toArray();
+            return await this.dbo.collection("my-cryptos").find({}).sort({symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -152,7 +152,7 @@ class MongoHelper {
     findAllWalletsName = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("wallets").find({}).sort({wallet:1}).toArray();
+            return await this.dbo.collection("wallets").find({}).sort({wallet: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }

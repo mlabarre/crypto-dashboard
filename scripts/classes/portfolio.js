@@ -3,18 +3,20 @@ const utils = require('../utils')
 
 class Stock {
     tokens;
-    constructor () {
+
+    constructor() {
         this.tokens = [];
     }
+
     addOrUpdateSimple = (data) => {
         let foundIndex = this.tokens.findIndex(x => x.token === data.token && x.wallet === data.wallet);
-        if (foundIndex>=0) {
-            this.tokens[foundIndex].nb = +(((this.tokens[foundIndex].nb+data.nb)*100000000)/100000000).toFixed(8);
+        if (foundIndex >= 0) {
+            this.tokens[foundIndex].nb = +(((this.tokens[foundIndex].nb + data.nb) * 100000000) / 100000000).toFixed(8);
         } else {
             this.tokens.push({
                 "token": data.token,
                 "wallet": data.wallet,
-                "nb": +((data.nb*100000000)/100000000).toFixed(8)
+                "nb": +((data.nb * 100000000) / 100000000).toFixed(8)
             });
         }
     }
@@ -38,6 +40,7 @@ class TokenAmount {
     purchasePrice;
     number;
     currency;
+
     constructor(date, price, nb, currency) {
         this.purchaseDate = date;
         this.purchasePrice = price;
@@ -49,13 +52,15 @@ class TokenAmount {
 class Token {
     symbol;
     tokensAmount;
+
     constructor(symbol) {
         this.symbol = symbol;
         // TokenAmount objects array.
         this.tokensAmount = [];
     }
+
     findTokenAmountFromDate = (opDate) => {
-        for (let i=0; i<this.tokensAmount.length; i++) {
+        for (let i = 0; i < this.tokensAmount.length; i++) {
             if (opDate.getTime() === this.tokensAmount[i].purchaseDate.getTime()) {
                 return this.tokensAmount[i];
             }
@@ -63,7 +68,7 @@ class Token {
         return null;
     }
     findTokenAmountFromPrice = (price) => {
-        for (let i=0; i<this.tokensAmount.length; i++) {
+        for (let i = 0; i < this.tokensAmount.length; i++) {
             if (price === this.tokensAmount[i].purchasePrice) {
                 return this.tokensAmount[i];
             }
@@ -78,6 +83,7 @@ class Token {
 class WalletToken {
     wallet;
     tokens;
+
     constructor(wallet) {
         this.wallet = wallet;
         // Token objects array.
@@ -87,13 +93,14 @@ class WalletToken {
 
 class Wallet {
     walletsTokens;
+
     constructor() {
         // WalletToken object array.
         this.walletsTokens = [];
     }
 
     getTokensOfWallet = async (wallet) => {
-        for (let i=0; i<this.walletsTokens.length; i++) {
+        for (let i = 0; i < this.walletsTokens.length; i++) {
             if (this.walletsTokens[i].wallet === wallet) {
                 return this.walletsTokens[i];
             }
@@ -106,7 +113,7 @@ class Wallet {
     getTokenOfWallet = async (wallet, symbol) => {
         let walletToken = await this.getTokensOfWallet(wallet);
         if (walletToken.tokens.length > 0) {
-            for (let i=0; i<walletToken.tokens.length; i++) {
+            for (let i = 0; i < walletToken.tokens.length; i++) {
                 if (walletToken.tokens[i].symbol === symbol) {
                     return walletToken.tokens[i];
                 }
@@ -125,7 +132,7 @@ class Wallet {
     addOrUpdateToken = async (wallet, symbol, tokensNb, opDate, price, currency) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
         let tokenAmount = token.findTokenAmountFromPrice(price);
-        if (tokenAmount != null){
+        if (tokenAmount != null) {
             tokenAmount.number += tokensNb;
         } else {
             token.tokensAmount.push(new TokenAmount(opDate, price, tokensNb, currency));
@@ -135,7 +142,7 @@ class Wallet {
     saleToken = async (wallet, symbol, tokensNb) => {
         let token = await this.getTokenOfWallet(wallet, symbol);
         let tokensAmount = token.getTokenAmountsSortedByDate();
-        for (let i=0; i<tokensAmount.length; i++) {
+        for (let i = 0; i < tokensAmount.length; i++) {
             let tokenAmount = tokensAmount[i];
             if (tokenAmount.number > tokensNb) {
                 tokenAmount.number -= tokensNb;
@@ -163,7 +170,7 @@ class Wallet {
         let token = await this.getTokenOfWallet(sendWallet, symbol);
         let tokensAmount = token.getTokenAmountsSortedByDate();
         let pricesForReceive = [];
-        for (let i=0; i<tokensAmount.length; i++) {
+        for (let i = 0; i < tokensAmount.length; i++) {
             let tokenAmount = tokensAmount[i];
             if (tokenAmount.number >= sendTokens) {
                 tokenAmount.number -= sendTokens;
@@ -176,7 +183,7 @@ class Wallet {
             }
         }
         // Handle receive part.
-        for (let i=0; i<pricesForReceive.length; i++) {
+        for (let i = 0; i < pricesForReceive.length; i++) {
             let priceForReceive = pricesForReceive[i];
             if (priceForReceive.nb >= receiveTokens) {
                 await this.addOrUpdateToken(receiveWallet, symbol, receiveTokens, opDate, priceForReceive.price, '');

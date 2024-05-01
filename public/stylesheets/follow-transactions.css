@@ -23,3 +23,7 @@
 tr:hover {
     background-color: antiquewhite;
 }
+
+.styled-table th, .styled-table td {
+    padding: 4px 5px !important;
+}

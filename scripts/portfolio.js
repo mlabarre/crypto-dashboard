@@ -1,7 +1,7 @@
 const config = require('config');
 const MongoHelper = require('./mongo-helper');
 const utils = require('../scripts/utils')
-const { Stock, Wallet } = require('./classes/portfolio')
+const {Stock, Wallet} = require('./classes/portfolio')
 
 /*
  SUMMARY part.
@@ -70,7 +70,7 @@ let getCryptoQuotation = (symbol, cryptos) => {
 }
 
 let valorize = (tokens, mycryptos) => {
-    for (let i=0; i<tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
         tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos))
     }
     return tokens;
@@ -78,7 +78,7 @@ let valorize = (tokens, mycryptos) => {
 
 let findTokenInValuesPerToken = (tokensValue, token) => {
     let foundIndex = tokensValue.findIndex(x => x.token === token);
-    if (foundIndex>=0) {
+    if (foundIndex >= 0) {
         return tokensValue[foundIndex]
     } else {
         return null;
@@ -88,14 +88,14 @@ let findTokenInValuesPerToken = (tokensValue, token) => {
 let buildValuePerToken = (tokens) => {
     let tokensValue = [];
     let total = 0.00;
-    for (let i=0; i<tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
         let t = findTokenInValuesPerToken(tokensValue, tokens[i].token);
         if (t != null) {
             t.value += parseFloat(tokens[i].value);
             total += parseFloat(tokens[i].value);
             t.nb += parseFloat(tokens[i].nb.toFixed(4));
-            if (t.wallets.indexOf(tokens[i].wallet)<0) {
-                t.wallets += ","+tokens[i].wallet;
+            if (t.wallets.indexOf(tokens[i].wallet) < 0) {
+                t.wallets += "," + tokens[i].wallet;
             }
         } else {
             tokensValue.push(
@@ -105,7 +105,7 @@ let buildValuePerToken = (tokens) => {
                     value: parseFloat(tokens[i].value),
                     wallets: tokens[i].wallet
                 });
-                total += parseFloat(tokens[i].value);
+            total += parseFloat(tokens[i].value);
         }
     }
     return {
@@ -116,7 +116,7 @@ let buildValuePerToken = (tokens) => {
 
 let handleFees = (stock, fees) => {
     let tokens = stock.getTokens();
-    for (let i=0; i<fees.length; i++) {
+    for (let i = 0; i < fees.length; i++) {
         let index = tokens.findIndex(x => x.token === fees[i].symbol && x.wallet === fees[i].wallet);
         if (index >= 0) {
             tokens[index].nb -= fees[i].nb;
@@ -254,7 +254,7 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
             token.id = "N/A";
         }
     }
-    let sortParam = sortDirection === "D" ? "-"+sortField : sortField;
+    let sortParam = sortDirection === "D" ? "-" + sortField : sortField;
     return {
         result: {
             balance: {

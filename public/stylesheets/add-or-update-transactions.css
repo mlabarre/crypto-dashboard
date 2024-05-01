@@ -9,10 +9,10 @@
 }
 
 .input {
-    padding: 10px 10px;
+    padding: 6px 10px;
     background-color: cadetblue;
     margin: 10px 10px;
-    border-radius: 10px;
+    border-radius: 5px;
     display: flex;
     justify-content: space-between;
 }

@@ -51,7 +51,7 @@ let interpretFlow = (lang, t, wallet) => {
 }
 
 let fd = (v) => {
-   return utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))
+    return utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))
 }
 
 let interpretFlowFr = (t, wallet) => {
@@ -63,28 +63,45 @@ let interpretFlowFr = (t, wallet) => {
     }
     let fiat = config.get('fiat_currency').toUpperCase();
     if (t.type === "purchase") {
-        return {id: t._id, msg: `${d} : Achat de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup} avec ${fd(t.feeInFiat)} ${fiat} de ` +
-        `frais. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Achat de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup} avec ${fd(t.feeInFiat)} ${fiat} de ` +
+                `frais. ${comment}`
+        };
     } else if (t.type === "sale") {
-         return {id: t._id, msg: `${d} : Vente de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup}avec ${fd(t.feeInFiat)} ${fiat} de ` +
-        `frais. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Vente de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup}avec ${fd(t.feeInFiat)} ${fiat} de ` +
+                `frais. ${comment}`
+        };
     } else if (t.type === "swap") {
-        return {id: t._id, msg: `${d} : Echange ${sup}de ${fd(t.outputTokens)} ${t.outputSymbol} coté à ${fd(t.outputTokenQuotation)} ` +
-        `${t.outputTokenQuotationCurrency} en ${fd(t.inputTokens)} ${t.inputSymbol} coté à ${fd(t.inputTokenQuotation)} ` +
-        `${t.inputTokenQuotationCurrency} avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Echange ${sup}de ${fd(t.outputTokens)} ${t.outputSymbol} coté à ${fd(t.outputTokenQuotation)} ` +
+                `${t.outputTokenQuotationCurrency} en ${fd(t.inputTokens)} ${t.inputSymbol} coté à ${fd(t.inputTokenQuotation)} ` +
+                `${t.inputTokenQuotationCurrency} avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`
+        };
     } else if (t.type === "send" && t.sendWallet === wallet) {
-        return {id: t._id, msg: `${d} : Envoi de ${fd(t.sendTokens)} ${t.symbol} ${sup}sur le wallet ${t.receiveWallet} ` +
-        `(reçu ${fd(t.receiveTokens)}) avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`};
+        return {
+            id: t._id, msg: `${d} : Envoi de ${fd(t.sendTokens)} ${t.symbol} ${sup}sur le wallet ${t.receiveWallet} ` +
+                `(reçu ${fd(t.receiveTokens)}) avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`
+        };
     } else if (t.type === "send" && t.receiveWallet === wallet) {
         if (wallet === "") {
             sup = `sur le wallet ${t.wallet} `;
         }
-        return {id: t._id, msg: `${d} : Réception de ${fd(t.receiveTokens)} ${t.symbol} ${sup}à partir des ${fd(t.sendTokens)} ${t.symbol} ` +
-        `envoyés par le wallet ${t.sendWallet} avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Réception de ${fd(t.receiveTokens)} ${t.symbol} ${sup}à partir des ${fd(t.sendTokens)} ${t.symbol} ` +
+                `envoyés par le wallet ${t.sendWallet} avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`
+        };
     } else {
         // wallet not supplied
-        return {id: t._id, msg: `${d} : Envoi de ${fd(t.sendTokens)} ${t.symbol} à partir du wallet ${t.sendWallet} sur le wallet ` +
-            `${t.receiveWallet} (reçu ${fd(t.receiveTokens)}) avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Envoi de ${fd(t.sendTokens)} ${t.symbol} à partir du wallet ${t.sendWallet} sur le wallet ` +
+                `${t.receiveWallet} (reçu ${fd(t.receiveTokens)}) avec ${fd(t.fee)} ${t.feeCurrency} de frais. ${comment}`
+        };
     }
 }
 
@@ -97,28 +114,44 @@ let interpretFlowEn = (t, wallet) => {
     }
     let fiat = config.get('fiat_currency').toUpperCase();
     if (t.type === "purchase") {
-        return {id: t._id, msg: `${d} : Purchase ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup} with fee of ${fd(t.feeInFiat)} ${fiat}` +
-            `${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Purchase ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup} with fee of ${fd(t.feeInFiat)} ${fiat}` +
+                `${comment}`
+        };
     } else if (t.type === "sale") {
-        return {id: t._id, msg: `${d} : Sale ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup}with fee of ${fd(t.feeInFiat)} ${fiat}` +
-            `${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Sale ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup}with fee of ${fd(t.feeInFiat)} ${fiat}` +
+                `${comment}`
+        };
     } else if (t.type === "swap") {
-        return {id: t._id, msg: `${d} : Swap ${sup}of ${fd(t.outputTokens)} ${t.outputSymbol} quoted at ${fd(t.outputTokenQuotation)} ` +
-            `${t.outputTokenQuotationCurrency} in ${fd(t.inputTokens)} ${t.inputSymbol} quoted at ${fd(t.inputTokenQuotation)} ` +
-            `${t.inputTokenQuotationCurrency} with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Swap ${sup}of ${fd(t.outputTokens)} ${t.outputSymbol} quoted at ${fd(t.outputTokenQuotation)} ` +
+                `${t.outputTokenQuotationCurrency} in ${fd(t.inputTokens)} ${t.inputSymbol} quoted at ${fd(t.inputTokenQuotation)} ` +
+                `${t.inputTokenQuotationCurrency} with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`
+        };
     } else if (t.type === "send" && t.sendWallet === wallet) {
-        return {id: t._id, msg: `${d} : Send ${fd(t.sendTokens)} ${t.symbol} ${sup}to the wallet ${t.receiveWallet} ` +
-            `(received ${fd(t.receiveTokens)}) with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`};
+        return {
+            id: t._id, msg: `${d} : Send ${fd(t.sendTokens)} ${t.symbol} ${sup}to the wallet ${t.receiveWallet} ` +
+                `(received ${fd(t.receiveTokens)}) with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`
+        };
     } else if (t.type === "send" && t.receiveWallet === wallet) {
         if (wallet === "") {
             sup = `to the wallet ${t.wallet} `;
         }
-        return {id: t._id, msg: `${d} : Receive ${fd(t.receiveTokens)} ${t.symbol} ${sup}from the ${fd(t.sendTokens)} ${t.symbol} ` +
-            `sent by the wallet ${t.sendWallet} with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`};
+        return {
+            id: t._id,
+            msg: `${d} : Receive ${fd(t.receiveTokens)} ${t.symbol} ${sup}from the ${fd(t.sendTokens)} ${t.symbol} ` +
+                `sent by the wallet ${t.sendWallet} with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`
+        };
     } else {
         // wallet not supplied
-        return {id: t._id, msg: `${d} : Send ${fd(t.sendTokens)} ${t.symbol} from wallet ${t.sendWallet} to the wallet ` +
-            `${t.receiveWallet} (received ${fd(t.receiveTokens)}) with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`};
+        return {
+            id: t._id, msg: `${d} : Send ${fd(t.sendTokens)} ${t.symbol} from wallet ${t.sendWallet} to the wallet ` +
+                `${t.receiveWallet} (received ${fd(t.receiveTokens)}) with fee of ${fd(t.fee)} ${t.feeCurrency}. ${comment}`
+        };
     }
 }
 
@@ -162,7 +195,7 @@ let getAllWallets = async () => {
 let follow = async (lang, token, wallet, sortDirection) => {
     let actions = [];
     let transactions = await getAllTransactionsOnDate(sortDirection === "A" ? 1 : -1);
-    for (let i=0; i<transactions.length; i++) {
+    for (let i = 0; i < transactions.length; i++) {
         if (await handleTransaction(transactions[i], token.toUpperCase(), wallet) === true) {
             actions.push(interpretFlow(lang, transactions[i], wallet));
         }

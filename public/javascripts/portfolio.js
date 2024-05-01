@@ -1,4 +1,3 @@
-
 let buildRowPerWallet = (crypto, first) => {
     let row;
     if (crypto.token === "") {

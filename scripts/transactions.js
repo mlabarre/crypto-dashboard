@@ -5,7 +5,7 @@ const utils = require('../scripts/utils');
 let buildDate = (date, time) => {
     let d = date.split('-');
     let t = time.split(':')
-    return new Date(d[0],parseInt(d[1])-1, d[2], t[0], t[1], t[2]);
+    return new Date(d[0], parseInt(d[1]) - 1, d[2], t[0], t[1], t[2]);
 }
 
 /* **********
@@ -29,8 +29,8 @@ let buildDate = (date, time) => {
 let preparePurchaseData = (body) => {
     let tokenId = body.purchaseTokenId === '' ? body.purchaseTokenIdIco : body.purchaseTokenId;
     return {
-        "type" : body.type,
-        "date" : buildDate(body.purchaseDate, body.purchaseTime),
+        "type": body.type,
+        "date": buildDate(body.purchaseDate, body.purchaseTime),
         "symbol": tokenId.toUpperCase(),
         "tokens": parseFloat(body.purchaseTokenNumber),
         "quotation": parseFloat(body.purchaseTokenQuotationInFiat),
@@ -60,8 +60,8 @@ let preparePurchaseData = (body) => {
 let prepareSaleData = (body) => {
     let tokenId = body.saleTokenId === '' ? body.saleTokenIdIco : body.saleTokenId;
     return {
-        "type" : body.type,
-        "date" : buildDate(body.saleDate, body.saleTime),
+        "type": body.type,
+        "date": buildDate(body.saleDate, body.saleTime),
         "symbol": tokenId.toUpperCase(),
         "tokens": parseFloat(body.saleTokenNumber),
         "quotation": parseFloat(body.saleTokenQuotationInFiat),
@@ -100,8 +100,8 @@ let prepareSwapData = (body) => {
     let outputTokenId = body.swapOutputTokenId === '' ? body.swapOutputTokenIdIco : body.swapOutputTokenId;
     let inputTokenId = body.swapInputTokenId === '' ? body.swapInputTokenIdIco : body.swapInputTokenId;
     return {
-        "type" : body.type,
-        "date" : buildDate(body.swapDate, body.swapTime),
+        "type": body.type,
+        "date": buildDate(body.swapDate, body.swapTime),
         "outputSymbol": outputTokenId.toUpperCase(),
         "outputTokens": parseFloat(body.swapOutputTokenNumber),
         "outputTokenQuotation": parseFloat(body.swapOutputTokenQuotation),
@@ -142,8 +142,8 @@ let prepareSwapData = (body) => {
 let prepareSendData = (body) => {
     let tokenId = body.sendTokenId === '' ? body.sendTokenIdIco : body.sendTokenId;
     return {
-        "type" : body.type,
-        "date" : buildDate(body.sendDate, body.sendTime),
+        "type": body.type,
+        "date": buildDate(body.sendDate, body.sendTime),
         "symbol": tokenId.toUpperCase(),
         "sendTokens": parseFloat(body.sendTokenNumber),
         "sendWallet": body.sendWallet,
@@ -241,7 +241,7 @@ let updateFieldForTransactionUpdatePurchase = (t, b) => {
     b.purchaseTokenQuotationInFiat = t.quotation;
     b.purchaseFeeInFiat = t.feeInFiat;
     b.purchaseWallet = t.wallet;
-    b.comment= t.comment;
+    b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
     return b;
@@ -256,7 +256,7 @@ let updateFieldForTransactionUpdateSale = (t, b) => {
     b.saleTokenQuotationInFiat = t.quotation;
     b.saleFeeInFiat = t.feeInFiat;
     b.saleWallet = t.wallet;
-    b.comment= t.comment;
+    b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
     return b;
@@ -265,19 +265,19 @@ let updateFieldForTransactionUpdateSale = (t, b) => {
 let updateFieldForTransactionUpdateSwap = (t, b) => {
     b.type = "swap";
     b.swapDate = utils.getDateFromDate(t.date);
-    b.swapTime= utils.getTimeFromDate(t.date);
-    b.swapOutputTokenId= t.outputSymbol;
-    b.swapOutputTokenNumber= t.outputTokens;
-    b.swapOutputTokenQuotation= t.outputTokenQuotation;
-    b.swapOutputTokenQuotationCurrency= t.outputTokenQuotationCurrency;
-    b.swapInputTokenId= t.inputSymbol;
-    b.swapInputTokenNumber= t.inputTokens;
-    b.swapInputTokenQuotation= t.inputTokenQuotation;
-    b.swapInputTokenQuotationCurrency= t.inputTokenQuotationCurrency;
-    b.swapFee= t.fee;
-    b.swapFeeCurrencyOpt= t.feeCurrency.toUpperCase();
-    b.swapWallet= t.wallet;
-    b.comment= t.comment;
+    b.swapTime = utils.getTimeFromDate(t.date);
+    b.swapOutputTokenId = t.outputSymbol;
+    b.swapOutputTokenNumber = t.outputTokens;
+    b.swapOutputTokenQuotation = t.outputTokenQuotation;
+    b.swapOutputTokenQuotationCurrency = t.outputTokenQuotationCurrency;
+    b.swapInputTokenId = t.inputSymbol;
+    b.swapInputTokenNumber = t.inputTokens;
+    b.swapInputTokenQuotation = t.inputTokenQuotation;
+    b.swapInputTokenQuotationCurrency = t.inputTokenQuotationCurrency;
+    b.swapFee = t.fee;
+    b.swapFeeCurrencyOpt = t.feeCurrency.toUpperCase();
+    b.swapWallet = t.wallet;
+    b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
     return b;
@@ -292,9 +292,9 @@ let updateFieldForTransactionUpdateSend = (t, b) => {
     b.sendWallet = t.sendWallet;
     b.receiveTokenNumber = t.receiveTokens;
     b.receiveWallet = t.receiveWallet;
-    b.sendFee= t.fee;
+    b.sendFee = t.fee;
     b.sendFeeCurrencyOpt = t.feeCurrency.toUpperCase();
-    b.sendCounterpart= t.feeInFiat;
+    b.sendCounterpart = t.feeInFiat;
     b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
@@ -303,14 +303,24 @@ let updateFieldForTransactionUpdateSend = (t, b) => {
 let updateFieldForTransactionUpdate = (transaction, dataForBody) => {
     if (transaction.type === "purchase") {
         return updateFieldForTransactionUpdatePurchase(transaction, dataForBody);
-    } else  if (transaction.type === "sale") {
+    } else if (transaction.type === "sale") {
         return updateFieldForTransactionUpdateSale(transaction, dataForBody);
     } else if (transaction.type === "swap") {
         return updateFieldForTransactionUpdateSwap(transaction, dataForBody);
-    }  else {
+    } else {
         return updateFieldForTransactionUpdateSend(transaction, dataForBody);
     }
 }
+
+let getChainExplorers = () => {
+    let chains = config.get('chain_explorers');
+    if (chains === null || chains === undefined) {
+        return [];
+    } else {
+        return chains;
+    }
+}
+
 let prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) => {
     let transaction = await new MongoHelper().findTransaction(id);
     let initData = getBodyValuesForCreation();
@@ -321,7 +331,7 @@ let prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) =>
     initData.token = token;
     initData.wallet = wallet;
     initData.lang = lang;
-    initData.chainExplorers = config.get('chain_explorers');
+    initData.chainExplorers = getChainExplorers();
     return initData;
 }
 
@@ -333,7 +343,7 @@ let prepareTransactionCreation = async () => {
     initData.token = "";
     initData.wallet = "";
     initData.lang = "";
-    initData.chainExplorers = config.get('chain_explorers');
+    initData.chainExplorers = getChainExplorers();
     return initData;
 }
 

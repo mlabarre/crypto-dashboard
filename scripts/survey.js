@@ -12,7 +12,7 @@ let removeAlert = async (token) => {
 
 let evolution = async (sortField, sortDirection) => {
     let cryptos = await new MongoHelper().getCryptosSurvey();
-    for (let i=0; i<cryptos.length; i++) {
+    for (let i = 0; i < cryptos.length; i++) {
         let token = cryptos[i];
         token.variation_on_five_minutes = (token.quotation -
             token.last_five_minutes_quotation) * 100 / token.last_five_minutes_quotation
@@ -23,7 +23,7 @@ let evolution = async (sortField, sortDirection) => {
         token.variation_on_one_week = (token.quotation -
             token.last_week_quotation) * 100 / token.last_week_quotation
     }
-    let sortParam = sortDirection === "D" ? "-"+sortField : sortField;
+    let sortParam = sortDirection === "D" ? "-" + sortField : sortField;
     return {
         result: {
             tokens: cryptos.sort(utils.fieldSorter([sortParam])),
