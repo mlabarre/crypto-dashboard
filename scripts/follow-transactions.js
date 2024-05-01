@@ -28,12 +28,13 @@ let handleTransaction = async (transaction, token, wallet) => {
 }
 
 let getExplorerUrl = (chainName, tx) => {
-    let chainIndex = config.get('chain_explorers').findIndex(chain => chain.name === chainName);
-    if (chainIndex >= 0) {
-        return `${config.get('chain_explorers')[chainIndex].url}${tx}`;
-    } else {
-        return null;
+    if (config.has('chain_explorers')) {
+        let chainIndex = config.get('chain_explorers').findIndex(chain => chain.name === chainName);
+        if (chainIndex >= 0) {
+            return `${config.get('chain_explorers')[chainIndex].url}${tx}`;
+        }
     }
+    return null;
 }
 
 let interpretFlow = (lang, t, wallet) => {

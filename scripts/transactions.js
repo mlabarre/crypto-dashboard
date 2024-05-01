@@ -313,11 +313,10 @@ let updateFieldForTransactionUpdate = (transaction, dataForBody) => {
 }
 
 let getChainExplorers = () => {
-    let chains = config.get('chain_explorers');
-    if (chains === null || chains === undefined) {
-        return [];
+    if (config.has('chain_explorers')) {
+        return config.get('chain_explorers')
     } else {
-        return chains;
+        return [];
     }
 }
 
