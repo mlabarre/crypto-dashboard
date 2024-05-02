@@ -119,20 +119,31 @@ let setWallets = () => {
             $('#message').text('error');
         })
 }
+
 let init = () => {
     $('#headerCol').on('click', () => {
         sortDirection = (sortDirection === "A" ? "D" : "A");
         getDatas();
     })
-    $('#validation').on('click', () => {
+    $('#reset').on('click', () => {
+        $('#token').val('');
+        $('#wallet').val('');
         getDatas();
     });
+    $('#token').on('change', () => {
+            getDatas();
+        }
+    )
+    $('#wallet').on('change', () => {
+            getDatas();
+        }
+    )
     if (returnedSortDirection !== "") {
         sortDirection = returnedSortDirection;
         $('#token').val(returnedToken);
         $('#wallet').val(returnedWallet);
-        getDatas();
     }
+    getDatas();
     setSymbols();
     setWallets();
 }
