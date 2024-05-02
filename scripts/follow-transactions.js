@@ -194,12 +194,16 @@ let getAllWallets = async () => {
 /*
  Follow transactions on a specified token and a specified wallet
  */
-let follow = async (lang, token, wallet, sortDirection) => {
+let follow = async (lang, token, wallet, sortDirection, noInterpret) => {
     let actions = [];
     let transactions = await getAllTransactionsOnDate(sortDirection === "A" ? 1 : -1);
     for (let i = 0; i < transactions.length; i++) {
         if (await handleTransaction(transactions[i], token.toUpperCase(), wallet) === true) {
-            actions.push(interpretFlow(lang, transactions[i], wallet));
+            if (noInterpret === undefined) {
+                actions.push(interpretFlow(lang, transactions[i], wallet));
+            } else {
+                actions.push(transactions[i]);
+            }
         }
     }
     return actions
@@ -213,15 +217,23 @@ let writeField = (line, value, first) => {
     }
     return line;
 }
-let getTransactionsAsCsvFile = async () => {
+
+let getCriteria = (request) => {
+    let wallet = request.query.wallet === undefined || request.query.wallet === '' ? '' : request.query.wallet;
+    let token = request.query.token === undefined || request.query.token === '' ? '' : request.query.token;
+    return { wallet: wallet, token: token };
+}
+
+let getTransactionsAsCsvFile = async (request) => {
     let names = await new MongoHelper().getAllTransactionFieldsName();
     delete names["_id"];
+    let criteria = getCriteria(request);
     let csvFileName = `/tmp/transactions-${new Date().getTime()}.csv`;
     let csvFile = fs.openSync(csvFileName, "a");
     let pos = fs.writeSync(csvFile, `${names.join(';')}\n`, 0);
-    let transactions = await new MongoHelper().findAllTransactionsSortedOnDate();
+    let transactions = await follow('', criteria.token, criteria.wallet, 'A', true);
     for (let posTran=0; posTran<transactions.length; posTran++) {
-        console.log("iter")
+        delete transactions[posTran]._id;
         let line = '';
         let first = true;
         for (let posName=0; posName<names.length; ++posName) {
@@ -237,12 +249,14 @@ let getTransactionsAsCsvFile = async () => {
     }
 }
 
-let getTransactionsAsJsonFile = async () => {
+let getTransactionsAsJsonFile = async (request) => {
     let jsonFileName = `/tmp/transactions-${new Date().getTime()}.json`;
+    let criteria = getCriteria(request);
     let jsonFile = fs.openSync(jsonFileName, "a");
-    let transactions = await new MongoHelper().findAllTransactionsSortedOnDateWithoutId();
+    let transactions = await follow('', criteria.token, criteria.wallet, 'A', true);
     let pos = 0;
     for (let posTran=0; posTran<transactions.length; posTran++) {
+        delete transactions[posTran]._id;
         pos = fs.writeSync(jsonFile, `${JSON.stringify(transactions[posTran])}\n`, pos);
     }
     fs.closeSync(jsonFile);

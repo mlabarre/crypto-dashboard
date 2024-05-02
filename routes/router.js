@@ -194,7 +194,7 @@ router
         })
     })
     .get('/api/getTransactionsAsCsv', function (request, response, next) {
-        followTransactions.getTransactionsAsCsvFile().then( (data) => {
+        followTransactions.getTransactionsAsCsvFile(request).then( (data) => {
             response.download(data.csv, data.name, (error) => {
                 console.log(response.headersSent);
                 console.log(error)
@@ -202,7 +202,7 @@ router
         })
     })
     .get('/api/getTransactionsAsJson', function (request, response, next) {
-        followTransactions.getTransactionsAsJsonFile().then( (data) => {
+        followTransactions.getTransactionsAsJsonFile(request).then( (data) => {
             response.download(data.csv, data.name, (error) => {
                 console.log(response.headersSent);
                 console.log(error)

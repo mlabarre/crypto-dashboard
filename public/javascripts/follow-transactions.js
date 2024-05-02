@@ -131,10 +131,14 @@ let init = () => {
         getDatas();
     });
     $('#downloadCsv').on('click', () => {
-        window.open("/api/getTransactionsAsCsv");
+        let token = $('#token').val();
+        let wallet = $('#wallet').val();
+        window.open(`/api/getTransactionsAsCsv?wallet=${wallet}&token=${token}`);
     });
     $('#downloadJson').on('click', () => {
-        window.open("/api/getTransactionsAsJson");
+        let token = $('#token').val();
+        let wallet = $('#wallet').val();
+        window.open(`/api/getTransactionsAsJson?wallet=${wallet}&token=${token}`);
     });
     $('#token').on('change', () => {
             getDatas();
