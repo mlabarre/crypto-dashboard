@@ -1,6 +1,7 @@
 const config = require('config');
 const MongoHelper = require('./mongo-helper');
 const utils = require('./utils');
+const fs = require('fs');
 
 let getAllTransactionsOnDate = async (direction) => {
     return await new MongoHelper().findAllTransactionsSortedOnDate(direction);
@@ -204,7 +205,42 @@ let follow = async (lang, token, wallet, sortDirection) => {
     return actions
 }
 
+let writeField = (line, value, first) => {
+    if (value !== undefined) {
+        line += (((first) ? '' : ';' ) + value);
+    } else {
+        line += ';'
+    }
+    return line;
+}
+let getTransactionsAsCsvFile = async () => {
+    let names = await new MongoHelper().getAllTransactionFieldsName();
+    delete names["_id"];
+    let csvFileName = `/tmp/transactions-${new Date().getTime()}.csv`;
+    let csvFile = fs.openSync(csvFileName, "a");
+    let pos = fs.writeSync(csvFile, `${names.join(';')}\n`, 0);
+    let transactions = await new MongoHelper().findAllTransactionsSortedOnDate();
+    for (let posTran=0; posTran<transactions.length; posTran++) {
+        console.log("iter")
+        let line = '';
+        let first = true;
+        for (let posName=0; posName<names.length; ++posName) {
+            line = writeField(line, transactions[posTran][names[posName]], first);
+            first= false;
+        }
+        pos = fs.writeSync(csvFile, `${line}\n`, pos);
+    }
+    fs.closeSync(csvFile);
+    fs.stat(csvFileName, (err, stats) => {
+        console.log(stats)
+    })
+    return {
+        csv : csvFileName,
+        name: "transactions.csv"
+    }
+}
 
 exports.follow = follow
 exports.getAllSymbols = getAllSymbols
 exports.getAllWallets = getAllWallets
+exports.getTransactionsAsCsvFile = getTransactionsAsCsvFile

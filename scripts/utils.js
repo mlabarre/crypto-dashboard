@@ -78,6 +78,11 @@ const buildIconsDir = async () => {
 
 }
 
+const storeUniqueInArray = (arr, item) => {
+    if (!arr.includes(item)) {
+        arr.push(item);
+    }
+}
 exports.fieldSorter = fieldSorter
 exports.dateSorter = dateSorter
 exports.getDateFromDate = getDateFromDate
@@ -85,3 +90,4 @@ exports.getTimeFromDate = getTimeFromDate
 exports.buildIconsDir = buildIconsDir
 exports.getFormattedDate = getFormattedDate
 exports.formatDelim = formatDelim
+exports.storeUniqueInArray = storeUniqueInArray

@@ -2,7 +2,7 @@ const config = require('config');
 const MongoClient = require('mongodb').MongoClient;
 const {ObjectId} = require('mongodb');
 const fs = require('fs/promises');
-
+const utils = require('./utils');
 const path = require('path');
 
 class MongoHelper {
@@ -59,9 +59,10 @@ class MongoHelper {
     }
 
     findAllTransactionsSortedOnDate = async (direction) => {
+        let dir = direction === undefined ? 1 : direction;
         try {
             await this.init();
-            return await this.dbo.collection("transactions").find({}).sort({date: direction}).toArray();
+            return await this.dbo.collection("transactions").find({}).sort({"date": dir}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -274,6 +275,25 @@ class MongoHelper {
         } finally {
             await this.mongoClient.close();
         }
+    }
+    getAllTransactionFieldsName = async () => {
+        let allNames = [];
+        try {
+            await this.init();
+            let cursor = await this.dbo.collection("transactions").find({});
+            while (await cursor.hasNext()) {
+                let transaction = await cursor.next();
+                let names = Object.keys(transaction);
+                for (let i=0; i<names.length; i++) {
+                    if (names[i] !== '_id') {
+                        utils.storeUniqueInArray(allNames, names[i]);
+                    }
+                }
+            }
+        } finally {
+            await this.mongoClient.close();
+        }
+        return allNames;
     }
 }
 

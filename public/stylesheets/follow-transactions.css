@@ -27,3 +27,7 @@ tr:hover {
 .styled-table th, .styled-table td {
     padding: 4px 5px !important;
 }
+
+#download {
+    margin-left: 15px;
+}

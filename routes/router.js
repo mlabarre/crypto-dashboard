@@ -193,5 +193,13 @@ router
             response.send({});
         })
     })
+    .get('/api/getTransactionsAsCsv', function (request, response, next) {
+        followTransactions.getTransactionsAsCsvFile().then( (data) => {
+            response.download(data.csv, data.name, (error) => {
+                console.log(response.headersSent);
+                console.log(error)
+            });
+        })
+    })
 
 module.exports = router;
