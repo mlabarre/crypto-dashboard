@@ -231,12 +231,24 @@ let getTransactionsAsCsvFile = async () => {
         pos = fs.writeSync(csvFile, `${line}\n`, pos);
     }
     fs.closeSync(csvFile);
-    fs.stat(csvFileName, (err, stats) => {
-        console.log(stats)
-    })
     return {
         csv : csvFileName,
         name: "transactions.csv"
+    }
+}
+
+let getTransactionsAsJsonFile = async () => {
+    let jsonFileName = `/tmp/transactions-${new Date().getTime()}.json`;
+    let jsonFile = fs.openSync(jsonFileName, "a");
+    let transactions = await new MongoHelper().findAllTransactionsSortedOnDateWithoutId();
+    let pos = 0;
+    for (let posTran=0; posTran<transactions.length; posTran++) {
+        pos = fs.writeSync(jsonFile, `${JSON.stringify(transactions[posTran])}\n`, pos);
+    }
+    fs.closeSync(jsonFile);
+    return {
+        csv : jsonFileName,
+        name: "transactions.json"
     }
 }
 
@@ -244,3 +256,4 @@ exports.follow = follow
 exports.getAllSymbols = getAllSymbols
 exports.getAllWallets = getAllWallets
 exports.getTransactionsAsCsvFile = getTransactionsAsCsvFile
+exports.getTransactionsAsJsonFile = getTransactionsAsJsonFile

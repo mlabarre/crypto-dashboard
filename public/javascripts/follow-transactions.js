@@ -130,9 +130,12 @@ let init = () => {
         $('#wallet').val('');
         getDatas();
     });
-    $('#download').on('click', () => {
+    $('#downloadCsv').on('click', () => {
         window.open("/api/getTransactionsAsCsv");
-    })
+    });
+    $('#downloadJson').on('click', () => {
+        window.open("/api/getTransactionsAsJson");
+    });
     $('#token').on('change', () => {
             getDatas();
         }

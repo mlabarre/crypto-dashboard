@@ -68,6 +68,16 @@ class MongoHelper {
         }
     }
 
+    findAllTransactionsSortedOnDateWithoutId = async (direction) => {
+        let dir = direction === undefined ? 1 : direction;
+        try {
+            await this.init();
+            return await this.dbo.collection("transactions").find({}).project({'_id': 0}).sort({"date": dir}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
     findAllSymbols = async () => {
         try {
             await this.init();
