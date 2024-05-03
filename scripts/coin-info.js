@@ -35,9 +35,9 @@ let getCoinInfo = async (request) => {
     info["low_24h"] = `${fd(info["low_24h"], config.fiat_symbol)}`;
     info["price_change_24h"] = `${fd(info["price_change_24h"], config.fiat_symbol)}`;
     info["market_cap_change_24h"] = `${fd(info["market_cap_change_24h"], config.fiat_symbol)}`;
-    info["circulating_supply"] = `${fd(info["circulating_supply"], coin.symbol)}`;
-    info["total_supply"] = `${fd(info["total_supply"], coin.symbol)}`;
-    info["max_supply"] = `${fd(info["max_supply"], coin.symbol)}`;
+    info["circulating_supply"] = `${fd(info["circulating_supply"], coin.symbol.toUpperCase())}`;
+    info["total_supply"] = `${fd(info["total_supply"], coin.symbol.toUpperCase())}`;
+    info["max_supply"] = `${fd(info["max_supply"], coin.symbol.toUpperCase())}`;
     info["ath"] = `${fd(info["ath"], config.fiat_symbol)}`;
     info["atl"] = `${fd(info["atl"], config.fiat_symbol)}`;
     if (info["price_change_percentage_24h"]) {
