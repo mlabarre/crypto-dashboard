@@ -83,6 +83,7 @@ In <CRYPTO_HOME>/config create a file named *default.json* with the following co
     "refresh_in_seconds" : 120,
     "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
     "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
     "notification_ntfy_url": "https://ntfy.sh",
     "notification_ntfy_topic": ".......",
     "chain_explorers": [
@@ -198,6 +199,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
     "mongodb_database": "crypto",
     "server_port" : 8080,
     "refresh_in_seconds" : 300,
+    "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
     "chain_explorers": [
     {
       "name": "Binance BSC",
@@ -245,6 +247,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 | mongodb_database   | Name you want to give to the mongo database. Here it is _**crypto**_.                                   |
 | server_port        | Node server listening port. Here 8080.                                                                  |
 | refresh_in_seconds | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes |
+| coingecko_chart_api | API for graphs. Do not modify.                                                                         |
 | chain_explorers    | URLs of major blockchain explorers. You can add more.                                                   |
 
 

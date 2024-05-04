@@ -82,6 +82,7 @@ Dans <CRYPTO_HOME>/config créer un fichier nommé *default.json* avec le conten
     "refresh_in_seconds" : 120,
     "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
     "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
     "notification_ntfy_url": "https://ntfy.sh",
     "notification_ntfy_topic": ".......",
     "chain_explorers": [
@@ -198,6 +199,7 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
     "mongodb_database": "crypto",
     "server_port" : 8080,
     "refresh_in_seconds" : 300,
+    "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
     "chain_explorers": [
     {
       "name": "Binance BSC",
@@ -235,17 +237,18 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
 }
 ```
 
-| variable           | Description                                                                                                       |
-|:-------------------|:------------------------------------------------------------------------------------------------------------------|
-| language           | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
-| fiat_currency      | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
-| fiat_symbol        | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
-| decimal_separator  | Caractère séparateur de décimales.                                                                                |
-| mongodb_uri        | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
-| mongodb_database   | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
-| server_port        | Port d'écoute du serveur node. Ici 8080                                                                           |
-| refresh_in_seconds | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn       |
-| chain_explorers    | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                            |
+| variable             | Description                                                                                                       |
+|:---------------------|:------------------------------------------------------------------------------------------------------------------|
+| language             | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
+| fiat_currency        | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
+| fiat_symbol          | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
+| decimal_separator    | Caractère séparateur de décimales.                                                                                |
+| mongodb_uri          | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
+| mongodb_database     | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
+| server_port          | Port d'écoute du serveur node. Ici 8080                                                                           |
+| refresh_in_seconds   | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn       |
+| coingecko_chart_api  | API coingecko pour les graphiques. Ne pas modifier.                                                              |
+| chain_explorers      | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                            |
 
 Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifier selon votre environnement
 
