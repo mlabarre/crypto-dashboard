@@ -94,8 +94,8 @@ let formatGraphData = (data) => {
     for (let i = 0; i < data.prices.length; i++) {
         prices.push({time: getTs(data.prices[i][0]), value: data.prices[i][1]})
         volume.push({time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1],
-        color: (data.total_volumes[i][1] >= previousPrice) ? green : red});
-        previousPrice = data.total_volumes[i][1];
+        color: (data.prices[i][1] >= previousPrice) ? green : red});
+        previousPrice = data.prices[i][1];
     }
     return {
         "prices": prices,

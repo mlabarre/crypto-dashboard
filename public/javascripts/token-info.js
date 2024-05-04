@@ -33,12 +33,10 @@ let buildGraphs = (data, period) => {
             }
         }
     );
-    const priceSeries = chart.addAreaSeries(
+    const priceSeries = chart.addLineSeries(
         {
-            topColor: '#2962FF',
-            bottomColor: 'rgba(41, 98, 255, 0.28)',
-            lineColor: '#2962FF',
-            lineWidth: 2,
+            color: '#2962FF',
+            lineWidth: 1,
         }
     );
     priceSeries.priceScale().applyOptions(
