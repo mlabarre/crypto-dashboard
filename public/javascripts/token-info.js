@@ -82,7 +82,7 @@ let showGraph = (period) => {
     }).done((data) => {
         buildGraphs(data, period);
     }).fail((err) => {
-        alert("Cannot display graph");
+        alert(errorGraph);
     })
 }
 
