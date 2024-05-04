@@ -42,6 +42,12 @@ let pad = (o) => {
     }
 }
 
+const getDateAsAAAAMMDD = (ts) => {
+    let d = new Date(ts);
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+}
+
+
 let getFormattedDate = (lang, dateAsString) => {
     if (lang === undefined || lang === '') lang = 'fr-FR';
     let date = (dateAsString === undefined) ? new Date() : new Date(dateAsString);
@@ -91,3 +97,4 @@ exports.buildIconsDir = buildIconsDir
 exports.getFormattedDate = getFormattedDate
 exports.formatDelim = formatDelim
 exports.storeUniqueInArray = storeUniqueInArray
+exports.getDateAsAAAAMMDD = getDateAsAAAAMMDD

@@ -62,4 +62,61 @@ let getCoinInfo = async (request) => {
     }
 }
 
+let getTs = (d) => {
+    return Math.trunc(d / 1000);
+}
+/**
+ * Fortmat graph data
+ * @param data ALl datas.
+ * @param data.prices Prices array
+ * @param data.market_caps Market Cap array
+ * @param data.total_volumes Volumes array
+ * @returns {{total_volumes: *[], prices: *[], market_caps: *[]}}
+ */
+let formatGraphData = (data) => {
+    let prices = [];
+//    let market = [];
+    let volume = [];
+    let green = '#26a69a';
+    let red = '#ef5350';
+    let previousPrice = 0;
+    /*
+    for (let i=0; i<data.market_caps.length; i++) {
+        market.push({time: getTs(data.market_caps[i][0]), value: data.market_caps[i][1]})
+    }
+    */
+    for (let i = 0; i < data.prices.length; i++) {
+        prices.push({time: getTs(data.prices[i][0]), value: data.prices[i][1]})
+    }
+    for (let i = 0; i < data.total_volumes.length; i++) {
+        volume.push({time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1]})
+    }
+    for (let i = 0; i < data.prices.length; i++) {
+        prices.push({time: getTs(data.prices[i][0]), value: data.prices[i][1]})
+        volume.push({time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1],
+        color: (data.total_volumes[i][1] >= previousPrice) ? green : red});
+        previousPrice = data.total_volumes[i][1];
+    }
+    return {
+        "prices": prices,
+//        "market_caps": market,
+        "total_volumes": volume
+    }
+}
+let getGraphDataFromApi = async (tokenId, period) => {
+    let url = config.get('coingecko_chart_api').replace('TOKEN', tokenId)
+        .replace('CURRENCY', config.get('coingecko_currency'))
+        .replace('DAYS', (period === 'H' ? "90" : "365"));
+    let response = await fetch(url);
+    if (response.status === 200) {
+        return formatGraphData(await response.json());
+    } else {
+        console.log(`Error getting coin graph for url ${url}`);
+        console.log(`Error info : ${response.statusText}. ${response.statusMessage}`);
+        return {"errorGecko": true};
+    }
+}
+
+
 exports.getCoinInfo = getCoinInfo
+exports.getGraphDataFromApi = getGraphDataFromApi

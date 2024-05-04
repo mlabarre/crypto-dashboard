@@ -209,5 +209,16 @@ router
             });
         })
     })
+    .get('/api/getTokenGraph', function (request, response, next) {
+        let tokenId = request.query.tokenId;
+        let period = request.query.period;
+        coinInfo.getGraphDataFromApi(tokenId, period).then( (data) => {
+            if (data.errorGecko === true) {
+                response.send({}).status(400);
+            } else {
+                response.send(data);
+            }
+        })
+    })
 
 module.exports = router;

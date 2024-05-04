@@ -8,3 +8,25 @@
 .icon2 {
     height: 35px !important;
 }
+
+.div-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+#graph {
+    margin: 10px 10px;
+}
+
+.graph-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 10px;
+    flex-direction: column;
+}
+
+.graph-title-container {
+    display: flex;
+    justify-content: center;
+}

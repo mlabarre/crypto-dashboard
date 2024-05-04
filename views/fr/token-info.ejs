@@ -5,6 +5,7 @@
     <title>Wallets</title>
     <script type="text/javascript" src="/javascripts/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/utils.js"></script>
+    <script type="text/javascript" src="/javascripts/lightweight-charts.js"></script>
     <link rel='stylesheet' id="theme" href='/stylesheets/style.css'/>
     <link rel='stylesheet' href='/stylesheets/token-info.css'/>
 </head>
@@ -103,24 +104,32 @@
             </tbody>
         </table>
 
-        <div class="button-box">
-            <input type="button" class="button" id="returnButton" value="Retour">
+        <div class="div-buttons">
+            <div class="button-box">
+                <input type="button" class="button" id="returnButton" value="Retour">
+            </div>
+            <div class="button-box">
+                <input type="button" class="button" id="graphButtonHour" value="Graphique par heure (90j)">
+            </div>
+            <div class="button-box">
+                <input type="button" class="button" id="graphButtonDay" value="Graphique par jour (1 an)">
+            </div>
+        </div>
+        <div id="graph-container" class="graph-container">
+            <div class="graph-title-container"><span id="graph-title"></span></div>
+            <div id="graph"></div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src="/javascripts/token-info.js"></script>
+
 <script>
 
+    let tokenId = "<%= data.info.id %>";
     let returnUrl = "<%= data.returnUrl %>";
-
-    let init = () => {
-        $('#returnButton').on('click', () => {
-            window.location = returnUrl;
-        })
-    }
-
-    includeHTML("<%= data.header %>").then(() => {
-        handleDarkMode(document.getElementById('darkmode'));
-    });
+    let graphTitleHour = "Prix/Volume sur 90 jours, par heure";
+    let graphTitleDay = "Prix/Volume sur 1 an, par jour";
 
     $(() => {
         init()

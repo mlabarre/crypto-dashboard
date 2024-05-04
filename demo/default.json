@@ -10,6 +10,7 @@
   "refresh_in_seconds": 120,
   "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
   "coingecko_quotation_url": "https://api.coingecko.com/api/v3/coins/markets",
+  "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
   "notification_ntfy_url": "https://ntfy.sh",
   "notification_ntfy_topic": "......",
   "chain_explorers": [
