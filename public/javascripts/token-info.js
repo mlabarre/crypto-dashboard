@@ -21,7 +21,7 @@ let buildGraphs = (data, period) => {
                 borderVisible: false,
             },
             grid: {
-                horzLines:  {
+                horzLines: {
                     visible: false
                 },
                 vertLines: {
@@ -48,6 +48,15 @@ let buildGraphs = (data, period) => {
             },
         }
     );
+    priceSeries.applyOptions(
+        {
+            priceFormat: {
+                type: 'price',
+                precision: data.precision,
+                minMove: data.minMove,
+            }
+        }
+    )
     const volumeSeries = chart.addHistogramSeries(
         {
             color: '#26a69a',

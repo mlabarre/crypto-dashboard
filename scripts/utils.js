@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs/promises");
 
 let formatDelim = (value, decimalSeparator) => {
-    let i, j, chain, c, deb, fin, mantissa;
+    let i, j, chain, c, deb, fin, mantissa = '';
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;
     else mantissa = value.substring(fin, value.length);

@@ -12,7 +12,7 @@ let formatDate = (dateAsString) => {
 
 let fd = (v, unit) => {
     return v === null || v === undefined ? "N/A" :
-        `${utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))} ${unit}`;
+        `${utils.formatDelim(v.toString(), config.get('decimal_separator'))} ${unit}`;
 }
 
 let getCoinInfo = async (request) => {
@@ -65,26 +65,25 @@ let getCoinInfo = async (request) => {
 let getTs = (d) => {
     return Math.trunc(d / 1000);
 }
+
+let getPrecision = (price) => {
+    return Math.min(8, (price.toString().indexOf('.')>=0) ? price.toString().length - price.toString().indexOf('.')-1 : 0);
+}
 /**
  * Fortmat graph data
  * @param data ALl datas.
  * @param data.prices Prices array
  * @param data.market_caps Market Cap array
  * @param data.total_volumes Volumes array
- * @returns {{total_volumes: *[], prices: *[], market_caps: *[]}}
+ * @returns {{total_volumes: *[], prices: *[]}}
  */
 let formatGraphData = (data) => {
     let prices = [];
-//    let market = [];
     let volume = [];
     let green = '#26a69a';
     let red = '#ef5350';
-    let previousPrice = 0;
-    /*
-    for (let i=0; i<data.market_caps.length; i++) {
-        market.push({time: getTs(data.market_caps[i][0]), value: data.market_caps[i][1]})
-    }
-    */
+    let previousPrice = 0.0;
+    let maxPrecision = 0;
     for (let i = 0; i < data.prices.length; i++) {
         prices.push({time: getTs(data.prices[i][0]), value: data.prices[i][1]})
     }
@@ -96,10 +95,12 @@ let formatGraphData = (data) => {
         volume.push({time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1],
         color: (data.prices[i][1] >= previousPrice) ? green : red});
         previousPrice = data.prices[i][1];
+        maxPrecision = Math.max(maxPrecision, getPrecision(previousPrice))
     }
     return {
+        "precision": maxPrecision,
+        "minMove": parseFloat(1/Math.pow(10,maxPrecision)).toFixed(maxPrecision),
         "prices": prices,
-//        "market_caps": market,
         "total_volumes": volume
     }
 }
