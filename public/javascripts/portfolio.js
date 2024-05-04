@@ -1,13 +1,14 @@
 let buildRowPerWallet = (crypto, first) => {
     let row;
-    if (crypto.token === "") {
+    if (crypto.token === "") { // Total
         row = `<tr><td></td><td></td><td class="num total">Total</td>` +
             `<td class="num total">${formatDelim(((crypto.value * 100) / 100).toFixed(2), ds)}</td></tr>`;
     } else {
         let wallet = first ? getIconsHtml(crypto.wallet) + '&nbsp;&nbsp;<span>' + crypto.wallet : '';
+        let value = (crypto.value === "N/A") ? "N/A" : formatDelim(((crypto.value * 100) / 100).toFixed(2), ds);
         row = `<tr><td>${wallet}</span></td><td>${crypto.token}</td>` +
             `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
-            `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2), ds)}</td></tr>`;
+            `<td class="num">${value}</td></tr>`;
     }
     $('#cryptosPerWallet').append(row);
 }
@@ -18,9 +19,10 @@ let buildRowPerToken = (crypto) => {
     for (let i = 0; i < wallets.length; i++) {
         images += getIconsHtml(wallets[i]);
     }
+    let value = (crypto.value === "N/A") ? "N/A" : formatDelim(((crypto.value * 100) / 100).toFixed(2), ds);
     let row = `<tr><td><span>${crypto.token}</span></td><td>${images}</td>` +
         `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
-        `<td class="num">${formatDelim(((crypto.value * 100) / 100).toFixed(2), ds)}</td></tr>`;
+        `<td class="num">${value}</td></tr>`;
     $('#cryptosPerToken').append(row);
 }
 

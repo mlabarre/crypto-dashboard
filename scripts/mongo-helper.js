@@ -68,17 +68,7 @@ class MongoHelper {
         }
     }
 
-    findAllTransactionsSortedOnDateWithoutId = async (direction) => {
-        let dir = direction === undefined ? 1 : direction;
-        try {
-            await this.init();
-            return await this.dbo.collection("transactions").find({}).project({'_id': 0}).sort({"date": dir}).toArray();
-        } finally {
-            await this.mongoClient.close();
-        }
-    }
-
-    findAllSymbols = async () => {
+    findAllSymbolsInTransactions = async () => {
         try {
             await this.init();
             return await this.dbo.collection("transactions").find({}, {
@@ -86,6 +76,15 @@ class MongoHelper {
                 "inputSymbol": 1,
                 "outputSymbol": 1
             }).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    findAllSymbolsInMyCryptos = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection("my-cryptos").find({}).project({_id: 0, symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -294,7 +293,7 @@ class MongoHelper {
             while (await cursor.hasNext()) {
                 let transaction = await cursor.next();
                 let names = Object.keys(transaction);
-                for (let i=0; i<names.length; i++) {
+                for (let i = 0; i < names.length; i++) {
                     if (names[i] !== '_id') {
                         utils.storeUniqueInArray(allNames, names[i]);
                     }

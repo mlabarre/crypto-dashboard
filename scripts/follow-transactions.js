@@ -159,7 +159,7 @@ let interpretFlowEn = (t, wallet) => {
 
 
 let getAllSymbols = async () => {
-    let triple = await new MongoHelper().findAllSymbols();
+    let triple = await new MongoHelper().findAllSymbolsInTransactions();
     let symbols = [];
     await triple.forEach((t) => {
         if (t.symbol != null && !symbols.includes(t.symbol)) {

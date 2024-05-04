@@ -2,12 +2,13 @@ const config = require('config');
 const express = require('express');
 const router = express.Router();
 const transactionHandler = require('../scripts/transactions');
+const evolution = require('../scripts/evolution');
 const portFolio = require('../scripts/portfolio');
 const followTransactions = require('../scripts/follow-transactions')
 const cryptos = require('../scripts/cryptos')
 const wallets = require('../scripts/wallets')
 const survey = require('../scripts/survey')
-const coinInfo = require('../scripts/coin-info')
+const tokenInfo = require('../scripts/token-info')
 const {prepareTransactionCreation, prepareTransactionUpdate} = require("../scripts/transactions");
 
 /* GET home page. */
@@ -76,7 +77,7 @@ router
         });
     })
     .get('/showTokenInfo', function (request, response, next) {
-        coinInfo.getCoinInfo(request).then((data) => {
+        tokenInfo.getCoinInfo(request).then((data) => {
             response.render(config.get('language') + '/token-info', data);
         })
 
@@ -100,12 +101,12 @@ router
         })
     })
     .get('/api/portfolio', function (request, response, next) {
-        portFolio.summary().then((data) => {
+        portFolio.portfolio().then((data) => {
             response.send(data);
         })
     })
     .get('/api/evolution', function (request, response, next) {
-        portFolio.evolution(request.query.sortField, request.query.sortDirection).then((data) => {
+        evolution.evolution(request.query.sortField, request.query.sortDirection).then((data) => {
             response.send(JSON.stringify(data));
         })
     })
@@ -158,12 +159,12 @@ router
         })
     })
     .post('/api/alert', function (request, response, next) {
-        portFolio.addAlert(request.body).then((res) => {
+        evolution.addAlert(request.body).then((res) => {
             response.send({});
         })
     })
     .delete('/api/alert', function (request, response, next) {
-        portFolio.removeAlert(request.query.token).then((res) => {
+        evolution.removeAlert(request.query.token).then((res) => {
             response.send({});
 
         })
@@ -212,7 +213,7 @@ router
     .get('/api/getTokenGraph', function (request, response, next) {
         let tokenId = request.query.tokenId;
         let period = request.query.period;
-        coinInfo.getGraphDataFromApi(tokenId, period).then( (data) => {
+        tokenInfo.getGraphDataFromApi(tokenId, period).then( (data) => {
             if (data.errorGecko === true) {
                 response.send({}).status(400);
             } else {
