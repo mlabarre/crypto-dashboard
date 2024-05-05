@@ -69,7 +69,7 @@ let getIconsHtml = (wallet) => {
 }
 
 let getInfoIconHtml = (coin) => {
-    if (coin) {
+    if (coin && coin.id !== 'N/A') {
         return `<img class="icon" title="Info ${coin.name}" ` +
             ` src="images/rond-info.png" alt="Info ${coin.name}" ` +
             `onclick="showInfo('${coin.id}')">`;
@@ -135,6 +135,11 @@ const handleDarkMode = (checkbox) => {
 const sortArray = (a, b) => {
     if (a.id < b.id) return -1;
     else if (a.id > b.id) return 1;
+    else return 0;
+}
+const sortArrayOnSymbol = (a, b) => {
+    if (a.symbol < b.symbol) return -1;
+    else if (a.symbol > b.symbol) return 1;
     else return 0;
 }
 const getIndexInArray = (arr, o) => {

@@ -50,11 +50,10 @@ let findCrypto = (symbol, myCryptos) => {
 }
 
 let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
-    let myCryptos = await new MongoHelper().findAllMyCryptos();
+    let myCryptos = await new MongoHelper().findAllMyCryptos(true);
     let total_start = 0.00;
     let total_current = 0.00;
     let usdt = await new MongoHelper().getUSDTValueInFiat();
-    console.log("Use USDT value ", usdt.value)
     for (let i = 0; i < allTokens.length; i++) {
         let token = allTokens[i];
         // token already contains wallet, symbol, start_price and tokens (nb)
@@ -85,6 +84,8 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
                 values.last_week_quotation) * 100 / values.last_week_quotation
             total_start += token.start_price * token.tokens;
             total_current += token.quotation * token.tokens;
+            console.log(values.ico)
+            token.ico = values.ico_address !== undefined;
         } else {
             token.id = "N/A";
         }

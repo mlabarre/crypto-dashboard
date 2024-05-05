@@ -84,6 +84,17 @@ class MongoHelper {
     findAllSymbolsInMyCryptos = async () => {
         try {
             await this.init();
+            return await this.dbo.collection("my-cryptos").find({
+                ico_address: {$exists: false}
+            }).project({_id: 0, symbol: 1}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    findAllSymbolsInMyCryptosWithIco = async () => {
+        try {
+            await this.init();
             return await this.dbo.collection("my-cryptos").find({}).project({_id: 0, symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
@@ -100,10 +111,11 @@ class MongoHelper {
         }
     }
 
-    findAllMyCryptos = async () => {
+    findAllMyCryptos = async (ico) => {
+        let criteria = (ico === undefined) ? {ico_address: {$exists: false}} : {};
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").find({}).sort({symbol: 1}).toArray();
+            return await this.dbo.collection("my-cryptos").find(criteria).sort({symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -121,10 +133,7 @@ class MongoHelper {
     addToMyCryptos = async (crypto) => {
         try {
             await this.init();
-            await this.dbo.collection("my-cryptos").insertOne({
-                "id": crypto.id,
-                "symbol": crypto.symbol, "name": crypto.name
-            });
+            await this.dbo.collection("my-cryptos").insertOne(crypto);
             return "ok";
         } finally {
             await this.mongoClient.close();

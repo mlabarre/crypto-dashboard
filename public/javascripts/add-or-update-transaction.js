@@ -65,7 +65,7 @@ let getMySymbols = () => {
     $.ajax(
         {
             type: "GET",
-            url: "/api/get-my-cryptos",
+            url: "/api/get-my-cryptos?ico=yes",
             contentType: "application/json; charset=utf-8"
         })
         .done((data) => {
@@ -92,13 +92,11 @@ let setSelectedInComboWallets = (selectId, value) => {
     }
 }
 
-let setSelectedInComboSymbols = (selectId, value, alternateFieldId) => {
+let setSelectedInComboSymbols = (selectId, value) => {
     let index = symbols.indexOf(value);
     try {
         if (index >= 0) {
             document.querySelector('#' + selectId).selectedIndex = index + 1;
-        } else {
-            document.querySelector('#' + alternateFieldId).value = value;
         }
     } catch (e) {
         console.log("error symbol selectId", selectId)
@@ -127,14 +125,14 @@ let initializeCombosWallet = () => {
 
 let initializeCombosToken = () => {
     if (typeTransaction === "purchase") {
-        setSelectedInComboSymbols("purchaseTokenId", purchaseTokenId, "purchaseTokenIdIco");
+        setSelectedInComboSymbols("purchaseTokenId", purchaseTokenId);
     } else if (typeTransaction === "sale") {
-        setSelectedInComboSymbols("saleTokenId", saleTokenId, "saleTokenIdIco");
+        setSelectedInComboSymbols("saleTokenId", saleTokenId);
     } else if (typeTransaction === "swap") {
-        setSelectedInComboSymbols("swapOutputTokenId", swapOutputTokenId, "swapOutputTokenIdIco");
-        setSelectedInComboSymbols("swapInputTokenId", swapInputTokenId, "swapInputTokenIdIco");
+        setSelectedInComboSymbols("swapOutputTokenId", swapOutputTokenId);
+        setSelectedInComboSymbols("swapInputTokenId", swapInputTokenId);
     } else if (typeTransaction === "send") {
-        setSelectedInComboSymbols("sendTokenId", sendTokenId, "sendTokenIdIco");
+        setSelectedInComboSymbols("sendTokenId", sendTokenId);
     }
 }
 
@@ -143,15 +141,11 @@ let validateTokenId = (prefix) => {
     let res = false;
     if (prefix === "purchase" || prefix === "sale" || prefix === "send") {
         let tid = $('#' + prefix + 'TokenId').val();
-        let tidico = $('#' + prefix + 'TokenIdIco').val();
-        res = !((tid === '' && tidico === '') || (tid !== '' && tidico !== ''));
+        res = !(tid === '');
     } else {
         let outputtid = $('#' + prefix + 'OutputTokenId').val();
-        let outputtidico = $('#' + prefix + 'OutputTokenIdIco').val();
         let inputtid = $('#' + prefix + 'InputTokenId').val();
-        let inputtidico = $('#' + prefix + 'InputTokenIdIco').val();
-        res = !((outputtid === '' && outputtidico === '') || (outputtid !== '' && outputtidico !== '') ||
-            (inputtid === '' && inputtidico === '') || (inputtid !== '' && inputtidico !== ''));
+        res = !(outputtid === '' || inputtid === '');
     }
     if (!res) {
         msg = validateMsg;
@@ -163,14 +157,8 @@ let coherenceControl = () => {
     let msg = "";
     // SWAP : tokens must differ
     if ($('#type').val() === "swap") {
-        let input = $('#swapInputTokenIdIco').val();
-        if (input === '') {
-            input = $('#swapInputTokenId option:selected').val();
-        }
-        let output = $('#swapOutputTokenIdIco').val();
-        if (output === '') {
-            output = $('#swapOutputTokenId option:selected').val();
-        }
+        let input = $('#swapInputTokenId option:selected').val();
+        let output = $('#swapOutputTokenId option:selected').val();
         if (input.toUpperCase() === output.toUpperCase()) {
             msg = coherenceMsg1;
         }

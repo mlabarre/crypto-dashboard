@@ -64,7 +64,9 @@ router
         }
     })
     .get('/cryptos', function (request, response, next) {
-        response.render(config.get('language') + '/cryptos', {});
+        cryptos.getNetworksFromGeckoterminal().then( (networks) => {
+            response.render(config.get('language') + '/cryptos', networks);
+        })
     })
     .get('/wallets', function (request, response, next) {
         response.render(config.get('language') + '/wallets', {});
@@ -126,7 +128,7 @@ router
         })
     })
     .get('/api/get-my-cryptos', function (request, response, next) {
-        cryptos.getMyCryptos(request.query.token, request.query.wallet).then((data) => {
+        cryptos.getMyCryptos(request.query.ico).then((data) => {
             response.send(data);
         })
     })

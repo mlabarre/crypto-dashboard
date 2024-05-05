@@ -83,6 +83,8 @@ Dans <CRYPTO_HOME>/config créer un fichier nommé *default.json* avec le conten
     "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
     "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
     "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
+    "geckoterminal_networks_url": "https://api.geckoterminal.com/api/v2/networks?page=",
+    "geckoterminal_quotation_url": "https://api.geckoterminal.com/api/v2/simple/networks/NETWORK/token_price/",
     "notification_ntfy_url": "https://ntfy.sh",
     "notification_ntfy_topic": ".......",
     "chain_explorers": [
@@ -200,6 +202,7 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
     "server_port" : 8080,
     "refresh_in_seconds" : 300,
     "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
+    "geckoterminal_networks_url": "https://api.geckoterminal.com/api/v2/networks?page=",
     "chain_explorers": [
     {
       "name": "Binance BSC",
@@ -237,18 +240,19 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
 }
 ```
 
-| variable             | Description                                                                                                       |
-|:---------------------|:------------------------------------------------------------------------------------------------------------------|
-| language             | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
-| fiat_currency        | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
-| fiat_symbol          | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
-| decimal_separator    | Caractère séparateur de décimales.                                                                                |
-| mongodb_uri          | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
-| mongodb_database     | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
-| server_port          | Port d'écoute du serveur node. Ici 8080                                                                           |
-| refresh_in_seconds   | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn       |
-| coingecko_chart_api  | API coingecko pour les graphiques. Ne pas modifier.                                                              |
-| chain_explorers      | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                            |
+| variable                   | Description                                                                                                       |
+|:---------------------------|:------------------------------------------------------------------------------------------------------------------|
+| language                   | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
+| fiat_currency              | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
+| fiat_symbol                | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
+| decimal_separator          | Caractère séparateur de décimales.                                                                                |
+| mongodb_uri                | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
+| mongodb_database           | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
+| server_port                | Port d'écoute du serveur node. Ici 8080                                                                           |
+| refresh_in_seconds         | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn       |
+| coingecko_chart_api        | API coingecko pour les graphiques. Ne pas modifier.                                                               |
+| geckoterminal_networks_url | URL pour la liste des réseaux sur geckoterminal. Ne rien changer.                                                 |
+| chain_explorers            | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                            |
 
 Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifier selon votre environnement
 
@@ -261,22 +265,24 @@ Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifie
     "mongodb_database": "crypto",
     "coingecko_coins_url": "https://api.coingecko.com/api/v3/coins/list",
     "coingecko_quotation_url": "https://api.coingecko.com/api/v3/simple/price",
+    "geckoterminal_quotation_url": "https://api.geckoterminal.com/api/v2/simple/networks/NETWORK/token_price/",
     "notification_ntfy_url": "https://ntfy.sh",
     "notification_ntfy_topic": "KdiLd90OOODO"
 }
 ```
 
-| variable                | Description                                                                                                       |
-|:------------------------|:------------------------------------------------------------------------------------------------------------------|
-| language                | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
-| fiat_currency           | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
-| coingecko_currency      | Monnaie relative à la variable précédente. Elle doit être reconnue de coingecko : eur, usd, gbp, etc.             |
-| mongodb_uri             | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
-| mongodb_database        | Nom que vous avez donné dans le fichier default.json de crypto-dashboard ci-dessus.                               |
-| coingecko_coins_url     | API pour obtenir la liste de toutes les cryptos (appelée 1 fois par jour)                                         |
-| coingecko_quotation_url | API pour obtenir les quotations des cryptos utilisées (appelée 1 fois toutes les 5mn)                             |
-| notification_ntfy_url   | URL de ntfy.sh pour les notifications. Ne rien changer.                                                           |
-| notification_ntfy_topic | Clef/topic que vous avez déclaré dans l'application NTFY                                                          |
+| variable                    | Description                                                                                                       |
+|:----------------------------|:------------------------------------------------------------------------------------------------------------------|
+| language                    | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
+| fiat_currency               | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
+| coingecko_currency          | Monnaie relative à la variable précédente. Elle doit être reconnue de coingecko : eur, usd, gbp, etc.             |
+| mongodb_uri                 | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
+| mongodb_database            | Nom que vous avez donné dans le fichier default.json de crypto-dashboard ci-dessus.                               |
+| coingecko_coins_url         | API pour obtenir la liste de toutes les cryptos (appelée 1 fois par jour)                                         |
+| coingecko_quotation_url     | API pour obtenir les quotations des cryptos utilisées (appelée 1 fois toutes les 5mn)                             |
+ | geckoterminal_quotation_url | URL pour les cours des cryptos sur geckoterminal. Ne rien changer.                                                | 
+| notification_ntfy_url       | URL de ntfy.sh pour les notifications. Ne rien changer.                                                           |
+| notification_ntfy_topic     | Clef/topic que vous avez déclaré dans l'application NTFY.                                                         |
 
 
 ###### Wallets icons

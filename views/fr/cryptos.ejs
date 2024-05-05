@@ -16,7 +16,7 @@
         <div class="message">
             <span id="message">Chargement des cryptos en cours...</span>
         </div>
-        <div class="filter cond">
+        <div class="filter available-cryptos-container">
             <input class="input" type="text" id="criteria" placeholder="Filtre">
             <button type="button" class="button button-filter" onclick="doFilter('all');">Filtrer sur tout</button>
             <button type="button" class="button button-filter" onclick="doFilter('symbol');">Filtrer sur le symbole
@@ -41,9 +41,50 @@
                 <div class="button-box">
                     <input class="button" type="button" onclick="changeButtonList(this);return false;"
                            name="buttonList" id="buttonList" value="Afficher les cryptos dispo">
+                    <input class="button" type="button" onclick="showNotListed(this);return false;"
+                           name="buttonNotListed" id="buttonNotListed" value="Crypto pas encore listée">
+                </div>
+                <div id="icoCryptos" class="ico-crypto-container">
+                    <table class="ico-table">
+                        <tbody>
+                        <tr>
+                            <td><span class="ico-label">Symbole</span></td>
+                            <td><input name="symbol" id="symbol"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Nom (temporaire)</span></td>
+                            <td><input name="name" id="name"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Réseau</span></td>
+                            <td>
+                                <select name="network" id="network">
+                                    <option value="">Choisir</option>
+                                    <% networks.forEach( function (network) { %>
+                                        <option value="<%= network.id %>">
+                                            <%= network.name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Adresse du token</span></td>
+                            <td><input name="address" id="address" class="address"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="button-box">
+                        <input class="button" type="button" onclick="cancelIco(this);return false;"
+                               name="cancelIcoButton" id="cancelIcoButton" value="Annuler">
+                        <input class="button" type="button" onclick="addNotListed(this);return false;"
+                               name="buttonAddNotListed" id="buttonAddNotListed" value="Ajouter">
+                    </div>
+
                 </div>
             </div>
-            <div id="availableCryptos" class="bloc cond">
+            <div id="availableCryptos" class="bloc available-cryptos-container">
                 <div class="title-table"><span>Cryptos disponibles</span></div>
                 <div class="bloc">
                     <table id="availableCryptosTable" class="styled-table ctable">
@@ -58,6 +99,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </form>
 
@@ -73,6 +115,7 @@
     let wordDel = "supprimée"
     let errorAdd = "Erreur. L'item n'existe pas dans availableCryptos"
     let errorDel = "Erreur. Item existe déjà dans availableCryptos"
+    let msgFieldsRequired = "Symbole et nom sont requis";
 
     $(() => {
         init()

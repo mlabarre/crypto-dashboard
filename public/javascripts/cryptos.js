@@ -17,7 +17,7 @@ let showInfo = (coinId) => {
 
 let buildMyCryptos = () => {
     $('#myCryptosTable').find('tbody tr').remove();
-    myCryptosList.sort(sortArray)
+    myCryptosList.sort(sortArrayOnSymbol)
     for (let i = 0; i < myCryptosList.length; i++) {
         addMyCryptosRow(myCryptosList[i]);
     }
@@ -26,7 +26,7 @@ let buildMyCryptos = () => {
 let getMyCryptos = async () => {
     return $.ajax({
         type: "GET",
-        url: "/api/get-my-cryptos",
+        url: "/api/get-my-cryptos?ico=yes",
         contentType: "application/json; charset=utf-8"
     })
 }
@@ -109,23 +109,6 @@ let removeFromCollection = (crypto) => {
     })
 }
 
-
-let init = () => {
-    $('.cond').hide();
-    getMyCryptos().then((data) => {
-        myCryptosList = data;
-        buildMyCryptos();
-    });
-    getAvailableCryptos().then((data) => {
-        availableCryptosList = data;
-    });
-    return 1;
-}
-
-includeHTML("h-cryptos").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});
-
 let addMyCryptosRow = (row) => {
     let infoHtml = getInfoIconHtml(row);
     let r = `<tr><td>${infoHtml}</td><td>${getTokenIconHtml(row)}</td><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
@@ -144,12 +127,12 @@ let changeButtonList = (o) => {
     if (availableCryptoShown === true) {
         o.value = titleButtonShow;
         availableCryptoShown = false;
-        $('.cond').hide();
+        $('.available-cryptos-container').hide();
     } else {
         buildAvailableCryptos(true).then(() => {
             o.value = titleButtonHide;
             availableCryptoShown = true;
-            $('.cond').show();
+            $('.available-cryptos-container').show();
         })
     }
 }
@@ -177,22 +160,85 @@ let addMyCrypto = (o) => {
 let suppressMyCrypto = (o) => {
     let children = o.closest("tr").children;
     let crypto = {"id": children[2].innerText, "symbol": children[3].innerText, "name": children[4].innerText}
-    let indexAvailable = getIndexInArray(availableCryptosList, crypto);
-    let indexMy = getIndexInArray(myCryptosList, crypto);
-    if (indexAvailable >= 0 && availableCryptoShown === true) {
-        alert(`${errorDel} : ` + JSON.stringify(availableCryptosList[indexAvailable]));
+    if (crypto.id !== 'N/A') {
+        let indexAvailable = getIndexInArray(availableCryptosList, crypto);
+        let indexMy = getIndexInArray(myCryptosList, crypto);
+        if (indexAvailable >= 0 && availableCryptoShown === true) {
+            alert(`${errorDel} : ` + JSON.stringify(availableCryptosList[indexAvailable]));
+        } else {
+            myCryptosList.splice(indexMy, 1);
+            removeFromCollection(crypto).then((data) => {
+                buildAvailableCryptos(true).then(() => {
+                    alert(`Crypto ${crypto.name} ${wordDel}`)
+                    buildMyCryptos();
+                })
+            }).fail((error) => {
+                console.log(error)
+            });
+        }
     } else {
+        let indexMy = getIndexInArray(myCryptosList, crypto);
         myCryptosList.splice(indexMy, 1);
         removeFromCollection(crypto).then((data) => {
-            buildAvailableCryptos(true).then(() => {
-                alert(`Crypto ${crypto.name} ${wordDel}`)
-                buildMyCryptos();
-            })
+            alert(`Crypto ${crypto.name} ${wordDel}`)
+            buildMyCryptos();
         }).fail((error) => {
             console.log(error)
         });
     }
 }
+
+let showNotListed = () => {
+    $('.ico-crypto-container').show();
+    $('#buttonList').hide();
+    $('#buttonNotListed').hide();
+    $('.available-cryptos-container').hide();
+}
+
+let cancelIco = () => {
+    $('.ico-crypto-container').hide();
+    $('#buttonList').show();
+    $('#buttonNotListed').show();
+}
+
+let addNotListed = () => {
+    if ($('#symbol').val() === '' || $('#name').val() === '') {
+        alert(msgFieldsRequired);
+        return;
+    }
+    let crypto = {
+        id: 'N/A',
+        symbol: $('#symbol').val().toLowerCase(),
+        name: $('#name').val(),
+        ico_network: $('#network').val(),
+        ico_address: $('#address').val()
+    }
+    addToCollection(JSON.stringify(crypto)).then((data) => {
+        myCryptosList.push(crypto);
+        buildMyCryptos();
+        alert(`Crypto ${crypto.name} ${wordAdd}`)
+    }).fail((error) => {
+        console.log(error)
+    });
+}
+
+includeHTML("h-cryptos").then(() => {
+    handleDarkMode(document.getElementById('darkmode'));
+});
+
+let init = () => {
+    $('.available-cryptos-container').hide();
+    $('.ico-crypto-container').hide();
+    getMyCryptos().then((data) => {
+        myCryptosList = data;
+        buildMyCryptos();
+    });
+    getAvailableCryptos().then((data) => {
+        availableCryptosList = data;
+    });
+    return 1;
+}
+
 
 
 

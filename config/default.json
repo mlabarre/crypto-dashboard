@@ -8,6 +8,7 @@
   "server_port" : 8080,
   "refresh_in_seconds" : 120,
   "coingecko_chart_api": "https://api.coingecko.com/api/v3/coins/TOKEN/market_chart?vs_currency=CURRENCY&days=DAYS",
+  "geckoterminal_networks_url": "https://api.geckoterminal.com/api/v2/networks?page=",
   "chain_explorers": [
     {
       "name": "Binance BSC",

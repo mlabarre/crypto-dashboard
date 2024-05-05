@@ -56,3 +56,23 @@
 .styled-table td {
     padding: 4px 4px !important;
 }
+
+.address {
+    width: 400px;
+}
+
+.ico-crypto-container {
+
+}
+
+.button, .ico-label {
+    margin-right: 20px;
+}
+
+.ico-label {
+    color: cadetblue;
+}
+.ico-table {
+    margin: 20px;
+}
+

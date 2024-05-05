@@ -191,7 +191,7 @@ let fill = (data) => {
     let tokens = data.result.tokens;
     $.each(tokens, (no) => {
         let coin = tokens[no];
-        if (coin.id !== "N/A") {
+        if (coin.id !== "N/A" || coin.ico === true) {
             $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
                 '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
                 '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8), ds) + '</td>' +

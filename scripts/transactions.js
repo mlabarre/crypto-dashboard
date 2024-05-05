@@ -16,7 +16,6 @@ let buildDate = (date, time) => {
  * @param body.purchaseDate Purchase date.
  * @param body.purchaseTime Purchase time.
  * @param body.purchaseTokenId Purchase token id.
- * @param body.purchaseTokenIdIco Purchase token id when not listed.
  * @param body.purchaseTokenNumber Purchase token number.
  * @param body.purchaseTokenQuotationInFiat Purchase token quotation in Fiat currency.
  * @param body.purchaseFeeInFiat Purchase fee in Fiat currency.
@@ -27,11 +26,10 @@ let buildDate = (date, time) => {
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
 let preparePurchaseData = (body) => {
-    let tokenId = body.purchaseTokenId === '' ? body.purchaseTokenIdIco : body.purchaseTokenId;
     return {
         "type": body.type,
         "date": buildDate(body.purchaseDate, body.purchaseTime),
-        "symbol": tokenId.toUpperCase(),
+        "symbol": body.purchaseTokenId.toUpperCase(),
         "tokens": parseFloat(body.purchaseTokenNumber),
         "quotation": parseFloat(body.purchaseTokenQuotationInFiat),
         "feeInFiat": parseFloat(body.purchaseFeeInFiat),
@@ -47,7 +45,6 @@ let preparePurchaseData = (body) => {
  * @param body.saleDate Sale date.
  * @param body.saleTime Sale time.
  * @param body.saleTokenId Sale token id.
- * @param body.saleTokenIdIco Sale token id when not listed.
  * @param body.saleTokenNumber Sale token number.
  * @param body.saleTokenQuotationInFiat Sale token quotation in Fiat currency.
  * @param body.saleFeeInFiat Sale fee in Fiat currency.
@@ -58,11 +55,10 @@ let preparePurchaseData = (body) => {
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
 let prepareSaleData = (body) => {
-    let tokenId = body.saleTokenId === '' ? body.saleTokenIdIco : body.saleTokenId;
     return {
         "type": body.type,
         "date": buildDate(body.saleDate, body.saleTime),
-        "symbol": tokenId.toUpperCase(),
+        "symbol": body.saleTokenId.toUpperCase(),
         "tokens": parseFloat(body.saleTokenNumber),
         "quotation": parseFloat(body.saleTokenQuotationInFiat),
         "feeInFiat": parseFloat(body.saleFeeInFiat),
@@ -79,12 +75,10 @@ let prepareSaleData = (body) => {
  * @param body.swapDate Swap date.
  * @param body.swapTime Swap time.
  * @param body.swapOutputTokenId Swap output token id.
- * @param body.swapOutputTokenIdIco Swap output token id when not listed.
  * @param body.swapOutputTokenNumber Swap output token number.
  * @param body.swapOutputTokenQuotation Swap token quotation.
  * @param body.swapOutputTokenQuotationCurrency Swap token quotation currency.
  * @param body.swapInputTokenId Swap input token id.
- * @param body.swapInputTokenIdIco Swap input token id when not listed.
  * @param body.swapInputTokenNumber Swap input token number.
  * @param body.swapInputTokenQuotation Swap input quotation.
  * @param body.swapInputTokenQuotationCurrency Swap input quotation currency.
@@ -97,16 +91,14 @@ let prepareSaleData = (body) => {
  * @returns {{date: Date, wallet: *, inputSymbol: string, inputTokenQuotation: number, outputSymbol: string, fee: number, feeCurrency: *, inputTokens: number, type, outputTokenQuotationCurrency: *, inputTokenQuotationCurrency: *, comment, outputTokenQuotation: number, outputTokens: number}}
  */
 let prepareSwapData = (body) => {
-    let outputTokenId = body.swapOutputTokenId === '' ? body.swapOutputTokenIdIco : body.swapOutputTokenId;
-    let inputTokenId = body.swapInputTokenId === '' ? body.swapInputTokenIdIco : body.swapInputTokenId;
     return {
         "type": body.type,
         "date": buildDate(body.swapDate, body.swapTime),
-        "outputSymbol": outputTokenId.toUpperCase(),
+        "outputSymbol": body.swapOutputTokenId.toUpperCase(),
         "outputTokens": parseFloat(body.swapOutputTokenNumber),
         "outputTokenQuotation": parseFloat(body.swapOutputTokenQuotation),
         "outputTokenQuotationCurrency": body.swapOutputTokenQuotationCurrency,
-        "inputSymbol": inputTokenId.toUpperCase(),
+        "inputSymbol": body.swapInputTokenId.toUpperCase(),
         "inputTokens": parseFloat(body.swapInputTokenNumber),
         "inputTokenQuotation": parseFloat(body.swapInputTokenQuotation),
         "inputTokenQuotationCurrency": body.swapInputTokenQuotationCurrency,
@@ -124,7 +116,6 @@ let prepareSwapData = (body) => {
  * @param body.sendDate Send date.
  * @param body.sendTime Send time.
  * @param body.sendTokenId Send token id.
- * @param body.sendTokenIdIco Send token id when not listed.
  * @param body.sendTokenNumber Number of tokens sent.
  * @param body.sendWallet Send wallet.
  * @param body.receiveTokenNumber Number of tokens received.
@@ -140,11 +131,10 @@ let prepareSwapData = (body) => {
  * @returns {{date: Date, symbol: string, sendTokens: number, receiveWallet: (number|*), fee: number, feeCurrency: *, feeInFiat: number, comment, type, sendWallet: (number|*), receiveTokens: number}}
  */
 let prepareSendData = (body) => {
-    let tokenId = body.sendTokenId === '' ? body.sendTokenIdIco : body.sendTokenId;
     return {
         "type": body.type,
         "date": buildDate(body.sendDate, body.sendTime),
-        "symbol": tokenId.toUpperCase(),
+        "symbol": body.sendTokenId.toUpperCase(),
         "sendTokens": parseFloat(body.sendTokenNumber),
         "sendWallet": body.sendWallet,
         "receiveTokens": parseFloat(body.receiveTokenNumber),

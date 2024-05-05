@@ -38,9 +38,50 @@
                 <div class="button-box">
                     <input class="button" type="button" onclick="changeButtonList(this);return false;"
                            name="buttonList" id="buttonList" value="Show available cryptos">
+                    <input class="button" type="button" onclick="showNotListed(this);return false;"
+                           name="buttonNotListed" id="buttonNotListed" value="Crypto not yet listed">
+                </div>
+                <div id="icoCryptos" class="ico-crypto-container">
+                    <table class="ico-table">
+                        <tbody>
+                        <tr>
+                            <td><span class="ico-label">Symbol</span></td>
+                            <td><input name="symbol" id="symbol"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Name (temporary)</span></td>
+                            <td><input name="name" id="name"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Network</span></td>
+                            <td>
+                                <select name="network" id="network">
+                                    <option value="">Choisir</option>
+                                    <% networks.forEach( function (network) { %>
+                                        <option value="<%= network.id %>">
+                                            <%= network.name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="ico-label">Token address</span></td>
+                            <td><input name="address" id="address" class="address"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="button-box">
+                        <input class="button" type="button" onclick="cancelIco(this);return false;"
+                               name="cancelIcoButton" id="cancelIcoButton" value="Cancel">
+                        <input class="button" type="button" onclick="addNotListed(this);return false;"
+                               name="buttonAddNotListed" id="buttonAddNotListed" value="Add">
+                    </div>
+
                 </div>
             </div>
-            <div id="availableCryptos" class="bloc cond">
+            <div id="availableCryptos" class="bloc available-cryptos-container">
                 <div class="title-table"><span>Cryptos available</span></div>
                 <div class="bloc">
                     <table id="availableCryptosTable" class="styled-table ctable">
@@ -55,6 +96,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </form>
 
@@ -70,6 +112,7 @@
     let wordDel = "removed"
     let errorAdd = "Error. Item does not exists in availableCryptos"
     let errorDel = "Error. Item already exists in availableCryptos"
+    let msgFieldsRequired = "Symbol and name are required";
 
     $(() => {
         init()
