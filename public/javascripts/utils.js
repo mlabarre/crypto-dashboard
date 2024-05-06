@@ -1,6 +1,7 @@
 // Utils functions.
 
 let formatDelim = (value, decimalSeparator) => {
+    if (isNaN(value)) return 'N/A';
     let i, j, chain, c, deb, fin, mantissa;
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;

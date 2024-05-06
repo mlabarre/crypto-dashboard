@@ -59,11 +59,13 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
         // token already contains wallet, symbol, start_price and tokens (nb)
         let values = findCrypto(token.symbol, myCryptos);
         if (values != null) {
+            console.log(values.name)
+            console.log(values.quotation)
             token.id = values.id;
             token.name = values.name;
-            token.quotation = values.quotation;
-            token.quotation_usdt = values.quotation_usdt;
-            token.value = values.quotation * token.tokens;
+            token.quotation = values.quotation === undefined ? 'N/A' :  values.quotation;
+            token.quotation_usdt = values.quotation_usdt === undefined ? 'N/A' : values.quotation_usdt;
+            token.value = values.quotation === undefined ? 'N/A' : values.quotation * token.tokens;
             token.start_price_usdt = token.start_price / usdt.value;
             token.quotation_date = values.quotation_date;
             token.last_five_minutes_quotation_date = values.last_five_minutes_quotation_date;
@@ -83,7 +85,7 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
             token.variation_on_one_week = (values.quotation -
                 values.last_week_quotation) * 100 / values.last_week_quotation
             total_start += token.start_price * token.tokens;
-            total_current += (token.quotation ? token.quotation * token.tokens : 0);
+            total_current += (token.quotation === 'N/A' ? 0 : token.quotation * token.tokens);
             token.ico = values.ico_address !== undefined;
         } else {
             token.id = "N/A";

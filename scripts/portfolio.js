@@ -89,7 +89,7 @@ let buildValuePerToken = (tokens) => {
         let t = findTokenInValuesPerToken(tokensValue, tokens[i].token);
         if (t != null) {
             t.value += parseFloat(tokens[i].value);
-            total += parseFloat(tokens[i].value);
+            total += isNaN(tokens[i].value) ? 0 : parseFloat(tokens[i].value);
             t.nb += parseFloat(tokens[i].nb.toFixed(4));
             if (t.wallets.indexOf(tokens[i].wallet) < 0) {
                 t.wallets += "," + tokens[i].wallet;
@@ -102,7 +102,7 @@ let buildValuePerToken = (tokens) => {
                     value: parseFloat(tokens[i].value),
                     wallets: tokens[i].wallet
                 });
-            total += parseFloat(tokens[i].value);
+            total += isNaN(tokens[i].value) ? 0 : parseFloat(tokens[i].value);
         }
     }
     return {
@@ -161,7 +161,7 @@ let getTokenFromObjectList = (list) => {
 
 let removeValueForIco = (symbolsInMyCryptos, list) => {
     for (let item in list) {
-        if (list[item].token !== '' && !symbolsInMyCryptos.includes(list[item].token.toUpperCase())) {
+        if (list[item].token !== '' && isNaN(list[item].value)) {
             list[item].value = "N/A";
         }
     }
@@ -172,7 +172,7 @@ let portfolio = async () => {
     let stock = new Stock();
     let fees = [];
     let transactions = await new MongoHelper().findAllTransactions();
-    let mycryptos = await new MongoHelper().findAllMyCryptos();
+    let mycryptos = await new MongoHelper().findAllMyCryptos(true);
     for (let i = 0; i < transactions.length; i++) {
         await handleSummaryTransaction(transactions[i], stock, fees);
     }
@@ -180,7 +180,7 @@ let portfolio = async () => {
     stock = handleFees(stock, fees);
     valorize(stock.tokens, mycryptos)
     let result = buildValuePerToken(stock.getTokens());
-    let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos());
+    let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
     console.log("symbols", symbols);
     return {
         total: result.total,
