@@ -26,7 +26,7 @@ The project use
 * API coingecko
 * API geckoterminal
 * Graph library of TradingView
-* 
+
 ## Installation
 
 ### Pré-requisites
