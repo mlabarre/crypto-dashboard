@@ -4,10 +4,7 @@
 
 Ce projet me sert à gérer un peu plus efficacement mes transactions en crypto-monnaies.
 
-Je l'ai développé en moins d'une semaine pour mes besoins personnels et le code s'en ressent certainement :)
-Je l'ai agrémenté depuis par d'autres fonctionnalités.
-
-C'est vraiment un outil sans prétention mais s'il peut aider autrui....
+C'est vraiment un outil sans prétention, mais s'il peut aider autrui....
 
 En plus de ce projet, mon autre projet crypto-updater sera nécessaire pour obtenir les derniers cours des cryptos en utilisant les API de coingecko.
 Ce sont les seuls accès à internet.
