@@ -114,3 +114,7 @@
 .button {
     margin: 10px;
 }
+
+.styled-table th, .styled-table td {
+    padding: 4px 5px;
+}
