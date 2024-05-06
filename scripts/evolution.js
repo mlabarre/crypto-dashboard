@@ -83,8 +83,7 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
             token.variation_on_one_week = (values.quotation -
                 values.last_week_quotation) * 100 / values.last_week_quotation
             total_start += token.start_price * token.tokens;
-            total_current += token.quotation * token.tokens;
-            console.log(values.ico)
+            total_current += (token.quotation ? token.quotation * token.tokens : 0);
             token.ico = values.ico_address !== undefined;
         } else {
             token.id = "N/A";

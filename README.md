@@ -25,6 +25,11 @@ Associated with the crypto-updater project, crypto-dashboard allows:
 
 To use it, all you need is a machine with docker installed.
 
+The project use
+* API coingecko
+* API geckoterminal
+* Graph library of TradingView
+* 
 ## Installation
 
 ### Pré-requisites
