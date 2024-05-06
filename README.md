@@ -134,7 +134,7 @@ You create (or copy from this Github project) the docker-compose-images.yml file
 ```
 services:
   dashboard:
-    image: labarrem/crypto-dashboard-ui:latest
+    image: labarrem/crypto-dashboard-ui:stable
     ports:
       - "8080:8080"
     depends_on:
@@ -144,7 +144,7 @@ services:
       - /datas/dashboard/config:/home/node/app/config
     restart: unless-stopped
   updater:
-    image: labarrem/crypto-dashboard-data:latest
+    image: labarrem/crypto-dashboard-data:stable
     depends_on:
       - mongo
     volumes:
