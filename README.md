@@ -285,7 +285,7 @@ Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it acc
 | coingecko_quotation_uri     | API to obtain the quotations of the cryptos used (called once every 5 minutes)                        |
 | geckoterminal_quotation_url | URL to access crypto prices from geckoterminal. Don't change anything.                                |
 | notification_ntfy_url       | ntfy.sh URL for notifications. Don't change anything.                                                 |
-| notification_ntfy_topic     | Key/topic that you declared in the NTFY application                                                   |
+| notification_ntfy_topic     | Key/topic that you declared in the NTFY application (see *Alertes* section below).                    |
 
 ###### Wallets icons
 
@@ -414,7 +414,7 @@ With MACOS, if the docker compose command fails, try without *sudo*.
 
 ## Alertes
 
-It is possible to define alerts on the *Evolution* view.
+It is possible to define alerts on the *Evolution* and *survey* views.
 
 Notifications are sent to any device where the application open-source [ntfy](https://ntfy.sh) is installed (Android, IOS, desktop).
 The necessary settings were discussed above, in the default.json configuration file of crypto-updater.
