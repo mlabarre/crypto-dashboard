@@ -6,6 +6,9 @@ Ce projet me sert à gérer un peu plus efficacement mes transactions en crypto-
 
 C'est vraiment un outil sans prétention, mais s'il peut aider autrui....
 
+Après avoir saisi mon historique depuis 2017 (quel travail !), je peux désormais saisir mes transactions au fur et à mesure
+ce qui simplifie grandement le suivi.
+
 En plus de ce projet, mon autre projet crypto-updater sera nécessaire pour obtenir les derniers cours des cryptos en utilisant les API de coingecko.
 Ce sont les seuls accès à internet.
 

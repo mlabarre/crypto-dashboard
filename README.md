@@ -6,6 +6,9 @@ This project helps me manage my cryptocurrency transactions a little more effici
 
 It's really an unpretentious tool but if it can help others....
 
+After entering my history since 2017 (big job !), I can now enter my transactions as they happen
+which greatly simplifies monitoring.
+
 In addition to this project, my other crypto-updater project will be necessary to obtain the latest crypto prices using the coingecko APIs. These are the only internet access.
 
 In addition, no data such as the address of your wallets is entered. On the other hand, you have the possibility when creating a transaction
