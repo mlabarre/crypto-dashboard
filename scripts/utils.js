@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs/promises");
 
-let formatDelim = (value, decimalSeparator) => {
+const formatDelim = (value, decimalSeparator) => {
     let i, j, chain, c, deb, fin, mantissa = '';
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;
@@ -34,7 +34,7 @@ const dateSorter = (a, b) => {
     return new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime();
 }
 
-let pad = (o) => {
+const pad = (o) => {
     if (o > 9) {
         return o;
     } else {
@@ -44,9 +44,8 @@ let pad = (o) => {
 
 const getDateAsAAAAMMDD = (ts) => {
     let d = new Date(ts);
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
-
 
 let getFormattedDate = (lang, dateAsString) => {
     if (lang === undefined || lang === '') lang = 'fr-FR';

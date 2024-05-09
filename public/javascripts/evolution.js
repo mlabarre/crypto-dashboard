@@ -6,17 +6,17 @@ let tokenAlert = "";
 //
 // ALERTS
 //
-let showAllTokenAlertTitle = () => {
+const showAllTokenAlertTitle = () => {
     $('.all_token').show();
     $('.one_token').hide();
 }
 
-let showOneTokenAlertTitle = () => {
+const showOneTokenAlertTitle = () => {
     $('.all_token').hide();
     $('.one_token').show();
 }
 
-let initAlertsVariables = () => {
+const initAlertsVariables = () => {
     $('#alert_gt_5mn').val('');
     $('#alert_lt_5mn').val('');
     $('#alert_gt_1h').val('');
@@ -27,7 +27,7 @@ let initAlertsVariables = () => {
     $('#alert_lt_1w').val('');
 }
 
-let setAlertsVariables = (alertToken) => {
+const setAlertsVariables = (alertToken) => {
     $('#alert_gt_5mn').val(alertToken.gt5mn < 0 ? '' : alertToken.gt5mn);
     $('#alert_lt_5mn').val(alertToken.lt5mn < 0 ? '' : alertToken.lt5mn);
     $('#alert_gt_1h').val(alertToken.gt1h < 0 ? '' : alertToken.gt1h);
@@ -38,12 +38,12 @@ let setAlertsVariables = (alertToken) => {
     $('#alert_lt_1w').val(alertToken.lt1w < 0 ? '' : alertToken.lt1w);
 }
 
-let hideAlertPanel = () => {
+const hideAlertPanel = () => {
     $('.alerts').hide();
     $('.non-alerts').show();
 }
 
-let initAlerts = () => {
+const initAlerts = () => {
     hideAlertPanel();
     tokenAlert = "";
     globalAlert = false;
@@ -52,7 +52,7 @@ let initAlerts = () => {
 }
 
 // Called by icon click.
-let showAlertPanel = (token) => {
+const showAlertPanel = (token) => {
     tokenAlert = token;
     $('.alerts').show();
     $('.non-alerts').hide();
@@ -73,7 +73,7 @@ let showAlertPanel = (token) => {
     }
 }
 
-let findAlertInArray = (token) => {
+const findAlertInArray = (token) => {
     for (let i = 0; i < allAlerts.length; i++) {
         if (allAlerts[i].token === token) {
             return allAlerts[i];
@@ -81,13 +81,13 @@ let findAlertInArray = (token) => {
     }
 }
 
-let setAlerts = (alerts) => {
+const setAlerts = (alerts) => {
     allAlerts = alerts;
     globalAlertValue = findAlertInArray('_all_tokens_');
     globalAlert = globalAlertValue !== undefined;
 }
 
-let delAlert = () => {
+const delAlert = () => {
     $.ajax(
         {
             url: `/api/alert?token=${tokenAlert}`,
@@ -104,11 +104,11 @@ let delAlert = () => {
     )
 }
 
-let cancelAlert = () => {
+const cancelAlert = () => {
     hideAlertPanel();
 }
 
-let addOrUpdateAlert = () => {
+const addOrUpdateAlert = () => {
     let json = {
         token: tokenAlert,
         gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
@@ -120,7 +120,6 @@ let addOrUpdateAlert = () => {
         gt1w: $('#alert_gt_1w').val() === '' ? -1.0 : parseFloat($('#alert_gt_1w').val()),
         lt1w: $('#alert_lt_1w').val() === '' ? -1.0 : parseFloat($('#alert_lt_1w').val())
     }
-    console.log(JSON.stringify(json))
     $.ajax(
         {
             url: "/api/alert",
@@ -138,7 +137,7 @@ let addOrUpdateAlert = () => {
     )
 }
 
-let setGeneralAlertIconHtml = () => {
+const setGeneralAlertIconHtml = () => {
     let html;
     if (globalAlert === true) {
         html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('_all_tokens_')" ` +
@@ -151,7 +150,7 @@ let setGeneralAlertIconHtml = () => {
     return html;
 }
 
-let buildAlertIconHtml = (token) => {
+const buildAlertIconHtml = (token) => {
     let html;
     if (findAlertInArray(token) !== undefined) {
         html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="showAlertPanel('${token}')" ` +
@@ -171,7 +170,7 @@ let lastSortField = "variation";
 let lastSortDirection = "D";
 let fontSize = 14;
 
-let signRate = (rate) => {
+const signRate = (rate) => {
     if (rate.indexOf("-") >= 0) {
         return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ds) + ' %' + '</span>';
     } else {
@@ -179,12 +178,12 @@ let signRate = (rate) => {
     }
 }
 
-let setBalance = (balance) => {
+const setBalance = (balance) => {
     $('#amount').text(formatDelim(balance.amount.toFixed(2), ds));
     $('#variation').html(signRate(balance.variation.toFixed(2)));
 }
 
-let fill = (data) => {
+const fill = (data) => {
     $('.alerts').hide();
     setAlerts(data.result.alerts);
     setGeneralAlertIconHtml();
@@ -223,7 +222,7 @@ let fill = (data) => {
     changeBellSize();
 }
 
-let sortTable = (sortField) => {
+const sortTable = (sortField) => {
     if (sortField === lastSortField) {
         lastSortDirection = lastSortDirection === "A" ? "D" : "A";
     }
@@ -231,11 +230,11 @@ let sortTable = (sortField) => {
     getDatas();
 }
 
-let showInfo = (coinId) => {
+const showInfo = (coinId) => {
     window.location = `/showTokenInfo?id=${coinId}&returnUrl=/evolution&header=h-evolution`;
 }
 
-let getDatas = () => {
+const getDatas = () => {
     $('#cryptos').find('tbody tr').remove();
     initAlerts();
     $.ajax(
@@ -253,18 +252,18 @@ let getDatas = () => {
     )
 }
 
-let changeBellSize = () => {
+const changeBellSize = () => {
     const bells = document.querySelectorAll('.bell');
     bells.forEach(bell => {
         bell.style.fontSize = '16px';
     });
 }
 
-let changeTableFontSize = () => {
+const changeTableFontSize = () => {
     document.getElementsByClassName("styled-table")[0].style["font-size"] = fontSize + "px";
 }
 
-let changeFontSize = (direction) => {
+const changeFontSize = (direction) => {
     if (direction === "up") {
         fontSize += 1;
     } else {
@@ -277,12 +276,12 @@ let changeFontSize = (direction) => {
     changeBellSize();
 }
 
-let reload = () => {
+const reload = () => {
     getDatas();
     setDate();
 }
 
-let init = () => {
+const init = () => {
     reload();
     fontSize = getEvolutionFontSize();
     changeTableFontSize();
@@ -299,6 +298,3 @@ let init = () => {
 includeHTML("h-evolution").then(() => {
     handleDarkMode(document.getElementById('darkmode'));
 });
-
-
-

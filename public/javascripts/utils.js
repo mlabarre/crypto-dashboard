@@ -1,6 +1,6 @@
 // Utils functions.
 
-let formatDelim = (value, decimalSeparator) => {
+const formatDelim = (value, decimalSeparator) => {
     if (isNaN(value)) return 'N/A';
     let i, j, chain, c, deb, fin, mantissa;
     fin = value.indexOf(".");
@@ -22,7 +22,7 @@ let formatDelim = (value, decimalSeparator) => {
 }
 
 // From W3schools.com
-let includeHTML = async (classTag) => {
+const includeHTML = async (classTag) => {
     return new Promise((resolve) => {
         let z, i, element, file, xhttp;
         z = document.getElementsByTagName("*");
@@ -55,7 +55,7 @@ let includeHTML = async (classTag) => {
 
 }
 
-let getIconsHtml = (wallet) => {
+const getIconsHtml = (wallet) => {
     if (wallet) {
         let icons = wallet.split(",");
         let result = "";
@@ -69,7 +69,7 @@ let getIconsHtml = (wallet) => {
     }
 }
 
-let getInfoIconHtml = (coin) => {
+const getInfoIconHtml = (coin) => {
     if (coin && coin.id !== 'N/A') {
         return `<img class="icon" title="Info ${coin.name}" ` +
             ` src="images/rond-info.png" alt="Info ${coin.name}" ` +
@@ -79,7 +79,7 @@ let getInfoIconHtml = (coin) => {
     }
 }
 
-let getFormattedDate = (lang, dateAsString) => {
+const getFormattedDate = (lang, dateAsString) => {
     if (lang === undefined || lang === '') lang = 'fr-FR';
     let date = (dateAsString === undefined) ? new Date() : new Date(dateAsString);
     return date.toLocaleString(lang, {
@@ -93,7 +93,7 @@ let getFormattedDate = (lang, dateAsString) => {
     });
 }
 
-let pad = (o) => {
+const pad = (o) => {
     if (o > 9) {
         return o;
     } else {

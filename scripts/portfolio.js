@@ -1,17 +1,17 @@
 const config = require('config');
-const MongoHelper = require('./mongo-helper');
+const MongoHelper = require('./classes/mongo-helper');
 const utils = require('../scripts/utils')
 const {Stock} = require('./classes/portfolio')
 
-let handleSummaryPurchaseTransaction = async (tr) => {
+const handleSummaryPurchaseTransaction = async (tr) => {
     return {"token": tr.symbol, "wallet": tr.wallet, "nb": tr.tokens}
 }
 
-let handleSummarySaleTransaction = async (tr) => {
+const handleSummarySaleTransaction = async (tr) => {
     return {"token": tr.symbol, "wallet": tr.wallet, "nb": tr.tokens * -1}
 }
 
-let handleSummarySwapTransaction = async (tr, fees) => {
+const handleSummarySwapTransaction = async (tr, fees) => {
     if (tr.fee > 0 && tr.feeCurrency !== config.get('fiat_currency').toUpperCase() &&
         tr.feeCurrency !== tr.outputSymbol) {
         fees.push({symbol: tr.feeCurrency, nb: tr.fee, wallet: tr.wallet});
@@ -20,7 +20,7 @@ let handleSummarySwapTransaction = async (tr, fees) => {
         {"token": tr.inputSymbol, "wallet": tr.wallet, "nb": tr.inputTokens}]
 }
 
-let handleSummarySendTransaction = async (tr, fees) => {
+const handleSummarySendTransaction = async (tr, fees) => {
     if (tr.fee > 0 && tr.feeCurrency !== config.get('fiat_currency').toUpperCase() &&
         tr.feeCurrency !== tr.symbol) {
         fees.push({symbol: tr.feeCurrency, nb: tr.fee, wallet: tr.sendWallet});
@@ -29,7 +29,7 @@ let handleSummarySendTransaction = async (tr, fees) => {
         {"token": tr.symbol, "wallet": tr.receiveWallet, "nb": tr.receiveTokens}]
 }
 
-let handleSummaryTransaction = async (transaction, stock, fees) => {
+const handleSummaryTransaction = async (transaction, stock, fees) => {
     if (transaction.type === "purchase") {
         let result = await handleSummaryPurchaseTransaction(transaction);
         stock.addOrUpdateSimple(result);
@@ -45,7 +45,7 @@ let handleSummaryTransaction = async (transaction, stock, fees) => {
     }
 }
 
-let removeAllWithZeroTokens = async (stock) => {
+const removeAllWithZeroTokens = async (stock) => {
     let tokens = stock.getTokens();
     let cleanTokens = [];
     for (let i = 0; i < tokens.length; i++) {
@@ -57,7 +57,7 @@ let removeAllWithZeroTokens = async (stock) => {
     return stock;
 }
 
-let getCryptoQuotation = (symbol, cryptos) => {
+const getCryptoQuotation = (symbol, cryptos) => {
     let res = findCrypto(symbol, cryptos);
     if (res != null) {
         return res.quotation;
@@ -66,14 +66,14 @@ let getCryptoQuotation = (symbol, cryptos) => {
     }
 }
 
-let valorize = (tokens, mycryptos) => {
+const valorize = (tokens, mycryptos) => {
     for (let i = 0; i < tokens.length; i++) {
         tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos))
     }
     return tokens;
 }
 
-let findTokenInValuesPerToken = (tokensValue, token) => {
+const findTokenInValuesPerToken = (tokensValue, token) => {
     let foundIndex = tokensValue.findIndex(x => x.token === token);
     if (foundIndex >= 0) {
         return tokensValue[foundIndex]
@@ -82,7 +82,7 @@ let findTokenInValuesPerToken = (tokensValue, token) => {
     }
 }
 
-let buildValuePerToken = (tokens) => {
+const buildValuePerToken = (tokens) => {
     let tokensValue = [];
     let total = 0.00;
     for (let i = 0; i < tokens.length; i++) {
@@ -111,7 +111,7 @@ let buildValuePerToken = (tokens) => {
     };
 }
 
-let handleFees = (stock, fees) => {
+const handleFees = (stock, fees) => {
     let tokens = stock.getTokens();
     for (let i = 0; i < fees.length; i++) {
         let index = tokens.findIndex(x => x.token === fees[i].symbol && x.wallet === fees[i].wallet);
@@ -122,7 +122,7 @@ let handleFees = (stock, fees) => {
     return stock;
 }
 
-let setTotalPerWallet = (tokens) => {
+const setTotalPerWallet = (tokens) => {
     let tokensWithTotal = [];
     let totalWallet = 0.00;
     if (tokens.length > 0) {
@@ -142,7 +142,7 @@ let setTotalPerWallet = (tokens) => {
     return tokensWithTotal;
 }
 
-let findCrypto = (symbol, myCryptos) => {
+const findCrypto = (symbol, myCryptos) => {
     for (let i = 0; i < myCryptos.length; i++) {
         if (myCryptos[i].symbol.toUpperCase() === symbol.toUpperCase()) {
             return myCryptos[i];
@@ -151,7 +151,7 @@ let findCrypto = (symbol, myCryptos) => {
     return null;
 }
 
-let getTokenFromObjectList = (list) => {
+const getTokenFromObjectList = (list) => {
     let symbols = [];
     for (let item in list) {
         symbols.push(list[item].symbol.toUpperCase());
@@ -159,7 +159,7 @@ let getTokenFromObjectList = (list) => {
     return symbols;
 }
 
-let removeValueForIco = (symbolsInMyCryptos, list) => {
+const removeValueForIco = (symbolsInMyCryptos, list) => {
     for (let item in list) {
         if (list[item].token !== '' && isNaN(list[item].value)) {
             list[item].value = "N/A";
@@ -168,7 +168,7 @@ let removeValueForIco = (symbolsInMyCryptos, list) => {
     return list;
 }
 
-let portfolio = async () => {
+const portfolio = async () => {
     let stock = new Stock();
     let fees = [];
     let transactions = await new MongoHelper().findAllTransactions();
@@ -181,7 +181,6 @@ let portfolio = async () => {
     valorize(stock.tokens, mycryptos)
     let result = buildValuePerToken(stock.getTokens());
     let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
-    console.log("symbols", symbols);
     return {
         total: result.total,
         perWallet: removeValueForIco(symbols, setTotalPerWallet(stock.getTokens())),

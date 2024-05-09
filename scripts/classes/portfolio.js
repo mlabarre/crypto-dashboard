@@ -1,9 +1,10 @@
 const config = require('config')
 const utils = require('../utils')
-const MongoHelper = require('../mongo-helper')
+const MongoHelper = require('./mongo-helper')
 const {MongoAPIError} = require("mongodb");
 
 class Stock {
+
     tokens;
 
     constructor() {
@@ -38,6 +39,7 @@ class Stock {
 
 
 class TokenAmount {
+
     purchaseDate;
     purchasePrice;
     number;
@@ -52,6 +54,7 @@ class TokenAmount {
 }
 
 class Token {
+
     symbol;
     tokensAmount;
 
@@ -83,6 +86,7 @@ class Token {
 }
 
 class WalletToken {
+
     wallet;
     tokens;
 
@@ -94,6 +98,7 @@ class WalletToken {
 }
 
 class Wallet {
+
     walletsTokens;
 
     constructor() {

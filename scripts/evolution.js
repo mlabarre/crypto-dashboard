@@ -1,8 +1,8 @@
-const MongoHelper = require('./mongo-helper');
+const MongoHelper = require('./classes/mongo-helper');
 const utils = require('../scripts/utils')
 const {Wallet} = require('./classes/portfolio')
 
-let handleEvolutionTransaction = async (wallet, tr) => {
+const handleEvolutionTransaction = async (wallet, tr) => {
     if (tr.type === "purchase") {
         return await wallet.buyToken(tr.wallet, tr.symbol, tr.tokens, tr.date, tr.quotation);
     } else if (tr.type === "sale") {
@@ -16,7 +16,7 @@ let handleEvolutionTransaction = async (wallet, tr) => {
     }
 }
 
-let buildEvolution = (walletsTokens) => {
+const buildEvolution = (walletsTokens) => {
     let records = [];
     for (let i = 0; i < walletsTokens.length; i++) {
         let walletTokens = walletsTokens[i];
@@ -40,7 +40,7 @@ let buildEvolution = (walletsTokens) => {
     return records;
 }
 
-let findCrypto = (symbol, myCryptos) => {
+const findCrypto = (symbol, myCryptos) => {
     for (let i = 0; i < myCryptos.length; i++) {
         if (myCryptos[i].symbol.toUpperCase() === symbol.toUpperCase()) {
             return myCryptos[i];
@@ -49,7 +49,34 @@ let findCrypto = (symbol, myCryptos) => {
     return null;
 }
 
-let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
+const valorizeToken = (token, values, usdt) => {
+    token.id = values.id;
+    token.name = values.name;
+    token.quotation = values.quotation === undefined ? 'N/A' : values.quotation;
+    token.quotation_usdt = values.quotation_usdt === undefined ? 'N/A' : values.quotation_usdt;
+    token.value = values.quotation === undefined ? 'N/A' : values.quotation * token.tokens;
+    token.start_price_usdt = token.start_price / usdt.value;
+    token.quotation_date = values.quotation_date;
+    token.last_five_minutes_quotation_date = values.last_five_minutes_quotation_date;
+    token.last_five_minutes_quotation = values.last_five_minutes_quotation;
+    token.last_one_hour_quotation_date = values.last_one_hour_quotation_date;
+    token.last_one_hour_quotation = values.last_one_hour_quotation;
+    token.last_day_quotation_date = values.last_day_quotation_date;
+    token.last_day_quotation = values.last_day_quotation;
+    // variations
+    token.variation = (values.quotation - token.start_price) * 100 / token.start_price;
+    token.variation_on_five_minutes = (values.quotation -
+        values.last_five_minutes_quotation) * 100 / values.last_five_minutes_quotation;
+    token.variation_on_one_hour = (values.quotation -
+        values.last_one_hour_quotation) * 100 / values.last_one_hour_quotation;
+    token.variation_on_one_day = (values.quotation -
+        values.last_day_quotation) * 100 / values.last_day_quotation;
+    token.variation_on_one_week = (values.quotation -
+        values.last_week_quotation) * 100 / values.last_week_quotation;
+    token.ico = values.ico_address !== undefined;
+}
+
+const updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
     let myCryptos = await new MongoHelper().findAllMyCryptos(true);
     let total_start = 0.00;
     let total_current = 0.00;
@@ -59,34 +86,9 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
         // token already contains wallet, symbol, start_price and tokens (nb)
         let values = findCrypto(token.symbol, myCryptos);
         if (values != null) {
-            console.log(values.name)
-            console.log(values.quotation)
-            token.id = values.id;
-            token.name = values.name;
-            token.quotation = values.quotation === undefined ? 'N/A' :  values.quotation;
-            token.quotation_usdt = values.quotation_usdt === undefined ? 'N/A' : values.quotation_usdt;
-            token.value = values.quotation === undefined ? 'N/A' : values.quotation * token.tokens;
-            token.start_price_usdt = token.start_price / usdt.value;
-            token.quotation_date = values.quotation_date;
-            token.last_five_minutes_quotation_date = values.last_five_minutes_quotation_date;
-            token.last_five_minutes_quotation = values.last_five_minutes_quotation;
-            token.last_one_hour_quotation_date = values.last_one_hour_quotation_date;
-            token.last_one_hour_quotation = values.last_one_hour_quotation;
-            token.last_day_quotation_date = values.last_day_quotation_date;
-            token.last_day_quotation = values.last_day_quotation;
-            // variations
-            token.variation = (values.quotation - token.start_price) * 100 / token.start_price;
-            token.variation_on_five_minutes = (values.quotation -
-                values.last_five_minutes_quotation) * 100 / values.last_five_minutes_quotation
-            token.variation_on_one_hour = (values.quotation -
-                values.last_one_hour_quotation) * 100 / values.last_one_hour_quotation
-            token.variation_on_one_day = (values.quotation -
-                values.last_day_quotation) * 100 / values.last_day_quotation
-            token.variation_on_one_week = (values.quotation -
-                values.last_week_quotation) * 100 / values.last_week_quotation
+            valorizeToken(token, values, usdt);
             total_start += token.start_price * token.tokens;
             total_current += (token.quotation === 'N/A' ? 0 : token.quotation * token.tokens);
-            token.ico = values.ico_address !== undefined;
         } else {
             token.id = "N/A";
         }
@@ -103,7 +105,7 @@ let updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
     };
 }
 
-evolution = async (sortField = "symbol", sortDirection = "A") => {
+const evolution = async (sortField = "symbol", sortDirection = "A") => {
     let wallet = new Wallet();
     let transactions = await new MongoHelper().findAllTransactions();
     for (let i = 0; i < transactions.length; i++) {
@@ -111,17 +113,16 @@ evolution = async (sortField = "symbol", sortDirection = "A") => {
     }
     let allTokens = buildEvolution(wallet.walletsTokens);
     let alerts = await new MongoHelper().getAlerts();
-    console.log(alerts)
     let balanceTokensResult = await updateWithCurrentValues(allTokens, sortField, sortDirection);
     balanceTokensResult.result.alerts = alerts;
     return balanceTokensResult;
 }
 
-addAlert = async (data) => {
+const addAlert = async (data) => {
     return await new MongoHelper().addAlert(data);
 }
 
-removeAlert = async (data) => {
+const removeAlert = async (data) => {
     return await new MongoHelper().delAlert(data)
 }
 

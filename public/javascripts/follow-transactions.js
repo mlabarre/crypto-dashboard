@@ -1,6 +1,6 @@
 let sortDirection = "A";
 
-let fill = (data) => {
+const fill = (data) => {
     $.each(data, (line) => {
         let row = `<tr><td style="display:none">${data[line].id}</td><td>${data[line].msg}</td>`;
         if (data[line].chainUrl !== null) {
@@ -15,11 +15,11 @@ let fill = (data) => {
     })
 }
 
-let showTransaction = (url) => {
+const showTransaction = (url) => {
     window.open(url, '_blank');
 }
 
-let getMessageFromRow = (id) => {
+const getMessageFromRow = (id) => {
     let t = document.getElementById('transactions');
     let n = t.rows.length;
     let i, s = null, tr, td;
@@ -35,7 +35,7 @@ let getMessageFromRow = (id) => {
     return '';
 }
 
-let deleteTransaction = (id) => {
+const deleteTransaction = (id) => {
     if (window.confirm(`${delTranMsg}: ${getMessageFromRow(id)}`)) {
         $.ajax(
             {
@@ -52,12 +52,12 @@ let deleteTransaction = (id) => {
     }
 }
 
-let editTransaction = (id) => {
+const editTransaction = (id) => {
     document.location.href = `/updateTransaction?id=${id}&lang=fr&sortDirection=${sortDirection}&token=${document.getElementById("token").value}` +
         `&wallet=${document.getElementById("wallet").value}`;
 }
 
-let getDatas = () => {
+const getDatas = () => {
     $('#transactions').find('tbody tr').remove()
     $.ajax(
         {
@@ -75,7 +75,7 @@ let getDatas = () => {
         })
 }
 
-let fillCombo = (id, data) => {
+const fillCombo = (id, data) => {
     let select = document.querySelector('#' + id);
     for (let i = 0; i < data.length; i++) {
         let option = document.createElement("option");
@@ -85,10 +85,11 @@ let fillCombo = (id, data) => {
     }
 }
 
-let fillComboSymbols = (symbols) => {
+const fillComboSymbols = (symbols) => {
     fillCombo("token", symbols);
 }
-let setSymbols = () => {
+
+const setSymbols = () => {
     $.ajax(
         {
             type: "GET",
@@ -102,10 +103,12 @@ let setSymbols = () => {
             $('#message').text('error');
         })
 }
-let fillComboWallets = (wallets) => {
+
+const fillComboWallets = (wallets) => {
     fillCombo("wallet", wallets);
 }
-let setWallets = () => {
+
+const setWallets = () => {
     $.ajax(
         {
             type: "GET",
@@ -120,7 +123,7 @@ let setWallets = () => {
         })
 }
 
-let init = () => {
+const init = () => {
     $('#headerCol').on('click', () => {
         sortDirection = (sortDirection === "A" ? "D" : "A");
         getDatas();
@@ -133,12 +136,12 @@ let init = () => {
     $('#downloadCsv').on('click', () => {
         let token = $('#token').val();
         let wallet = $('#wallet').val();
-        window.open(`/api/getTransactionsAsCsv?wallet=${wallet}&token=${token}`);
+        window.open(`/api/get-transactions-as-csv?wallet=${wallet}&token=${token}`);
     });
     $('#downloadJson').on('click', () => {
         let token = $('#token').val();
         let wallet = $('#wallet').val();
-        window.open(`/api/getTransactionsAsJson?wallet=${wallet}&token=${token}`);
+        window.open(`/api/get-transactions-as-json?wallet=${wallet}&token=${token}`);
     });
     $('#token').on('change', () => {
             getDatas();
@@ -161,6 +164,3 @@ let init = () => {
 includeHTML("h-follow").then(() => {
     handleDarkMode(document.getElementById('darkmode'));
 });
-
-
-

@@ -6,17 +6,17 @@ let globalAlertValue;
 let allAlerts = [];
 let tokenAlert = "";
 
-let showAllTokenAlertTitle = () => {
+const showAllTokenAlertTitle = () => {
     $('.all_token').show();
     $('.one_token').hide();
 }
 
-let showOneTokenAlertTitle = () => {
+const showOneTokenAlertTitle = () => {
     $('.all_token').hide();
     $('.one_token').show();
 }
 
-let initAlertsVariables = () => {
+const initAlertsVariables = () => {
     $('#alert_gt_5mn').val('');
     $('#alert_lt_5mn').val('');
     $('#alert_gt_1h').val('');
@@ -27,7 +27,7 @@ let initAlertsVariables = () => {
     $('#alert_lt_1w').val('');
 }
 
-let setAlertsVariables = (alertToken) => {
+const setAlertsVariables = (alertToken) => {
     $('#alert_gt_5mn').val(alertToken.gt5mn < 0 ? '' : alertToken.gt5mn);
     $('#alert_lt_5mn').val(alertToken.lt5mn < 0 ? '' : alertToken.lt5mn);
     $('#alert_gt_1h').val(alertToken.gt1h < 0 ? '' : alertToken.gt1h);
@@ -38,13 +38,13 @@ let setAlertsVariables = (alertToken) => {
     $('#alert_lt_1w').val(alertToken.lt1w < 0 ? '' : alertToken.lt1w);
 }
 
-let showAlertPanel = () => {
+const showAlertPanel = () => {
     $('.alerts').show();
     $('.evolution').hide();
     $('.cryptos').hide();
 }
 
-let initAlerts = () => {
+const initAlerts = () => {
     showEvolutionPanel();
     tokenAlert = "";
     globalAlert = false;
@@ -53,7 +53,7 @@ let initAlerts = () => {
 }
 
 // Called by icon click.
-let handleAlertPanel = (token) => {
+const handleAlertPanel = (token) => {
     tokenAlert = token;
     showAlertPanel();
     $('#alertDel').hide();
@@ -80,7 +80,7 @@ let handleAlertPanel = (token) => {
     }
 }
 
-let findAlertInArray = (token) => {
+const findAlertInArray = (token) => {
     for (let i = 0; i < allAlerts.length; i++) {
         if (allAlerts[i].token === token) {
             return allAlerts[i];
@@ -88,13 +88,13 @@ let findAlertInArray = (token) => {
     }
 }
 
-let setAlerts = (alerts) => {
+const setAlerts = (alerts) => {
     allAlerts = alerts;
     globalAlertValue = findAlertInArray('_all_tokens_');
     globalAlert = globalAlertValue !== undefined;
 }
 
-let delAlert = () => {
+const delAlert = () => {
     $.ajax(
         {
             url: `/api/alert-survey?token=${tokenAlert}`,
@@ -111,11 +111,11 @@ let delAlert = () => {
     )
 }
 
-let cancelAlert = () => {
+const cancelAlert = () => {
     showEvolutionPanel();
 }
 
-let addOrUpdateAlert = () => {
+const addOrUpdateAlert = () => {
     let json = {
         token: tokenAlert,
         gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
@@ -145,14 +145,14 @@ let addOrUpdateAlert = () => {
     )
 }
 
-let setGeneralAlertIconHtml = () => {
+const setGeneralAlertIconHtml = () => {
     let html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="handleAlertPanel('_all_tokens_')" ` +
         `title=${titleGenAlert}></i>`;
     $('.generalAlert').html(html);
     return html;
 }
 
-let buildAlertIconHtml = (token) => {
+const buildAlertIconHtml = (token) => {
     let html;
     if (findAlertInArray(token) !== undefined) {
         html = `<i class="fa-solid fa-bell alert clickable bell orange" onclick="handleAlertPanel('${token}')" ` +
@@ -171,13 +171,13 @@ let buildAlertIconHtml = (token) => {
 let lastSortField = "variation";
 let lastSortDirection = "D";
 
-let showEvolutionPanel = () => {
+const showEvolutionPanel = () => {
     $('.alerts').hide();
     $('.evolution').show();
     $('.cryptos').hide();
 }
 
-let signRate = (rate) => {
+const signRate = (rate) => {
     if (rate.indexOf("-") >= 0) {
         return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ds) + ' %' + '</span>';
     } else {
@@ -185,7 +185,7 @@ let signRate = (rate) => {
     }
 }
 
-let fill = (data) => {
+const fill = (data) => {
     $('.alerts').hide();
     setAlerts(data.result.alerts);
     surveyCryptosList = data.result.tokens;
@@ -220,11 +220,11 @@ let fill = (data) => {
     })
 }
 
-let showInfo = (coinId) => {
+const showInfo = (coinId) => {
     window.location = `/showTokenInfo?id=${coinId}&returnUrl=/survey&header=h-survey`;
 }
 
-let sortTable = (sortField) => {
+const sortTable = (sortField) => {
     if (sortField === lastSortField) {
         lastSortDirection = lastSortDirection === "A" ? "D" : "A";
     }
@@ -232,7 +232,7 @@ let sortTable = (sortField) => {
     getDatas();
 }
 
-let getDatas = () => {
+const getDatas = () => {
     $('#cryptos').find('tbody tr').remove();
     initAlerts();
     $.ajax(
@@ -258,28 +258,28 @@ let availableCryptoShown = false;
 let surveyCryptosList = null;
 let availableCryptosList = null;
 
-let showMessage = () => {
+const showMessage = () => {
     $('.message').css('color', 'white');
 }
 
-let hideMessage = () => {
+const hideMessage = () => {
     $('.message').css('color', 'black');
 }
 
-let showCryptosPanel = () => {
+const showCryptosPanel = () => {
     $('.alerts').hide();
     $('.evolution').hide();
     $('.cryptos').show();
 }
 
-let addAvailableCryptosRow = async (row) => {
+const addAvailableCryptosRow = async (row) => {
     let r = `<tr><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td>` +
         `<td class="action" onclick="addSurveyCrypto(this)">` +
         `<span class="indic-plus" title="${msgAddAvailable}">+</span></td></tr>`
     $('#availableCryptosTable').append(r);
 }
 
-let removeSurveyCryptosFromAvailableCryptos = async () => {
+const removeSurveyCryptosFromAvailableCryptos = async () => {
     for (let i = 0; i < surveyCryptosList.length; i++) {
         let index = getIndexInArray(availableCryptosList, surveyCryptosList[i]);
         availableCryptosList.splice(index, 1);
@@ -287,7 +287,7 @@ let removeSurveyCryptosFromAvailableCryptos = async () => {
     return availableCryptosList;
 }
 
-let buildAvailableCryptos = async () => {
+const buildAvailableCryptos = async () => {
     showMessage();
     $('#availableCryptosTable').find('tbody tr').remove();
     availableCryptosList = await getAvailableCryptos();
@@ -301,12 +301,12 @@ let buildAvailableCryptos = async () => {
     hideMessage();
 }
 
-let closeCryptos = () => {
+const closeCryptos = () => {
     stopRefresh();
     getDatas();
 }
 
-let addSurveyCrypto = (o) => {
+const addSurveyCrypto = (o) => {
     let tr = o.closest("tr");
     let children = tr.children;
     let crypto = {"id": children[0].innerText, "symbol": children[1].innerText, "name": children[2].innerText}
@@ -317,7 +317,7 @@ let addSurveyCrypto = (o) => {
 
 }
 
-let addToCollection = (crypto) => {
+const addToCollection = (crypto) => {
     return $.ajax({
         type: "POST",
         url: "/api/add-to-cryptos-survey",
@@ -326,7 +326,7 @@ let addToCollection = (crypto) => {
     })
 }
 
-let getAvailableCryptos = async () => {
+const getAvailableCryptos = async () => {
     return $.ajax({
         type: "GET",
         url: "/api/get-available-cryptos",
@@ -334,7 +334,7 @@ let getAvailableCryptos = async () => {
     })
 }
 
-let addCrypto = () => {
+const addCrypto = () => {
     showCryptosPanel();
     stopRefresh();
     buildAvailableCryptos().then(() => {
@@ -342,7 +342,7 @@ let addCrypto = () => {
     })
 }
 
-let delCrypto = (id) => {
+const delCrypto = (id) => {
     $.ajax({
         type: "DELETE",
         url: `/api/delete-crypto-survey?id=${id}`,
@@ -352,12 +352,12 @@ let delCrypto = (id) => {
     })
 }
 
-let findInFields = (criteria, child) => {
+const findInFields = (criteria, child) => {
     let from = `${child[0].textContent} ${child[1].textContent} ${child[2].textContent}`;
     return from.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
 }
 
-let doFilter = (type) => {
+const doFilter = (type) => {
     let criteria = $('#criteria').val();
     $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
         if (type === "all") {
@@ -368,7 +368,7 @@ let doFilter = (type) => {
     })
 }
 
-let resetFilter = () => {
+const resetFilter = () => {
     $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
         raw.hidden = false;
     })
@@ -379,23 +379,23 @@ let resetFilter = () => {
 // GLOBAL
 //
 
-let reload = () => {
+const reload = () => {
     getDatas();
     setDate();
 }
 
 let intervalId = null;
 
-let startRefresh = () => {
+const startRefresh = () => {
     intervalId = setInterval(reload, parseInt(refresh) * 1000);
 }
 
-let stopRefresh = () => {
+const stopRefresh = () => {
     clearInterval(intervalId);
     intervalId = null;
 }
 
-let init = () => {
+const init = () => {
     reload();
     startRefresh();
     return 1;

@@ -123,7 +123,8 @@
                         <div class="input">
                             <div>
                                 <label for="swapOutputTokenId">Token </label>
-                                <select class="selectSymbolNode select-right" id="swapOutputTokenId" name="swapOutputTokenId">
+                                <select class="selectSymbolNode select-right" id="swapOutputTokenId"
+                                        name="swapOutputTokenId">
                                     <option value="">Choisir</option>
                                 </select>
                             </div>
@@ -152,7 +153,8 @@
                         <div class="input">
                             <div>
                                 <label for="swapInputTokenId">Token </label>
-                                <select class="selectSymbolNode select-right" id="swapInputTokenId" name="swapInputTokenId">
+                                <select class="selectSymbolNode select-right" id="swapInputTokenId"
+                                        name="swapInputTokenId">
                                     <option value="">Choisir</option>
                                 </select>
                             </div>
@@ -262,10 +264,10 @@
                     <select id="chainExplorerOpt" name="chainExplorerOpt" class="tx-sel">
                         <option value="">Choisir</option>
                         <% chainExplorers.forEach( function (chain) { %>
-                        <option value="<%= chain.name %>">
-                            <%= chain.name %>
-                        </option>
-                        <% });%>
+                            <option value="<%= chain.name %>">
+                                <%= chain.name %>
+                            </option>
+                        <% }); %>
                     </select>
                     <label for="txId"># transaction </label>
                     <input class="tx-chain-tx" type="text" id="txIdOpt" name="txIdOpt" value="<%= txIdOpt %>">

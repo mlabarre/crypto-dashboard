@@ -1,8 +1,8 @@
 const config = require('config');
-const MongoHelper = require('./mongo-helper')
+const MongoHelper = require('./classes/mongo-helper')
 const utils = require('./utils')
 
-let formatDate = (dateAsString) => {
+const formatDate = (dateAsString) => {
     if (dateAsString) {
         return utils.getFormattedDate(config.get('language'), dateAsString);
     } else {
@@ -10,12 +10,12 @@ let formatDate = (dateAsString) => {
     }
 }
 
-let fd = (v, unit) => {
+const fd = (v, unit) => {
     return v === null || v === undefined ? "N/A" :
         `${utils.formatDelim(v.toString(), config.get('decimal_separator'))} ${unit}`;
 }
 
-let getCoinInfo = async (request) => {
+const getCoinInfo = async (request) => {
     let coin;
     if (request.query.header === "h-survey") {
         coin = await new MongoHelper().findCryptoSurvey(request.query.id);
@@ -62,12 +62,12 @@ let getCoinInfo = async (request) => {
     }
 }
 
-let getTs = (d) => {
+const getTs = (d) => {
     return Math.trunc(d / 1000);
 }
 
-let getPrecision = (price) => {
-    return Math.min(8, (price.toString().indexOf('.')>=0) ? price.toString().length - price.toString().indexOf('.')-1 : 0);
+const getPrecision = (price) => {
+    return Math.min(8, (price.toString().indexOf('.') >= 0) ? price.toString().length - price.toString().indexOf('.') - 1 : 0);
 }
 /**
  * Fortmat graph data
@@ -77,7 +77,7 @@ let getPrecision = (price) => {
  * @param data.total_volumes Volumes array
  * @returns {{total_volumes: *[], prices: *[]}}
  */
-let formatGraphData = (data) => {
+const formatGraphData = (data) => {
     let prices = [];
     let volume = [];
     let green = '#26a69a';
@@ -92,19 +92,22 @@ let formatGraphData = (data) => {
     }
     for (let i = 0; i < data.prices.length; i++) {
         prices.push({time: getTs(data.prices[i][0]), value: data.prices[i][1]})
-        volume.push({time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1],
-        color: (data.prices[i][1] >= previousPrice) ? green : red});
+        volume.push({
+            time: getTs(data.total_volumes[i][0]), value: data.total_volumes[i][1],
+            color: (data.prices[i][1] >= previousPrice) ? green : red
+        });
         previousPrice = data.prices[i][1];
         maxPrecision = Math.max(maxPrecision, getPrecision(previousPrice))
     }
     return {
         "precision": maxPrecision,
-        "minMove": parseFloat(1/Math.pow(10,maxPrecision)).toFixed(maxPrecision),
+        "minMove": parseFloat(1 / Math.pow(10, maxPrecision)).toFixed(maxPrecision),
         "prices": prices,
         "total_volumes": volume
     }
 }
-let getGraphDataFromApi = async (tokenId, period) => {
+
+const getGraphDataFromApi = async (tokenId, period) => {
     let url = config.get('coingecko_chart_api').replace('TOKEN', tokenId)
         .replace('CURRENCY', config.get('coingecko_currency'))
         .replace('DAYS', (period === 'H' ? "90" : "365"));
@@ -117,7 +120,6 @@ let getGraphDataFromApi = async (tokenId, period) => {
         return {"errorGecko": true};
     }
 }
-
 
 exports.getCoinInfo = getCoinInfo
 exports.getGraphDataFromApi = getGraphDataFromApi

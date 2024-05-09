@@ -1,19 +1,19 @@
 const config = require('config');
-const MongoHelper = require('./mongo-helper');
+const MongoHelper = require('./classes/mongo-helper');
 const utils = require('./utils');
 const fs = require('fs');
 
-let getAllTransactionsOnDate = async (direction) => {
+const getAllTransactionsOnDate = async (direction) => {
     return await new MongoHelper().findAllTransactionsSortedOnDate(direction);
 }
 
-let handleTransaction = async (transaction, token, wallet) => {
+const handleTransaction = (transaction, token, wallet) => {
     if (transaction.type === "purchase") {
         if ((wallet === "" || transaction.wallet === wallet) && (transaction.symbol === token || token === "")) {
             return true;
         }
     } else if (transaction.type === "sale") {
-        if ((wallet === "" || transaction.wallet === wallet) && transaction.symbol === token || token === "") {
+        if ((wallet === "" || transaction.wallet === wallet) && (transaction.symbol === token || token === "")) {
             return true;
         }
     } else if (transaction.type === "swap") {
@@ -28,7 +28,7 @@ let handleTransaction = async (transaction, token, wallet) => {
     return false;
 }
 
-let getExplorerUrl = (chainName, tx) => {
+const getExplorerUrl = (chainName, tx) => {
     if (config.has('chain_explorers')) {
         let chainIndex = config.get('chain_explorers').findIndex(chain => chain.name === chainName);
         if (chainIndex >= 0) {
@@ -38,7 +38,7 @@ let getExplorerUrl = (chainName, tx) => {
     return null;
 }
 
-let interpretFlow = (lang, t, wallet) => {
+const interpretFlow = (lang, t, wallet) => {
     let flow;
     if (lang === "en") {
         flow = interpretFlowEn(t, wallet)
@@ -52,11 +52,20 @@ let interpretFlow = (lang, t, wallet) => {
     return flow;
 }
 
-let fd = (v) => {
-    return utils.formatDelim(v.toFixed(2), config.get('decimal_separator'))
+const resolveDec = (v) => {
+    let s = v.toFixed(8).split('.')[1];
+    for (let dec = 7; dec >= 0; dec--) {
+        if (s[dec] !== '0') {
+            return dec + 1;
+        }
+    }
+    return 2;
+}
+const fd = (v) => {
+    return utils.formatDelim(v.toFixed(resolveDec(v)), config.get('decimal_separator'))
 }
 
-let interpretFlowFr = (t, wallet) => {
+const interpretFlowFr = (t, wallet) => {
     let comment = (t.comment) ? t.comment : "";
     let d = t.date.toLocaleString('fr-FR')
     let sup = "";
@@ -67,14 +76,14 @@ let interpretFlowFr = (t, wallet) => {
     if (t.type === "purchase") {
         return {
             id: t._id,
-            msg: `${d} : Achat de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup} avec ${fd(t.feeInFiat)} ${fiat} de ` +
-                `frais. ${comment}`
+            msg: `${d} : Achat de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup} avec ` +
+                `${fd(t.feeInFiat)} ${fiat} de frais. ${comment}`
         };
     } else if (t.type === "sale") {
         return {
             id: t._id,
-            msg: `${d} : Vente de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup}avec ${fd(t.feeInFiat)} ${fiat} de ` +
-                `frais. ${comment}`
+            msg: `${d} : Vente de ${fd(t.tokens)} ${t.symbol} quoté à ${fd(t.quotation)} ${fiat} ${sup}avec ` +
+                `${fd(t.feeInFiat)} ${fiat} de frais. ${comment}`
         };
     } else if (t.type === "swap") {
         return {
@@ -107,7 +116,7 @@ let interpretFlowFr = (t, wallet) => {
     }
 }
 
-let interpretFlowEn = (t, wallet) => {
+const interpretFlowEn = (t, wallet) => {
     let comment = (t.comment) ? t.comment : "";
     let d = t.date.toLocaleString('en-EN')
     let sup = "";
@@ -118,14 +127,14 @@ let interpretFlowEn = (t, wallet) => {
     if (t.type === "purchase") {
         return {
             id: t._id,
-            msg: `${d} : Purchase ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup} with fee of ${fd(t.feeInFiat)} ${fiat}` +
-                `${comment}`
+            msg: `${d} : Purchase ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup} ` +
+                `with fee of ${fd(t.feeInFiat)} ${fiat}. ${comment}`
         };
     } else if (t.type === "sale") {
         return {
             id: t._id,
-            msg: `${d} : Sale ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup}with fee of ${fd(t.feeInFiat)} ${fiat}` +
-                `${comment}`
+            msg: `${d} : Sale ${fd(t.tokens)} ${t.symbol} quoted at ${fd(t.quotation)} ${fiat} ${sup}` +
+                `with fee of ${fd(t.feeInFiat)} ${fiat}. ${comment}`
         };
     } else if (t.type === "swap") {
         return {
@@ -158,7 +167,7 @@ let interpretFlowEn = (t, wallet) => {
 }
 
 
-let getAllSymbols = async () => {
+const getAllSymbols = async () => {
     let triple = await new MongoHelper().findAllSymbolsInTransactions();
     let symbols = [];
     await triple.forEach((t) => {
@@ -175,7 +184,7 @@ let getAllSymbols = async () => {
     return symbols.sort();
 }
 
-let getAllWallets = async () => {
+const getAllWallets = async () => {
     let triple = await new MongoHelper().findAllWallets();
     let wallets = [];
     await triple.forEach((t) => {
@@ -194,11 +203,12 @@ let getAllWallets = async () => {
 /*
  Follow transactions on a specified token and a specified wallet
  */
-let follow = async (lang, token, wallet, sortDirection, noInterpret) => {
+const follow = async (lang, token, wallet, sortDirection, noInterpret) => {
     let actions = [];
     let transactions = await getAllTransactionsOnDate(sortDirection === "A" ? 1 : -1);
     for (let i = 0; i < transactions.length; i++) {
-        if (await handleTransaction(transactions[i], token.toUpperCase(), wallet) === true) {
+        let res = handleTransaction(transactions[i], token.toUpperCase(), wallet);
+        if (res === true) {
             if (noInterpret === undefined) {
                 actions.push(interpretFlow(lang, transactions[i], wallet));
             } else {
@@ -209,22 +219,22 @@ let follow = async (lang, token, wallet, sortDirection, noInterpret) => {
     return actions
 }
 
-let writeField = (line, value, first) => {
+const writeField = (line, value, first) => {
     if (value !== undefined) {
-        line += (((first) ? '' : ';' ) + value);
+        line += (((first) ? '' : ';') + value);
     } else {
         line += ';'
     }
     return line;
 }
 
-let getCriteria = (request) => {
+const getCriteria = (request) => {
     let wallet = request.query.wallet === undefined || request.query.wallet === '' ? '' : request.query.wallet;
     let token = request.query.token === undefined || request.query.token === '' ? '' : request.query.token;
-    return { wallet: wallet, token: token };
+    return {wallet: wallet, token: token};
 }
 
-let getTransactionsAsCsvFile = async (request) => {
+const getTransactionsAsCsvFile = async (request) => {
     let names = await new MongoHelper().getAllTransactionFieldsName();
     delete names["_id"];
     let criteria = getCriteria(request);
@@ -232,36 +242,36 @@ let getTransactionsAsCsvFile = async (request) => {
     let csvFile = fs.openSync(csvFileName, "a");
     let pos = fs.writeSync(csvFile, `${names.join(';')}\n`, 0);
     let transactions = await follow('', criteria.token, criteria.wallet, 'A', true);
-    for (let posTran=0; posTran<transactions.length; posTran++) {
+    for (let posTran = 0; posTran < transactions.length; posTran++) {
         delete transactions[posTran]._id;
         let line = '';
         let first = true;
-        for (let posName=0; posName<names.length; ++posName) {
+        for (let posName = 0; posName < names.length; ++posName) {
             line = writeField(line, transactions[posTran][names[posName]], first);
-            first= false;
+            first = false;
         }
         pos = fs.writeSync(csvFile, `${line}\n`, pos);
     }
     fs.closeSync(csvFile);
     return {
-        csv : csvFileName,
+        csv: csvFileName,
         name: "transactions.csv"
     }
 }
 
-let getTransactionsAsJsonFile = async (request) => {
+const getTransactionsAsJsonFile = async (request) => {
     let jsonFileName = `/tmp/transactions-${new Date().getTime()}.json`;
     let criteria = getCriteria(request);
     let jsonFile = fs.openSync(jsonFileName, "a");
     let transactions = await follow('', criteria.token, criteria.wallet, 'A', true);
     let pos = 0;
-    for (let posTran=0; posTran<transactions.length; posTran++) {
+    for (let posTran = 0; posTran < transactions.length; posTran++) {
         delete transactions[posTran]._id;
         pos = fs.writeSync(jsonFile, `${JSON.stringify(transactions[posTran])}\n`, pos);
     }
     fs.closeSync(jsonFile);
     return {
-        csv : jsonFileName,
+        csv: jsonFileName,
         name: "transactions.json"
     }
 }

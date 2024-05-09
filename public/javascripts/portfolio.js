@@ -1,4 +1,4 @@
-let buildRowPerWallet = (crypto, first) => {
+const buildRowPerWallet = (crypto, first) => {
     let row;
     if (crypto.token === "") { // Total
         row = `<tr><td></td><td></td><td class="num total">Total</td>` +
@@ -13,7 +13,7 @@ let buildRowPerWallet = (crypto, first) => {
     $('#cryptosPerWallet').append(row);
 }
 
-let buildRowPerToken = (crypto) => {
+const buildRowPerToken = (crypto) => {
     let wallets = crypto.wallets.split(",");
     let images = "";
     for (let i = 0; i < wallets.length; i++) {
@@ -26,7 +26,7 @@ let buildRowPerToken = (crypto) => {
     $('#cryptosPerToken').append(row);
 }
 
-let display = (jsonData) => {
+const display = (jsonData) => {
     $('#cryptosPerWallet').find('tbody tr').remove()
     $('#cryptosPerToken').find('tbody tr').remove()
     let currentWallet = "";
@@ -45,7 +45,8 @@ let display = (jsonData) => {
         buildRowPerToken(crypto);
     }
 }
-let getTokens = () => {
+
+const getTokens = () => {
     $.ajax(
         {
             type: "GET",
@@ -61,17 +62,16 @@ let getTokens = () => {
         })
 }
 
-includeHTML("h-portfolio").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});
-
-let reload = () => {
+const reload = () => {
     getTokens();
     setDate();
 }
 
-let init = () => {
+const init = () => {
     reload();
     setInterval(reload, parseInt(refresh) * 1000);
 }
 
+includeHTML("h-portfolio").then(() => {
+    handleDarkMode(document.getElementById('darkmode'));
+});

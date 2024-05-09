@@ -1,8 +1,4 @@
-includeHTML("<%= data.header %>").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});
-
-let buildGraphs = (data, period) => {
+const buildGraphs = (data, period) => {
     $('#graph').empty();
     if (period === 'H') {
         $('#graph-title').text(graphTitleHour);
@@ -84,10 +80,10 @@ let buildGraphs = (data, period) => {
     chart.timeScale().fitContent();
 }
 
-let showGraph = (period) => {
+const showGraph = (period) => {
     $.ajax({
         method: 'GET',
-        url: `/api/getTokenGraph?tokenId=${tokenId}&period=${period}`
+        url: `/api/get-token-graph?tokenId=${tokenId}&period=${period}`
     }).done((data) => {
         buildGraphs(data, period);
     }).fail((err) => {
@@ -95,7 +91,7 @@ let showGraph = (period) => {
     })
 }
 
-let init = () => {
+const init = () => {
     $('#returnButton').on('click', () => {
         window.location = returnUrl;
     })
@@ -106,3 +102,7 @@ let init = () => {
         showGraph('D');
     })
 }
+
+includeHTML("<%= data.header %>").then(() => {
+    handleDarkMode(document.getElementById('darkmode'));
+});

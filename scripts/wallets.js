@@ -1,7 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp')
 const path = require('path')
-const MongoHelper = require('./mongo-helper')
+const MongoHelper = require('./classes/mongo-helper')
 
 /**
  * @param request HTTP request
@@ -9,7 +9,7 @@ const MongoHelper = require('./mongo-helper')
  * @param request.file Icon file.
  * @param response
  */
-let addWallet = (request, response) => {
+const addWallet = (request, response) => {
     const upload = multer({limits: {fileSize: 4000000}}).single('walletIcon');
     upload(request, response, async function (err) {
         if (err || request.file === undefined) {
@@ -29,7 +29,7 @@ let addWallet = (request, response) => {
     })
 }
 
-let getWallets = async () => {
+const getWallets = async () => {
     return await new MongoHelper().findAllWalletsName();
 }
 

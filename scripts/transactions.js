@@ -1,5 +1,5 @@
 const config = require('config');
-const MongoHelper = require('./mongo-helper');
+const MongoHelper = require('./classes/mongo-helper');
 const utils = require('../scripts/utils');
 
 let buildDate = (date, time) => {
@@ -25,7 +25,7 @@ let buildDate = (date, time) => {
  * @param body.txIdOpt Transaction id if any.
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
-let preparePurchaseData = (body) => {
+const preparePurchaseData = (body) => {
     return {
         "type": body.type,
         "date": buildDate(body.purchaseDate, body.purchaseTime),
@@ -54,7 +54,7 @@ let preparePurchaseData = (body) => {
  * @param body.txIdOpt Transaction id if any.
  * @returns {{date: Date, symbol: string, wallet: *, feeInFiat: number, tokens: number, comment, type, quotation: number}}
  */
-let prepareSaleData = (body) => {
+const prepareSaleData = (body) => {
     return {
         "type": body.type,
         "date": buildDate(body.saleDate, body.saleTime),
@@ -90,7 +90,7 @@ let prepareSaleData = (body) => {
  * @param body.txIdOpt Transaction id if any.
  * @returns {{date: Date, wallet: *, inputSymbol: string, inputTokenQuotation: number, outputSymbol: string, fee: number, feeCurrency: *, inputTokens: number, type, outputTokenQuotationCurrency: *, inputTokenQuotationCurrency: *, comment, outputTokenQuotation: number, outputTokens: number}}
  */
-let prepareSwapData = (body) => {
+const prepareSwapData = (body) => {
     return {
         "type": body.type,
         "date": buildDate(body.swapDate, body.swapTime),
@@ -130,7 +130,7 @@ let prepareSwapData = (body) => {
  * @param body
  * @returns {{date: Date, symbol: string, sendTokens: number, receiveWallet: (number|*), fee: number, feeCurrency: *, feeInFiat: number, comment, type, sendWallet: (number|*), receiveTokens: number}}
  */
-let prepareSendData = (body) => {
+const prepareSendData = (body) => {
     return {
         "type": body.type,
         "date": buildDate(body.sendDate, body.sendTime),
@@ -148,7 +148,7 @@ let prepareSendData = (body) => {
     }
 }
 
-let prepareData = (body) => {
+const prepareData = (body) => {
     if (body.type === "purchase") {
         return preparePurchaseData(body);
     } else if (body.type === "sale") {
@@ -160,7 +160,7 @@ let prepareData = (body) => {
     }
 }
 
-async function handleTransactionInsert(body) {
+const handleTransactionInsert = async (body) => {
     let jsonObj = prepareData(body);
     return await new MongoHelper().insertTransaction(jsonObj);
 }
@@ -168,7 +168,7 @@ async function handleTransactionInsert(body) {
 /* **********
    DELETE
    **********/
-let handleTransactionSuppression = async (id) => {
+const handleTransactionSuppression = async (id) => {
     await new MongoHelper().deleteTransaction(id);
     return "ok";
 }
@@ -176,7 +176,7 @@ let handleTransactionSuppression = async (id) => {
 /* **********
    UPDATE
    **********/
-let getBodyValuesForCreation = () => {
+const getBodyValuesForCreation = () => {
     return {
         type: "purchase",
         purchaseDate: "",
@@ -222,7 +222,7 @@ let getBodyValuesForCreation = () => {
     }
 }
 
-let updateFieldForTransactionUpdatePurchase = (t, b) => {
+const updateFieldForTransactionUpdatePurchase = (t, b) => {
     b.type = "purchase";
     b.purchaseDate = utils.getDateFromDate(t.date);
     b.purchaseTime = utils.getTimeFromDate(t.date);
@@ -237,7 +237,7 @@ let updateFieldForTransactionUpdatePurchase = (t, b) => {
     return b;
 }
 
-let updateFieldForTransactionUpdateSale = (t, b) => {
+const updateFieldForTransactionUpdateSale = (t, b) => {
     b.type = "sale";
     b.saleDate = utils.getDateFromDate(t.date);
     b.saleTime = utils.getTimeFromDate(t.date);
@@ -252,7 +252,7 @@ let updateFieldForTransactionUpdateSale = (t, b) => {
     return b;
 }
 
-let updateFieldForTransactionUpdateSwap = (t, b) => {
+const updateFieldForTransactionUpdateSwap = (t, b) => {
     b.type = "swap";
     b.swapDate = utils.getDateFromDate(t.date);
     b.swapTime = utils.getTimeFromDate(t.date);
@@ -273,7 +273,7 @@ let updateFieldForTransactionUpdateSwap = (t, b) => {
     return b;
 }
 
-let updateFieldForTransactionUpdateSend = (t, b) => {
+const updateFieldForTransactionUpdateSend = (t, b) => {
     b.type = "send";
     b.sendDate = utils.getDateFromDate(t.date);
     b.sendTime = utils.getTimeFromDate(t.date);
@@ -290,7 +290,8 @@ let updateFieldForTransactionUpdateSend = (t, b) => {
     b.txIdOpt = t.txIdOpt;
     return b;
 }
-let updateFieldForTransactionUpdate = (transaction, dataForBody) => {
+
+const updateFieldForTransactionUpdate = (transaction, dataForBody) => {
     if (transaction.type === "purchase") {
         return updateFieldForTransactionUpdatePurchase(transaction, dataForBody);
     } else if (transaction.type === "sale") {
@@ -302,7 +303,7 @@ let updateFieldForTransactionUpdate = (transaction, dataForBody) => {
     }
 }
 
-let getChainExplorers = () => {
+const getChainExplorers = () => {
     if (config.has('chain_explorers')) {
         return config.get('chain_explorers')
     } else {
@@ -310,7 +311,7 @@ let getChainExplorers = () => {
     }
 }
 
-let prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) => {
+const prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) => {
     let transaction = await new MongoHelper().findTransaction(id);
     let initData = getBodyValuesForCreation();
     initData = updateFieldForTransactionUpdate(transaction, initData)
@@ -324,7 +325,7 @@ let prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) =>
     return initData;
 }
 
-let prepareTransactionCreation = async () => {
+const prepareTransactionCreation = async () => {
     let initData = getBodyValuesForCreation();
     initData.trid = "";
     initData.fiat_symbol = config.get('fiat_symbol');
@@ -336,11 +337,12 @@ let prepareTransactionCreation = async () => {
     return initData;
 }
 
-let handleTransactionUpdate = async (transactionId, body) => {
+const handleTransactionUpdate = async (transactionId, body) => {
     let jsonObj = prepareData(body);
     return await new MongoHelper().updateTransaction(transactionId, jsonObj);
 
 }
+
 exports.handleTransactionInsert = handleTransactionInsert
 exports.handleTransactionUpdate = handleTransactionUpdate
 exports.handleTransactionSuppression = handleTransactionSuppression

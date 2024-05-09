@@ -4,18 +4,18 @@ let myCryptosList = null;
 
 let availableCryptosList = null;
 
-let getTokenIconHtml = (row) => {
+const getTokenIconHtml = (row) => {
     if (row.hasOwnProperty('info') && row.info.hasOwnProperty('image')) {
         return `<img class="icon" title="${row.name}" ` +
             ` src="${row.info.image}" alt="${row.name}">`;
     } else return '';
 }
 
-let showInfo = (coinId) => {
+const showInfo = (coinId) => {
     window.location = `/showTokenInfo?id=${coinId}&returnUrl=/cryptos&header=h-cryptos`;
 }
 
-let buildMyCryptos = () => {
+const buildMyCryptos = () => {
     $('#myCryptosTable').find('tbody tr').remove();
     myCryptosList.sort(sortArrayOnSymbol)
     for (let i = 0; i < myCryptosList.length; i++) {
@@ -23,7 +23,7 @@ let buildMyCryptos = () => {
     }
 }
 
-let getMyCryptos = async () => {
+const getMyCryptos = async () => {
     return $.ajax({
         type: "GET",
         url: "/api/get-my-cryptos?ico=yes",
@@ -31,12 +31,12 @@ let getMyCryptos = async () => {
     })
 }
 
-let findInFields = (criteria, child) => {
+const findInFields = (criteria, child) => {
     let from = `${child[1].textContent} ${child[2].textContent} ${child[3].textContent}`;
     return from.toLowerCase().indexOf(criteria.toLowerCase()) < 0;
 }
 
-let doFilter = (type) => {
+const doFilter = (type) => {
     let criteria = $('#criteria').val();
     $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
         if (type === "all") {
@@ -47,14 +47,14 @@ let doFilter = (type) => {
     })
 }
 
-let resetFilter = () => {
+const resetFilter = () => {
     $('#availableCryptosTable').find('tbody').find('tr').each((r, raw) => {
         raw.hidden = false;
     })
     $('#criteria').val("");
 }
 
-let removeMyCryptosFromAvailableCryptos = async () => {
+const removeMyCryptosFromAvailableCryptos = async () => {
     for (let i = 0; i < myCryptosList.length; i++) {
         let index = getIndexInArray(availableCryptosList, myCryptosList[i]);
         availableCryptosList.splice(index, 1);
@@ -62,15 +62,15 @@ let removeMyCryptosFromAvailableCryptos = async () => {
     return availableCryptosList;
 }
 
-let showMessage = () => {
+const showMessage = () => {
     $('.message').css('color', 'white');
 }
 
-let hideMessage = () => {
+const hideMessage = () => {
     $('.message').css('color', 'black');
 }
 
-let buildAvailableCryptos = async () => {
+const buildAvailableCryptos = async () => {
     showMessage();
     availableCryptosList = await getAvailableCryptos();
     $('#availableCryptosTable').find('tbody tr').remove();
@@ -84,7 +84,7 @@ let buildAvailableCryptos = async () => {
     hideMessage();
 }
 
-let getAvailableCryptos = async () => {
+const getAvailableCryptos = async () => {
     return $.ajax({
         type: "GET",
         url: "/api/get-available-cryptos",
@@ -92,7 +92,7 @@ let getAvailableCryptos = async () => {
     })
 }
 
-let addToCollection = (crypto) => {
+const addToCollection = (crypto) => {
     return $.ajax({
         type: "POST",
         url: "/api/add-to-my-cryptos",
@@ -101,7 +101,7 @@ let addToCollection = (crypto) => {
     })
 }
 
-let removeFromCollection = (crypto) => {
+const removeFromCollection = (crypto) => {
     return $.ajax({
         type: "DELETE",
         url: `/api/delete-from-my-cryptos?id=${crypto.id}&symbol=${crypto.symbol}&name=${crypto.name}`,
@@ -109,21 +109,21 @@ let removeFromCollection = (crypto) => {
     })
 }
 
-let addMyCryptosRow = (row) => {
+const addMyCryptosRow = (row) => {
     let infoHtml = getInfoIconHtml(row);
     let r = `<tr><td>${infoHtml}</td><td>${getTokenIconHtml(row)}</td><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
         `onclick="suppressMyCrypto(this)"><span class="indic-moins" title="${titleMinusAdd}">-</span></td></tr>`
     $('#myCryptosTable').append(r);
 }
 
-let addAvailableCryptosRow = async (row) => {
+const addAvailableCryptosRow = async (row) => {
     let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus" ` +
         `title="${titleAvailableAdd}">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td>` +
         `<td id="name">${row.name}</td></tr>`
     $('#availableCryptosTable').append(r);
 }
 
-let changeButtonList = (o) => {
+const changeButtonList = (o) => {
     if (availableCryptoShown === true) {
         o.value = titleButtonShow;
         availableCryptoShown = false;
@@ -137,7 +137,7 @@ let changeButtonList = (o) => {
     }
 }
 
-let addMyCrypto = (o) => {
+const addMyCrypto = (o) => {
     let children = o.closest("tr").children;
     let crypto = {"id": children[1].innerText, "symbol": children[2].innerText, "name": children[3].innerText}
     let index = getIndexInArray(availableCryptosList, crypto);
@@ -157,7 +157,7 @@ let addMyCrypto = (o) => {
     }
 }
 
-let suppressMyCrypto = (o) => {
+const suppressMyCrypto = (o) => {
     let children = o.closest("tr").children;
     let crypto = {"id": children[2].innerText, "symbol": children[3].innerText, "name": children[4].innerText}
     if (crypto.id !== 'N/A') {
@@ -188,20 +188,20 @@ let suppressMyCrypto = (o) => {
     }
 }
 
-let showNotListed = () => {
+const showNotListed = () => {
     $('.ico-crypto-container').show();
     $('#buttonList').hide();
     $('#buttonNotListed').hide();
     $('.available-cryptos-container').hide();
 }
 
-let cancelIco = () => {
+const cancelIco = () => {
     $('.ico-crypto-container').hide();
     $('#buttonList').show();
     $('#buttonNotListed').show();
 }
 
-let addNotListed = () => {
+const addNotListed = () => {
     if ($('#symbol').val() === '' || $('#name').val() === '') {
         alert(msgFieldsRequired);
         return;
@@ -222,11 +222,7 @@ let addNotListed = () => {
     });
 }
 
-includeHTML("h-cryptos").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});
-
-let init = () => {
+const init = () => {
     $('.available-cryptos-container').hide();
     $('.ico-crypto-container').hide();
     getMyCryptos().then((data) => {
@@ -239,7 +235,6 @@ let init = () => {
     return 1;
 }
 
-
-
-
-
+includeHTML("h-cryptos").then(() => {
+    handleDarkMode(document.getElementById('darkmode'));
+});

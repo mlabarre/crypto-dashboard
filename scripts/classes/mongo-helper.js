@@ -1,9 +1,9 @@
 const config = require('config');
+const path = require('path');
+const fs = require('fs/promises');
 const MongoClient = require('mongodb').MongoClient;
 const {ObjectId} = require('mongodb');
-const fs = require('fs/promises');
-const utils = require('./utils');
-const path = require('path');
+const utils = require('../utils');
 
 class MongoHelper {
 
@@ -38,6 +38,9 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    // transactions
+
     insertTransaction = async (doc) => {
         try {
             await this.init();
@@ -81,21 +84,70 @@ class MongoHelper {
         }
     }
 
-    findAllSymbolsInMyCryptos = async (ico) => {
-        let criteria = (ico === undefined) ? {ico_address: {$exists: false}} : {};
-        try {
-            await this.init();
-            return await this.dbo.collection("my-cryptos").find(criteria).project({_id: 0, symbol: 1}).toArray();
-        } finally {
-            await this.mongoClient.close();
-        }
-    }
-
     findAllWallets = async () => {
         try {
             await this.init();
             return await this.dbo.collection("transactions").find({},
                 {"wallet": 1, "sendWallet": 1, "receiveWallet": 1}).toArray();
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    deleteTransaction = async (id) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("transactions").deleteOne({_id: new ObjectId(id)})
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    findTransaction = async (id) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("transactions").findOne({_id: new ObjectId(id)})
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    updateTransaction = async (id, transaction) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("transactions").findOneAndReplace({_id: new ObjectId(id)}, transaction)
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
+    getAllTransactionFieldsName = async () => {
+        let allNames = [];
+        try {
+            await this.init();
+            let cursor = await this.dbo.collection("transactions").find({});
+            while (await cursor.hasNext()) {
+                let transaction = await cursor.next();
+                let names = Object.keys(transaction);
+                for (let i = 0; i < names.length; i++) {
+                    if (names[i] !== '_id') {
+                        utils.storeUniqueInArray(allNames, names[i]);
+                    }
+                }
+            }
+        } finally {
+            await this.mongoClient.close();
+        }
+        return allNames;
+    }
+
+    // my-cryptos
+
+    findAllSymbolsInMyCryptos = async (ico) => {
+        let criteria = (ico === undefined) ? {ico_address: {$exists: false}} : {};
+        try {
+            await this.init();
+            return await this.dbo.collection("my-cryptos").find(criteria).project({_id: 0, symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -140,6 +192,8 @@ class MongoHelper {
         }
     }
 
+    // coingecko
+
     findAllAvailableCryptos = async () => {
         try {
             await this.init();
@@ -148,6 +202,8 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    // wallets
 
     addWallet = async (wallet) => {
         try {
@@ -167,6 +223,8 @@ class MongoHelper {
         }
     }
 
+    // params
+
     getUSDTValueInFiat = async () => {
         try {
             await this.init();
@@ -176,32 +234,7 @@ class MongoHelper {
         }
     }
 
-    deleteTransaction = async (id) => {
-        try {
-            await this.init();
-            return await this.dbo.collection("transactions").deleteOne({_id: new ObjectId(id)})
-        } finally {
-            await this.mongoClient.close();
-        }
-    }
-
-    findTransaction = async (id) => {
-        try {
-            await this.init();
-            return await this.dbo.collection("transactions").findOne({_id: new ObjectId(id)})
-        } finally {
-            await this.mongoClient.close();
-        }
-    }
-
-    updateTransaction = async (id, transaction) => {
-        try {
-            await this.init();
-            return await this.dbo.collection("transactions").findOneAndReplace({_id: new ObjectId(id)}, transaction)
-        } finally {
-            await this.mongoClient.close();
-        }
-    }
+    // alerts
 
     getAlerts = async () => {
         try {
@@ -228,6 +261,9 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    // alert-survey
+
     addAlertSurvey = async (doc) => {
         try {
             await this.init();
@@ -252,6 +288,9 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    // cryptos-survey
+
     getCryptosSurvey = async () => {
         try {
             await this.init();
@@ -284,25 +323,27 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
-    getAllTransactionFieldsName = async () => {
-        let allNames = [];
+
+    // platforms-history
+
+    addOrReplacePlatformsHistory = async (doc) => {
         try {
             await this.init();
-            let cursor = await this.dbo.collection("transactions").find({});
-            while (await cursor.hasNext()) {
-                let transaction = await cursor.next();
-                let names = Object.keys(transaction);
-                for (let i = 0; i < names.length; i++) {
-                    if (names[i] !== '_id') {
-                        utils.storeUniqueInArray(allNames, names[i]);
-                    }
-                }
-            }
+            return await this.dbo.collection("platforms-history").findOneAndReplace({platform: doc.platform}, doc, {upsert: true});
         } finally {
             await this.mongoClient.close();
         }
-        return allNames;
     }
+
+    findPlatformsHistory = async (platform) => {
+        try {
+            await this.init();
+            return await this.dbo.collection("platforms-history").findOne({platform: platform});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
 }
 
 module.exports = MongoHelper;

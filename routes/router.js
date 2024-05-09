@@ -10,15 +10,25 @@ const wallets = require('../scripts/wallets')
 const survey = require('../scripts/survey')
 const tokenInfo = require('../scripts/token-info')
 const {prepareTransactionCreation, prepareTransactionUpdate} = require("../scripts/transactions");
+const platforms = require('../scripts/platforms');
 
-/* GET home page. */
 router
-    /* View rending */
+    /*
+     Views
+     */
     .get('/', function (request, response, next) {
         response.render(config.get('language') + '/index', {title: 'Cryptos'});
     })
     .get('/home', function (request, response, next) {
         response.render(config.get('language') + '/index', {title: 'Cryptos'});
+    })
+    .get('/cryptos', function (request, response, next) {
+        cryptos.getNetworksFromGeckoterminal().then((networks) => {
+            response.render(config.get('language') + '/cryptos', networks);
+        })
+    })
+    .get('/wallets', function (request, response, next) {
+        response.render(config.get('language') + '/wallets', {});
     })
     .get('/addTransaction', function (request, response, next) {
         prepareTransactionCreation().then((options) => {
@@ -30,21 +40,6 @@ router
             request.query.token, request.query.wallet, request.query.lang).then((options) => {
             response.render(config.get('language') + '/add-or-update-transaction', options);
         })
-    })
-    .get('/portfolio', function (request, response, next) {
-        response.render(config.get('language') + '/portfolio',
-            {
-                fiat_symbol: config.get('fiat_symbol'),
-                decimal_separator: config.get('decimal_separator'),
-                refresh: config.get('refresh_in_seconds')
-            });
-    })
-    .get('/evolution', function (request, response, next) {
-        response.render(config.get('language') + '/evolution', {
-            fiat_symbol: config.get('fiat_symbol'),
-            decimal_separator: config.get('decimal_separator'),
-            refresh: config.get('refresh_in_seconds')
-        });
     })
     .get('/followTransactions', function (request, response, next) {
         if (request.query.lang !== undefined && request.query.lang !== '') {
@@ -63,13 +58,20 @@ router
             });
         }
     })
-    .get('/cryptos', function (request, response, next) {
-        cryptos.getNetworksFromGeckoterminal().then( (networks) => {
-            response.render(config.get('language') + '/cryptos', networks);
-        })
+    .get('/portfolio', function (request, response, next) {
+        response.render(config.get('language') + '/portfolio',
+            {
+                fiat_symbol: config.get('fiat_symbol'),
+                decimal_separator: config.get('decimal_separator'),
+                refresh: config.get('refresh_in_seconds')
+            });
     })
-    .get('/wallets', function (request, response, next) {
-        response.render(config.get('language') + '/wallets', {});
+    .get('/evolution', function (request, response, next) {
+        response.render(config.get('language') + '/evolution', {
+            fiat_symbol: config.get('fiat_symbol'),
+            decimal_separator: config.get('decimal_separator'),
+            refresh: config.get('refresh_in_seconds')
+        });
     })
     .get('/survey', function (request, response, next) {
         response.render(config.get('language') + '/survey', {
@@ -84,7 +86,9 @@ router
         })
 
     })
-    /* Ajax calls */
+    /*
+    Ajax calls
+    */
     .post('/api/add-transaction', function (request, response, next) {
         console.log("request body", request.body);
         transactionHandler.handleTransactionInsert(request.body).then((data) => {
@@ -196,31 +200,65 @@ router
             response.send({});
         })
     })
-    .get('/api/getTransactionsAsCsv', function (request, response, next) {
-        followTransactions.getTransactionsAsCsvFile(request).then( (data) => {
+    .get('/api/get-transactions-as-csv', function (request, response, next) {
+        followTransactions.getTransactionsAsCsvFile(request).then((data) => {
             response.download(data.csv, data.name, (error) => {
                 console.log(response.headersSent);
                 console.log(error)
             });
         })
     })
-    .get('/api/getTransactionsAsJson', function (request, response, next) {
-        followTransactions.getTransactionsAsJsonFile(request).then( (data) => {
+    .get('/api/get-transactions-as-json', function (request, response, next) {
+        followTransactions.getTransactionsAsJsonFile(request).then((data) => {
             response.download(data.csv, data.name, (error) => {
                 console.log(response.headersSent);
                 console.log(error)
             });
         })
     })
-    .get('/api/getTokenGraph', function (request, response, next) {
+    .get('/api/get-token-graph', function (request, response, next) {
         let tokenId = request.query.tokenId;
         let period = request.query.period;
-        tokenInfo.getGraphDataFromApi(tokenId, period).then( (data) => {
+        tokenInfo.getGraphDataFromApi(tokenId, period).then((data) => {
             if (data.errorGecko === true) {
                 response.send({}).status(400);
             } else {
                 response.send(data);
             }
+        })
+    })
+    // Platforms APIs
+    // 1. Binance
+    .get('/api/binance/last', function (request, response, next) {
+        platforms.getBinanceTransactionsForLast90Days().then((data) => {
+            response.send(data);
+        })
+    })
+    .get('/api/binance/all', function (request, response, next) {
+        platforms.getBinanceTransactionsFrom2010().then((data) => {
+            response.send(data);
+        })
+    })
+    // 2. Coinbase
+    .get('/api/coinbase/accounts', function (request, response, next) {
+        platforms.getCoinbaseAccounts().then((data) => {
+            response.send(data);
+        })
+    })
+    .get('/api/coinbase/transactions', function (request, response, next) {
+        platforms.getCoinbaseTransactions().then((data) => {
+            response.send(data);
+        })
+    })
+    .get('/api/coinbase/addresses', function (request, response, next) {
+        platforms.getCoinbaseAddresses().then((data) => {
+            response.send(data);
+        })
+    })
+    // 3. Bitpanda
+    .get('/api/bitpanda/transactions', function (request, response, next) {
+        platforms.getBitpandaTransactions().then((data) => {
+            response.send(data);
         })
     })
 

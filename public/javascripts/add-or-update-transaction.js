@@ -1,4 +1,4 @@
-let setCurrentDate = (type) => {
+const setCurrentDate = (type) => {
     let d = new Date();
     if (type === "purchase") {
         document.querySelector('#purchaseDate').value = getDateFromDate(d);
@@ -15,7 +15,7 @@ let setCurrentDate = (type) => {
     }
 }
 
-let buildSelectWallets = async (data) => {
+const buildSelectWallets = async (data) => {
     let options = "";
     $.each(data, (item) => {
         options += `<option value="${data[item].wallet}">${data[item].wallet}</option>`;
@@ -24,7 +24,7 @@ let buildSelectWallets = async (data) => {
     $('.selectWalletNode').append(options);
 }
 
-let buildSelectSymbols = async (data) => {
+const buildSelectSymbols = async (data) => {
     let options = "";
     $.each(data, (item) => {
         options += `<option value="${data[item].symbol.toUpperCase()}">${data[item].symbol.toUpperCase()}</option>`;
@@ -33,18 +33,14 @@ let buildSelectSymbols = async (data) => {
     $('.selectSymbolNode').append(options);
 }
 
-let hideAll = () => {
+const hideAll = () => {
     $('#purchaseContainer').hide();
     $('#saleContainer').hide();
     $('#swapContainer').hide();
     $('#sendContainer').hide();
 }
 
-includeHTML("h-input").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});
-
-let getWalletsName = () => {
+const getWalletsName = () => {
     $.ajax(
         {
             type: "GET",
@@ -61,7 +57,7 @@ let getWalletsName = () => {
         })
 }
 
-let getMySymbols = () => {
+const getMySymbols = () => {
     $.ajax(
         {
             type: "GET",
@@ -78,7 +74,7 @@ let getMySymbols = () => {
         })
 }
 
-let setSelectedInComboWallets = (selectId, value) => {
+const setSelectedInComboWallets = (selectId, value) => {
     let index = wallets.indexOf(value);
     try {
         if (index >= 0) {
@@ -92,7 +88,7 @@ let setSelectedInComboWallets = (selectId, value) => {
     }
 }
 
-let setSelectedInComboSymbols = (selectId, value) => {
+const setSelectedInComboSymbols = (selectId, value) => {
     let index = symbols.indexOf(value);
     try {
         if (index >= 0) {
@@ -104,13 +100,13 @@ let setSelectedInComboSymbols = (selectId, value) => {
     }
 }
 
-let selectType = () => {
+const selectType = () => {
     document.querySelector('#type').value = typeTransaction;
     const element = document.querySelector('#type')
     element.dispatchEvent(new Event("change"));
 }
 
-let initializeCombosWallet = () => {
+const initializeCombosWallet = () => {
     if (typeTransaction === "purchase") {
         setSelectedInComboWallets("purchaseWallet", purchaseWallet);
     } else if (typeTransaction === "sale") {
@@ -123,7 +119,7 @@ let initializeCombosWallet = () => {
     }
 }
 
-let initializeCombosToken = () => {
+const initializeCombosToken = () => {
     if (typeTransaction === "purchase") {
         setSelectedInComboSymbols("purchaseTokenId", purchaseTokenId);
     } else if (typeTransaction === "sale") {
@@ -136,7 +132,7 @@ let initializeCombosToken = () => {
     }
 }
 
-let validateTokenId = (prefix) => {
+const validateTokenId = (prefix) => {
     let msg = '';
     let res = false;
     if (prefix === "purchase" || prefix === "sale" || prefix === "send") {
@@ -153,7 +149,7 @@ let validateTokenId = (prefix) => {
     return msg;
 }
 
-let coherenceControl = () => {
+const coherenceControl = () => {
     let msg = "";
     // SWAP : tokens must differ
     if ($('#type').val() === "swap") {
@@ -178,7 +174,7 @@ let coherenceControl = () => {
     return msg;
 }
 
-let validateFields = (prefix) => {
+const validateFields = (prefix) => {
     let formData = document.querySelector(('form'));
     for (let i = 0; i < formData.length; i++) {
         if (formData[i].name.startsWith(prefix) && !formData[i].name.endsWith('Opt')) {
@@ -190,7 +186,7 @@ let validateFields = (prefix) => {
     return validateTokenId(prefix);
 }
 
-let init = () => {
+const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {
         hideAll();
         let selectionType = document.querySelector('#type').value;
@@ -260,5 +256,8 @@ let init = () => {
     getWalletsName();
     getMySymbols();
     selectType();
-
 }
+
+includeHTML("h-input").then(() => {
+    handleDarkMode(document.getElementById('darkmode'));
+});

@@ -1,11 +1,12 @@
-let fill = (data) => {
+const fill = (data) => {
     $('#mywalletsTable').find('tbody tr').remove();
     for (let i = 0; i < data.length; i++) {
         let row = `<tr><td>${data[i].wallet}</td><td>${getIconsHtml(data[i].wallet)}</td></tr>`
         $('#mywalletsTable').append(row);
     }
 }
-let getWallets = () => {
+
+const getWallets = () => {
     $.ajax(
         {
             type: "GET",
@@ -20,15 +21,15 @@ let getWallets = () => {
         })
 }
 
-let hideForm = () => {
+const hideForm = () => {
     $('#newWallet').hide();
 }
 
-let showForm = () => {
+const showForm = () => {
     $('#newWallet').show();
 }
 
-let init = () => {
+const init = () => {
     hideForm();
     $('#buttonInput').on('click', () => {
         showForm();

@@ -1,16 +1,16 @@
 const config = require('config');
-const MongoHelper = require('./mongo-helper');
+const MongoHelper = require('./classes/mongo-helper');
 const utils = require('../scripts/utils')
 
-let addAlert = async (alert) => {
+const addAlert = async (alert) => {
     return new MongoHelper().addAlertSurvey(alert);
 }
 
-let removeAlert = async (token) => {
+const removeAlert = async (token) => {
     return new MongoHelper().delAlertSurvey(token);
 }
 
-let evolution = async (sortField, sortDirection) => {
+const evolution = async (sortField, sortDirection) => {
     let cryptos = await new MongoHelper().getCryptosSurvey();
     for (let i = 0; i < cryptos.length; i++) {
         let token = cryptos[i];
@@ -32,11 +32,11 @@ let evolution = async (sortField, sortDirection) => {
     }
 }
 
-let addCrypto = async (crypto) => {
+const addCrypto = async (crypto) => {
     return new MongoHelper().addCryptoSurvey(crypto);
 }
 
-let removeCrypto = async (id) => {
+const removeCrypto = async (id) => {
     return new MongoHelper().delCryptoSurvey(id);
 }
 
