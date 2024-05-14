@@ -1,11 +1,8 @@
 /*
- * Binance API access
- * Configuration is accessible in config.get('platforms_api').get('binance')
+ * Bitpanda API access
  */
-const tools = require('./common');
 const config = require('config');
-const crypto = require('node:crypto')
-const {sign} = require('jsonwebtoken')
+const axios = require('axios');
 
 class Bitpanda {
 
@@ -20,22 +17,22 @@ class Bitpanda {
     }
 
     get = async (url) => {
-        let response = await fetch(url,
-            {
-                headers: {
-                    "X-Api-Key": this.config.get('api_key')
+        try {
+            let response = await axios.get(url,
+                {
+                    headers: {
+                        "X-Api-Key": this.config.get('api_key')
+                    }
                 }
-            }
-        )
-        if (response.ok) {
+            )
             return {
                 error: false,
-                data: await response.json()
+                data: await response.data
             };
-        } else {
+        } catch (error) {
             return {
                 error: true,
-                data: `Fetch failed for URL ${url}. ${JSON.stringify(response)}`
+                data: `Fetch failed for URL ${url}. ${JSON.stringify(error)}`
             }
         }
     }
@@ -68,5 +65,5 @@ class Bitpanda {
 }
 
 module.exports = {
-    Bitpanda
+    Bitpanda: Bitpanda
 }

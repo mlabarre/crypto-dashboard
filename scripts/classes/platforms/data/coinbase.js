@@ -1,12 +1,12 @@
 /*
- * Binance API access
- * Configuration is accessible in config.get('platforms_api').get('binance')
+ * Coinbase API access
  */
-const tools = require('./common');
-const MongoHelper = require('../mongo-helper');
+const tools = require('../common');
+const MongoHelper = require('../../mongo-helper');
 const config = require('config');
 const crypto = require('node:crypto')
 const {sign} = require('jsonwebtoken')
+const axios = require('axios')
 
 class Coinbase {
 
@@ -16,14 +16,17 @@ class Coinbase {
         this.config = config.get('platforms_api.coinbase');
     }
 
-    buildUri = (path) => {
-        return `GET ${this.config.get('host')}${path}`;
+    buildUriForJwt = (path) => {
+        // JWT does not take account of query string.
+        let pathWithoutQs = path.split("?")[0];
+        return `GET ${this.config.get('host')}${pathWithoutQs}`;
     }
 
     buildUrl = (path) => {
         let urlPath = (path === undefined) ? this.config.get('accounts_path') : path;
         return `https://${this.config.get('host')}${urlPath}`;
     }
+
     getJwt = async (path) => {
         return await sign(
             {
@@ -31,7 +34,7 @@ class Coinbase {
                 nbf: Math.floor(Date.now() / 1000),
                 exp: Math.floor(Date.now() / 1000) + 120,
                 sub: this.config.get('api_key'),
-                uri: this.buildUri(path)
+                uri: this.buildUriForJwt(path)
             },
             this.config.get('secret_key'),
             {
@@ -45,22 +48,22 @@ class Coinbase {
     }
 
     get = async (path, url) => {
-        let response = await fetch(url,
-            {
-                headers: {
-                    "Authorization": `Bearer ${await this.getJwt(path)}`
+        try {
+            let response = await axios.get(url,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${await this.getJwt(path)}`
+                    }
                 }
-            }
-        )
-        if (response.ok) {
+            )
             return {
                 error: false,
-                data: await response.json()
+                data: await response.data
             };
-        } else {
+        } catch (error) {
             return {
                 error: true,
-                data: `Fetch failed for URL ${url}. ${JSON.stringify(response)}`
+                data: `Fetch failed for URL ${url}. ${JSON.stringify(error)}`
             }
         }
     }
@@ -70,11 +73,11 @@ class Coinbase {
     }
 
     getLastRefQueryString = (history, accountId) => {
-        let idx = history.findIndex(his => his.accountId === accountId);
+        let idx = history.transactionIds.findIndex(his => his.accountId === accountId);
         if (idx < 0) {
-            return '';
+            return '?new_version_opt_in=true&limit=100';
         } else {
-            return `&startingAfter=${history[idx].lastId}`;
+            return `?new_version_opt_in=true&limit=100&starting_after=${history.transactionIds[idx].lastId}`;
         }
     }
 
@@ -122,18 +125,21 @@ class Coinbase {
                     let path = `${account.resource_path}/transactions${subPath}`;
                     while (done === false) {
                         let lastIdTransaction = '';
-                        let transactionsResponse = await this.get(path,
-                            this.buildUrl(path));
+                        let transactionsResponse = await this.get(path, this.buildUrl(path));
                         if (transactionsResponse.error === false) {
                             let transactionsList = transactionsResponse.data.data;
-                            transactions = transactions.concat(transactionsList);
-                            lastIdTransaction = transactionsList[transactionsList.length - 1].id;
-                            if (tools.isFieldValid(transactionsResponse.data.pagination.next_uri)) {
-                                path = transactionsResponse.data.pagination.next_uri;
-                            } else {
+                            if (transactionsList.length === 0) {
                                 done = true;
-                                // Save account.id with lastIdTransaction for next calls later.
-                                historyIds.push({accountId: account.id, lastId: lastIdTransaction});
+                            } else {
+                                transactions = transactions.concat(transactionsList);
+                                lastIdTransaction = transactionsList[transactionsList.length - 1].id;
+                                if (tools.isFieldValid(transactionsResponse.data.pagination.next_uri)) {
+                                    path = transactionsResponse.data.pagination.next_uri;
+                                } else {
+                                    done = true;
+                                    // Save account.id with lastIdTransaction for next calls later.
+                                    historyIds.push({accountId: account.id, lastId: lastIdTransaction});
+                                }
                             }
                         } else {
                             return transactionsResponse;
@@ -187,5 +193,5 @@ class Coinbase {
 }
 
 module.exports = {
-    Coinbase
+    Coinbase: Coinbase
 }

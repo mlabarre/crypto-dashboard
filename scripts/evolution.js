@@ -28,7 +28,7 @@ const buildEvolution = (walletsTokens) => {
                     "wallet": walletTokens.wallet,
                     "symbol": token.symbol,
                     "start_price": tokenAmount.purchasePrice,
-                    "tokens": parseFloat(tokenAmount.number).toFixed(4),
+                    "tokens": parseFloat(tokenAmount.number),
                     "currency": tokenAmount.currency
                 }
                 if (tokenAmount.number !== 0 && parseFloat(tokenAmount.number.toFixed(6)) > 0) {

@@ -1,6 +1,8 @@
-const {Binance} = require('./classes/platforms/binance')
-const {Coinbase} = require('./classes/platforms/coinbase')
-const {Bitpanda} = require('./classes/platforms/bitpanda')
+const {Binance} = require('./classes/platforms/data/binance')
+const {Coinbase} = require('./classes/platforms/data/coinbase')
+const {Bitpanda} = require('./classes/platforms/data/bitpanda')
+
+// Binance
 
 const getBinanceTransactionsForLast90Days = async () => {
     let binance = new Binance();
@@ -8,6 +10,7 @@ const getBinanceTransactionsForLast90Days = async () => {
         purchase: await binance.getPurchaseListForLast90Days(),
         sale: await binance.getSaleListForLast90Days(),
         withdraw: await binance.getWithdrawListForLast90Days(),
+        swap: await binance.getConvertListForLast90Days(),
     }
 
 }
@@ -15,9 +18,10 @@ const getBinanceTransactionsForLast90Days = async () => {
 const getBinanceTransactionsFrom2010 = async () => {
     let binance = new Binance();
     return {
-        withdraw: await binance.getWithdrawListFrom2010(),
-        purchase: await binance.getPurchaseListFrom2010(),
-        sale: await binance.getSaleListFrom2010()
+        //withdraw: await binance.getWithdrawListFrom2010(),
+        //purchase: await binance.getPurchaseListFrom2010(),
+        //sale: await binance.getSaleListFrom2010(),
+        swap: await binance.getConvertListFrom2010()
     }
 }
 
@@ -26,21 +30,26 @@ const getBinanceTransactions = async () => {
     return {
         withdraw: await binance.getWithdrawListFromHistory(true),
         purchase: await binance.getPurchaseListFromHistory(true),
-        sale: await binance.getSaleListFromHistory(true)
+        sale: await binance.getSaleListFromHistory(true),
+        swap: await binance.getConvertListFromHistory(true)
     }
 }
+
+// Coinbase
 
 const getCoinbaseAccounts = async () => {
     return new Coinbase().getAccountsList();
 }
 
 const getCoinbaseTransactions = async () => {
-    return new Coinbase().getTransactionsList();
+    return new Coinbase().getTransactionsList(true);
 }
 
 const getCoinbaseAddresses = async () => {
     return new Coinbase().getAddressList();
 }
+
+// Bitpanda
 
 const getBitpandaTransactions = async () => {
     return new Bitpanda().getTransactionsList();

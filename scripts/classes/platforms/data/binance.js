@@ -1,15 +1,20 @@
 /*
  * Binance API access
- * Configuration is accessible in config.get('platforms_api').get('binance')
  */
-const tools = require('./common');
-const MongoHelper = require('../mongo-helper');
+const tools = require('../common');
+const MongoHelper = require('../../mongo-helper');
 const config = require('config');
-const crypto = require('node:crypto')
+const crypto = require('node:crypto');
+const axios = require('axios');
 
 class Binance {
 
     config;
+
+    IS_PURCHASE = 0;
+    IS_SALE = 1;
+    IS_WITHDRAW = 2;
+    IS_CONVERT = 3;
 
     constructor() {
         this.config = config.get('platforms_api.binance');
@@ -21,19 +26,19 @@ class Binance {
         return hmac.digest('hex');
     }
 
-    buildQueryStringForWithdraw = () => {
+    buildQueryString = () => {
         return `timestamp=${tools.getCurrentTimestamp()}`
     }
 
     buildQueryStringForPurchase = () => {
-        return `${this.buildQueryStringForWithdraw()}&transactionType=0`
+        return `${this.buildQueryString()}&transactionType=0`
     }
 
     buildQueryStringForSale = () => {
-        return `${this.buildQueryStringForWithdraw()}&transactionType=1`
+        return `${this.buildQueryString()}&transactionType=1`
     }
 
-    buildQueryStringWithRangeForWithdraw = (timestamp, start, end) => {
+    buildQueryStringWithRange = (timestamp, start, end) => {
         let queryString = `timestamp=${tools.getCurrentTimestamp()}&startTime=${start}`;
         if (end !== undefined) {
             queryString += `&endTime=${end}`;
@@ -42,11 +47,11 @@ class Binance {
     }
 
     buildQueryStringWithRangeForPurchase = (timestamp, start, end) => {
-        return `${this.buildQueryStringWithRangeForWithdraw(timestamp, start, end)}&transactionType=0`;
+        return `${this.buildQueryStringWithRange(timestamp, start, end)}&transactionType=0`;
     }
 
     buildQueryStringWithRangeForSale = (timestamp, start, end) => {
-        return `${this.buildQueryStringWithRangeForWithdraw(timestamp, start, end)}&transactionType=1`;
+        return `${this.buildQueryStringWithRange(timestamp, start, end)}&transactionType=1`;
     }
 
     buildWithdrawUrl = (queryString, signature) => {
@@ -61,23 +66,28 @@ class Binance {
         return `${this.config.get('payments_list_url')}?${queryString}&signature=${signature}`;
     }
 
+    buildConvertUrl = (queryString, signature) => {
+        return `${this.config.get('convert_url')}?${queryString}&signature=${signature}`;
+    }
+
     get = async (url) => {
-        console.log(url)
-        let response = await fetch(url,
-            {
-                headers: {
-                    "X-MBX-APIKEY": this.config.get('api_key')
-                }
-            });
-        if (response.ok) {
+        try {
+            console.log("GET", url);
+            let response = await axios.get(url,
+                {
+                    headers: {
+                        "X-MBX-APIKEY": this.config.get('api_key')
+                    }
+                });
+            console.log(response.data)
             return {
                 error: false,
-                data: await response.json()
+                data: await response.data
             };
-        } else {
+        } catch (error) {
             return {
                 error: true,
-                data: `Fetch failed for URL ${url}. ${JSON.stringify(response)}`
+                data: `Fetch failed for URL ${url}. ${JSON.stringify(error)}`
             }
         }
     }
@@ -88,7 +98,7 @@ class Binance {
         let endTimestamp = tools.getTimestampPast(startTimestamp, 90);
         if (endTimestamp >= currentTimestamp) {
             done = true;
-            endTimestamp = undefined;
+            endTimestamp = currentTimestamp;
         }
         let queryString = buildQueryFunction(currentTimestamp, startTimestamp, endTimestamp);
         let signature = this.getSignature(queryString);
@@ -117,7 +127,7 @@ class Binance {
         let history = await new MongoHelper().findPlatformsHistory("binance");
         return (history === null) ? tools.getTimestampFromDateString("2010-01-01") : history.timestamp;
     }
-    sendFromStartDateRequest = async (startTimestamp, buildQueryFunction, buildUrlFunction, saveHistory) => {
+    sendFromStartDateRequest = async (startTimestamp, buildQueryFunction, buildUrlFunction, type, saveHistory) => {
         let result = [];
         let done = false;
         while (done === false) {
@@ -126,9 +136,14 @@ class Binance {
             if (res.response.error === true) {
                 return res.response;
             }
-            let data = res.response.data;
-            if (data.success === true && data.total > 0) {
-                result = result.concat(data);
+            if (type === this.IS_WITHDRAW && res.response.data.length > 0) {
+                result = result.concat(res.response.data);
+            } else if (type === this.IS_CONVERT) {
+                result = result.concat(res.response.list)
+            } else {
+                if (res.response.data.success === true && res.response.data.total > 0) {
+                    result = result.concat(res.response.data.data);
+                }
             }
             startTimestamp = res.endTimestamp;
         }
@@ -143,7 +158,7 @@ class Binance {
      */
 
     getWithdrawListForLast90Days = async () => {
-        return await this.send90DaysRequest(this.buildQueryStringForWithdraw, this.buildWithdrawUrl);
+        return await this.send90DaysRequest(this.buildQueryString, this.buildWithdrawUrl);
     }
 
     getPurchaseListForLast90Days = async () => {
@@ -154,26 +169,36 @@ class Binance {
         return await this.send90DaysRequest(this.buildQueryStringForSale, this.buildSaleUrl);
     }
 
+    getConvertListForLast90Days = async () => {
+        return await this.send90DaysRequest(this.buildQueryString, this.buildConvertUrl());
+    }
+
     /*
      * Transactions since 2010 by 90 days steps.
      */
 
     getWithdrawListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
-        return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRangeForWithdraw,
-            this.buildWithdrawUrl, false);
+        return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
+            this.buildWithdrawUrl,this.IS_WITHDRAW, false);
     }
 
     getPurchaseListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRangeForPurchase,
-            this.buildPurchaseUrl, false);
+            this.buildPurchaseUrl, this.IS_PURCHASE,false);
     }
 
     getSaleListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRangeForSale,
-            this.buildSaleUrl, false);
+            this.buildSaleUrl, this.IS_SALE,false);
+    }
+
+    getConvertListFrom2010 = async () => {
+        let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
+        return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
+            this.buildConvertUrl, this.IS_CONVERT,false);
     }
 
     /*
@@ -181,21 +206,26 @@ class Binance {
      */
 
     getWithdrawListFromHistory = async () => {
-        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForWithdraw,
-            this.buildWithdrawUrl, true);
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
+            this.buildWithdrawUrl, this.IS_WITHDRAW, true);
     }
 
     getPurchaseListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForPurchase,
-            this.buildPurchaseUrl, true);
+            this.buildPurchaseUrl, this.IS_PURCHASE,true);
     }
 
     getSaleListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForSale,
-            this.buildSaleUrl, true);
+            this.buildSaleUrl, this.IS_SALE,true);
+    }
+
+    getConvertListFromHistory = async () => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
+            this.buildConvertUrl, this.IS_CONVERT,true);
     }
 }
 
 module.exports = {
-    Binance
+    Binance: Binance
 }

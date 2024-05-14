@@ -229,13 +229,21 @@ router
     })
     // Platforms APIs
     // 1. Binance
-    .get('/api/binance/last', function (request, response, next) {
+    //    Last 90 days (no history stored)
+    .get('/api/binance/transactions/last', function (request, response, next) {
         platforms.getBinanceTransactionsForLast90Days().then((data) => {
             response.send(data);
         })
     })
-    .get('/api/binance/all', function (request, response, next) {
+    //    From genesis (no history stored)
+    .get('/api/binance/transactions/all', function (request, response, next) {
         platforms.getBinanceTransactionsFrom2010().then((data) => {
+            response.send(data);
+        })
+    })
+    //   From history. Run periodically.
+    .get('/api/binance/transactions', function (request, response, next) {
+        platforms.getBinanceTransactions().then((data) => {
             response.send(data);
         })
     })
@@ -245,6 +253,7 @@ router
             response.send(data);
         })
     })
+    //   From history. Run periodically.
     .get('/api/coinbase/transactions', function (request, response, next) {
         platforms.getCoinbaseTransactions().then((data) => {
             response.send(data);
