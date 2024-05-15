@@ -412,7 +412,7 @@ by
 always replacing <CRYPTO_HOME> by the chosen path.
 
 
-### Lancement du docker 
+### To run in docker 
 
 Docker will build the images for crypto-dashboard and crypto-updater.
 It will also download the mongoDB image (I put version 4.4 here because version 5 can cause problems with some processors).
