@@ -22,6 +22,15 @@ Associé au projet crypto-updater, crypto-dashboard permet :
 * de voir l'évolution des cryptos (à 5mn, 1h, 24h et 1 semaine),
 * de définir des alertes,
 * de surveiller des cryptos que l'on n'a pas encore acheté.
+* d'accéder aux graphiques des tokens et éventuellement aux explorers.
+
+J'ai commencé à regarder l'alimentation automatique via les APIs des principales plateformes mais ce n'est gagné :
+* Coinbase est la plus "ouverte" et toutes les transactions peuvent y être retrouvées
+* Binance fourni un jeu d'API aussi impressionnat que Coinbase à la différence près que l'API publique pour les trades (swap en particulier) n'est pas mise à disposition
+* Bitpanda après divers "bricolages" s'avère utilisable
+* Coinhouse / eToro et toute la clique du genre s'abrite derrière leur image grand public et n'offre que des APIs dérisoires (quand elles existent).Encore faudrait-il qu'ils commencent par fournir le hash des transactions !
+
+Mais en tant que jeune retraité après 46 ans dans l'informatique dont 20 ans d'IT, il faut bien que je m'occupe :)
 
 Pour l'utiliser, il suffit d'une machine disposant d'un docker installé.
 
@@ -435,7 +444,7 @@ Ensuite, il ne vous reste qu'à saisir vos transactions passées.
 
 ## Support
 
-Si vous rencontrez quelques soucis vous pouvez m'envoyer un petit mail à [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
+Si vous rencontrez quelques soucis ou des questions vous pouvez m'envoyer un petit mail à [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
 Je ferai mon possible pour vous répondre.
 
 ## Screenshots

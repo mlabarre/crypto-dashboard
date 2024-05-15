@@ -20,9 +20,9 @@
         <div class="title">
             <span class="title-text">Balance: </span><span id="amount" class="title-data"></span>
             <span class="title-text"> <%= fiat_symbol %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variation: </span>
-            <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;
+            <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span id="sizeup" class="sizeup">A</span>&nbsp;<span id="sizedown" class="sizedown">A</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>
         </div>
 
         <table id="cryptos" class="styled-table">
@@ -31,8 +31,8 @@
             <th class="title-left clickable" onclick="sortTable('symbol')">Symbol</th>
             <th class="num clickable" onclick="sortTable('start_price')">Price <%= fiat_symbol %> purchase</th>
             <th class="num clickable" onclick="sortTable('start_price_usdt')">Price USDT purchase</th>
-            <th class="num clickable" onclick="sortTable('quotation\n')">Quotation <%= fiat_symbol %></th>
-            <th class="num clickable" onclick="sortTable('quotation_usdt\n')">Quotation USDT</th>
+            <th class="num clickable" onclick="sortTable('quotation')">Quotation <%= fiat_symbol %></th>
+            <th class="num clickable" onclick="sortTable('quotation_usdt')">Quotation USDT</th>
             <th class="num clickable" onclick="sortTable('tokens')">Tokens</th>
             <th class="num clickable" onclick="sortTable('value')">Value <%= fiat_symbol %></th>
             <th class="clickable" onclick="sortTable('variation')">Evol./puchase</th>

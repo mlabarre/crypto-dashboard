@@ -2,10 +2,12 @@ let globalAlert = false;
 let globalAlertValue;
 let allAlerts = [];
 let tokenAlert = "";
+let intervalId;
 
 //
 // ALERTS
 //
+
 const showAllTokenAlertTitle = () => {
     $('.all_token').show();
     $('.one_token').hide();
@@ -41,6 +43,7 @@ const setAlertsVariables = (alertToken) => {
 const hideAlertPanel = () => {
     $('.alerts').hide();
     $('.non-alerts').show();
+    setRefreshOn();
 }
 
 const initAlerts = () => {
@@ -57,6 +60,7 @@ const showAlertPanel = (token) => {
     $('.alerts').show();
     $('.non-alerts').hide();
     $('#alertDel').hide();
+    setRefreshOff();
     if (token === '_all_tokens_') {
         showAllTokenAlertTitle();
     } else {
@@ -281,11 +285,26 @@ const reload = () => {
     setDate();
 }
 
+const setRefreshOn = () => {
+    if (!intervalId) {
+        intervalId = setInterval(reload, parseInt(refresh) * 1000);
+    }
+}
+
+const setRefreshOff = () => {
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+    intervalId = null;
+}
+
 const init = () => {
     reload();
     fontSize = getEvolutionFontSize();
     changeTableFontSize();
-    setInterval(reload, parseInt(refresh) * 1000);
+
+    setRefreshOn();
+
     $('#sizeup').on('click', () => {
         changeFontSize('up');
     });

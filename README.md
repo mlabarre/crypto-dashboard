@@ -22,8 +22,16 @@ Associated with the crypto-updater project, crypto-dashboard allows:
 * to see the evolution of cryptos (at 5mn, 1h, 1 day et 1 week),
 * define alerts,
 * to monitor cryptos that you have not yet purchased.
+* to access token charts and possibly explorers.
 
+I started to look at automatic feeding via the APIs of the main platforms but it is not won:
+* Coinbase is the most "open" and all transactions can be found there
+* Binance provides a set of APIs as impressive as Coinbase except that the public API for trades (swap in particular) is not made available
+* Bitpanda after various "tinkering" turns out to be usable
+* Coinhouse / eToro and the whole "clique" of its kind hide behind their public image and only offer paltry APIs (when they exist). They would still have to start by providing the hash of the transactions!
 To use it, all you need is a machine with docker installed.
+
+But as a young retiree after 46 years in computer sciences, including 20 years in IT, I have to keep busy :)
 
 The project use
 * API coingecko
@@ -433,7 +441,7 @@ Then all you have to do is enter your past transactions.
 
 ## Support
 
-If you encounter any problems you can send me a quick email to [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
+If you encounter any problems or need some questions you can send me a quick email to [michel.labarre@gmail.com](mailto:michel.labarre@gmail.com).
 I will do my best to answer you.
 
 ## Screenshots (french version)
