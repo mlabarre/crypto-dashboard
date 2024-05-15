@@ -26,7 +26,7 @@ Associé au projet crypto-updater, crypto-dashboard permet :
 
 J'ai commencé à regarder l'alimentation automatique via les APIs des principales plateformes mais ce n'est pas gagné :
 * Coinbase est la plus "ouverte" et toutes les transactions peuvent y être retrouvées
-* Binance fourni un jeu d'API aussi impressionnat que Coinbase à la différence près que l'API publique pour les trades (swap en particulier) n'est pas mise à disposition
+* Binance fourni un jeu d'API aussi impressionnant que Coinbase à la différence près que l'API publique pour les trades (swap en particulier) n'est pas mise à disposition
 * Bitpanda après divers "bricolages" s'avère utilisable
 * Coinhouse / eToro et toute la clique du genre s'abrite derrière leur image grand public et n'offre que des APIs dérisoires (quand elles existent).Encore faudrait-il qu'ils commencent par fournir le hash des transactions !
 

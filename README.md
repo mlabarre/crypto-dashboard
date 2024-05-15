@@ -26,7 +26,7 @@ Associated with the crypto-updater project, crypto-dashboard allows:
 
 I started to look at automatic feeding via the APIs of the main platforms but it's not won:
 * Coinbase is the most "open" and all transactions can be found there
-* Binance provides a set of APIs as impressive as Coinbase except that the public API for trades (swap in particular) is not made available
+* Binance provides a set of APIs as considerable as Coinbase except that the public API for trades (swap in particular) is not made available
 * Bitpanda after various "tinkering" turns out to be usable
 * Coinhouse / eToro and the whole "clique" of its kind hide behind their public image and only offer paltry APIs (when they exist). They would still have to start by providing the hash of the transactions!
 To use it, all you need is a machine with docker installed.
