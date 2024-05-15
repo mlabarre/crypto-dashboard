@@ -24,7 +24,7 @@ Associé au projet crypto-updater, crypto-dashboard permet :
 * de surveiller des cryptos que l'on n'a pas encore acheté.
 * d'accéder aux graphiques des tokens et éventuellement aux explorers.
 
-J'ai commencé à regarder l'alimentation automatique via les APIs des principales plateformes mais ce n'est gagné :
+J'ai commencé à regarder l'alimentation automatique via les APIs des principales plateformes mais ce n'est pas gagné :
 * Coinbase est la plus "ouverte" et toutes les transactions peuvent y être retrouvées
 * Binance fourni un jeu d'API aussi impressionnat que Coinbase à la différence près que l'API publique pour les trades (swap en particulier) n'est pas mise à disposition
 * Bitpanda après divers "bricolages" s'avère utilisable
