@@ -96,15 +96,21 @@ class Coinbase {
             return history;
         }
     }
-    /**
-     * @returns {Promise<{data: any, error: boolean}|{data: string, error: boolean}|{data: *[], error: boolean}>}
-     */
+
+    replaceHistoryIdObjectInArray = (arr1, arr2) => {
+        return arr1.map(obj => arr2.find(o => o.accountId === obj.accountId) || obj);
+    }
+
+    rebuildHistory = (history, historyIds) => {
+        history.transactionIds = (history.transactionIds.length === 0) ? historyIds :
+            this.replaceHistoryIdObjectInArray(history.transactionIds, historyIds);
+    }
 
     /**
      * Get all transactions.
      * if 'withHistory' is set to true:
      * . needs to store lastIdTransaction for each account in mongo.
-     * . next call to this function must get the stored value and use 'starting_after query string with
+     * . next call to this function must get the stored value and use 'starting_after' query string with
      * stored lastIdTransaction.
      * @param withHistory: boolean Handle history or not.
      * @returns {Promise<{data: any, error: boolean}|{data: string, error: boolean}|{data: *[], error: boolean}>}
@@ -149,7 +155,7 @@ class Coinbase {
             }
             // save history in mongodb
             if (withHistory) {
-                history.transactionIds = historyIds;
+                this.rebuildHistory(history, historyIds);
                 await new MongoHelper().addOrReplacePlatformsHistory(history);
             }
             return {

@@ -33,3 +33,4 @@ exports.getTimestampPast = (timestamp, days) => {
 exports.isFieldValid = (f) => {
     return f !== undefined && f !== null && f !== '';
 }
+

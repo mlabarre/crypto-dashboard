@@ -25,7 +25,7 @@ Associé au projet crypto-updater, crypto-dashboard permet :
 * d'accéder aux graphiques des tokens et éventuellement aux explorers.
 
 J'ai commencé à regarder l'alimentation automatique via les APIs des principales plateformes mais ce n'est pas gagné :
-* Coinbase est la plus "ouverte" et toutes les transactions peuvent y être retrouvées
+* Coinbase est la plus "ouverte" et toutes les transactions peuvent y être retrouvées mais pas de swagger. On trouve couramment des transactions de réception de crypto avec le type 'send'. Cela ne fait pas très sérieux. Coinbase indique qu'ils ont revu tout cela mais dans les faits on ne s'y retrouve pas.
 * Binance fourni un jeu d'API aussi impressionnant que Coinbase à la différence près que l'API publique pour les trades (swap en particulier) n'est pas mise à disposition
 * Bitpanda après divers "bricolages" s'avère utilisable
 * Coinhouse / eToro et toute la clique du genre s'abrite derrière leur image grand public et n'offre que des APIs dérisoires (quand elles existent).Encore faudrait-il qu'ils commencent par fournir le hash des transactions !
