@@ -8,23 +8,37 @@ const utils = require('../utils');
 class MongoHelper {
 
     mongoClient;
+    connexion;
+    dbo;
+
+    collectionAlerts = "alerts";
+    collectionAlertsSurvey = "alerts-survey";
+    collectionCoingecko = "coingecko";
+    collectionCryptosSurvey = "cryptos-survey";
+    collectionMyCryptos = "my-cryptos";
+    collectionParams = "params";
+    collectionPlatformsHistory = "platforms-history";
+    collectionTransactions = "transactions";
+    collectionWallets = "wallets";
 
     constructor() {
         this.mongoClient = null;
     }
 
     init = async () => {
-        this.mongoClient = new MongoClient(config.get('mongodb_uri'));
-        let db = await this.mongoClient.connect();
-        this.dbo = db.db(config.get('mongodb_database'));
+        this.mongoClient = new MongoClient(config.get("mongodb_uri"));
+        this.connexion = await this.mongoClient.connect();
+        this.dbo = this.connexion.db(config.get("mongodb_database"));
     }
+
+    // startup
 
     walletsInitialize = async () => {
         try {
             await this.init();
             let wallets = await this.findAllWallets();
             if (wallets.length === 0) {
-                let icons = path.join(__dirname, '../public/images/icons/');
+                let icons = path.join(__dirname, "../public/images/icons/");
                 let files = await fs.readdir(icons);
                 for (let i = 0; i < files.length; i++) {
                     let file = files[i].split(".")[0]
@@ -41,10 +55,10 @@ class MongoHelper {
 
     // transactions
 
-    insertTransaction = async (doc) => {
+    insertTransaction = async (transaction) => {
         try {
             await this.init();
-            await this.dbo.collection("transactions").insertOne(doc);
+            await this.dbo.collection(this.collectionTransactions).insertOne(transaction);
             return "Transaction ajoutée"
         } finally {
             await this.mongoClient.close();
@@ -55,7 +69,7 @@ class MongoHelper {
     findAllTransactions = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").find({}).toArray();
+            return await this.dbo.collection(this.collectionTransactions).find({}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -65,7 +79,7 @@ class MongoHelper {
         let dir = direction === undefined ? 1 : direction;
         try {
             await this.init();
-            return await this.dbo.collection("transactions").find({}).sort({"date": dir}).toArray();
+            return await this.dbo.collection(this.collectionTransactions).find({}).sort({"date": dir}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -74,7 +88,7 @@ class MongoHelper {
     findAllSymbolsInTransactions = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").find({}, {
+            return await this.dbo.collection(this.collectionTransactions).find({}, {
                 "symbol": 1,
                 "inputSymbol": 1,
                 "outputSymbol": 1
@@ -87,7 +101,7 @@ class MongoHelper {
     findAllWallets = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").find({},
+            return await this.dbo.collection(this.collectionTransactions).find({},
                 {"wallet": 1, "sendWallet": 1, "receiveWallet": 1}).toArray();
         } finally {
             await this.mongoClient.close();
@@ -97,7 +111,7 @@ class MongoHelper {
     deleteTransaction = async (id) => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").deleteOne({_id: new ObjectId(id)})
+            return await this.dbo.collection(this.collectionTransactions).deleteOne({_id: new ObjectId(id)})
         } finally {
             await this.mongoClient.close();
         }
@@ -106,7 +120,7 @@ class MongoHelper {
     findTransaction = async (id) => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").findOne({_id: new ObjectId(id)})
+            return await this.dbo.collection(this.collectionTransactions).findOne({_id: new ObjectId(id)})
         } finally {
             await this.mongoClient.close();
         }
@@ -115,7 +129,7 @@ class MongoHelper {
     updateTransaction = async (id, transaction) => {
         try {
             await this.init();
-            return await this.dbo.collection("transactions").findOneAndReplace({_id: new ObjectId(id)}, transaction)
+            return await this.dbo.collection(this.collectionTransactions).findOneAndReplace({_id: new ObjectId(id)}, transaction)
         } finally {
             await this.mongoClient.close();
         }
@@ -125,12 +139,12 @@ class MongoHelper {
         let allNames = [];
         try {
             await this.init();
-            let cursor = await this.dbo.collection("transactions").find({});
+            let cursor = await this.dbo.collection(this.collectionTransactions).find({});
             while (await cursor.hasNext()) {
                 let transaction = await cursor.next();
                 let names = Object.keys(transaction);
                 for (let i = 0; i < names.length; i++) {
-                    if (names[i] !== '_id') {
+                    if (names[i] !== "_id") {
                         utils.storeUniqueInArray(allNames, names[i]);
                     }
                 }
@@ -147,7 +161,10 @@ class MongoHelper {
         let criteria = (ico === undefined) ? {ico_address: {$exists: false}} : {};
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").find(criteria).project({_id: 0, symbol: 1}).toArray();
+            return await this.dbo.collection(this.collectionMyCryptos).find(criteria).project({
+                _id: 0,
+                symbol: 1
+            }).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -157,7 +174,7 @@ class MongoHelper {
         let criteria = (ico === undefined) ? {ico_address: {$exists: false}} : {};
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").find(criteria).sort({symbol: 1}).toArray();
+            return await this.dbo.collection(this.collectionMyCryptos).find(criteria).sort({symbol: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -166,7 +183,7 @@ class MongoHelper {
     findMyCrypto = async (id) => {
         try {
             await this.init();
-            return await this.dbo.collection("my-cryptos").findOne({id: id});
+            return await this.dbo.collection(this.collectionMyCryptos).findOne({id: id});
         } finally {
             await this.mongoClient.close();
         }
@@ -175,7 +192,7 @@ class MongoHelper {
     addToMyCryptos = async (crypto) => {
         try {
             await this.init();
-            await this.dbo.collection("my-cryptos").insertOne(crypto);
+            await this.dbo.collection(this.collectionMyCryptos).insertOne(crypto);
             return "ok";
         } finally {
             await this.mongoClient.close();
@@ -185,7 +202,7 @@ class MongoHelper {
     findAndRemoveFromMyCryptos = async (crypto) => {
         try {
             await this.init();
-            await this.dbo.collection("my-cryptos").findOneAndDelete(crypto);
+            await this.dbo.collection(this.collectionMyCryptos).findOneAndDelete(crypto);
             return "ok";
         } finally {
             await this.mongoClient.close();
@@ -197,7 +214,7 @@ class MongoHelper {
     findAllAvailableCryptos = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("coingecko").find({}).toArray();
+            return await this.dbo.collection(this.collectionCoingecko).find({}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -208,7 +225,7 @@ class MongoHelper {
     addWallet = async (wallet) => {
         try {
             await this.init();
-            await this.dbo.collection("wallets").insertOne({wallet: wallet});
+            await this.dbo.collection(this.collectionWallets).insertOne({wallet: wallet});
         } finally {
             await this.mongoClient.close();
         }
@@ -217,7 +234,7 @@ class MongoHelper {
     findAllWalletsName = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("wallets").find({}).sort({wallet: 1}).toArray();
+            return await this.dbo.collection(this.collectionWallets).find({}).sort({wallet: 1}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -228,7 +245,7 @@ class MongoHelper {
     getUSDTValueInFiat = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("params").findOne({id: "usdt"})
+            return await this.dbo.collection(this.collectionParams).findOne({id: "usdt"})
         } finally {
             await this.mongoClient.close();
         }
@@ -239,24 +256,26 @@ class MongoHelper {
     getAlerts = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts").find({}).toArray();
+            return await this.dbo.collection(this.collectionAlerts).find({}).toArray();
         } finally {
             await this.mongoClient.close();
         }
     }
 
-    addAlert = async (doc) => {
+    addAlert = async (alert) => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts").findOneAndReplace({token: doc.token}, doc, {upsert: true});
+            return await this.dbo.collection(this.collectionAlerts)
+                .findOneAndReplace({token: alert.token}, alert, {upsert: true});
         } finally {
             await this.mongoClient.close();
         }
     }
+
     delAlert = async (token) => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts").findOneAndDelete({token: token});
+            return await this.dbo.collection(this.collectionAlerts).findOneAndDelete({token: token});
         } finally {
             await this.mongoClient.close();
         }
@@ -264,26 +283,29 @@ class MongoHelper {
 
     // alert-survey
 
-    addAlertSurvey = async (doc) => {
+    addAlertSurvey = async (alert) => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts-survey").findOneAndReplace({token: doc.token}, doc, {upsert: true});
+            return await this.dbo.collection(this.collectionAlertsSurvey)
+                .findOneAndReplace({token: alert.token}, alert, {upsert: true});
         } finally {
             await this.mongoClient.close();
         }
     }
+
     delAlertSurvey = async (token) => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts-survey").findOneAndDelete({token: token});
+            return await this.dbo.collection(this.collectionAlertsSurvey).findOneAndDelete({token: token});
         } finally {
             await this.mongoClient.close();
         }
     }
+
     getAlertsSurvey = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("alerts-survey").find({}).toArray();
+            return await this.dbo.collection(this.collectionAlertsSurvey).find({}).toArray();
         } finally {
             await this.mongoClient.close();
         }
@@ -294,31 +316,34 @@ class MongoHelper {
     getCryptosSurvey = async () => {
         try {
             await this.init();
-            return await this.dbo.collection("cryptos-survey").find({}).toArray();
+            return await this.dbo.collection(this.collectionCryptosSurvey).find({}).toArray();
         } finally {
             await this.mongoClient.close();
         }
     }
+
     findCryptoSurvey = async (id) => {
         try {
             await this.init();
-            return await this.dbo.collection("cryptos-survey").findOne({id: id});
+            return await this.dbo.collection(this.collectionCryptosSurvey).findOne({id: id});
         } finally {
             await this.mongoClient.close();
         }
     }
-    addCryptoSurvey = async (doc) => {
+
+    addCryptoSurvey = async (survey) => {
         try {
             await this.init();
-            return await this.dbo.collection("cryptos-survey").insertOne(doc);
+            return await this.dbo.collection(this.collectionCryptosSurvey).insertOne(survey);
         } finally {
             await this.mongoClient.close();
         }
     }
+
     delCryptoSurvey = async (id) => {
         try {
             await this.init();
-            return await this.dbo.collection("cryptos-survey").findOneAndDelete({id: id});
+            return await this.dbo.collection(this.collectionCryptosSurvey).findOneAndDelete({id: id});
         } finally {
             await this.mongoClient.close();
         }
@@ -326,10 +351,11 @@ class MongoHelper {
 
     // platforms-history
 
-    addOrReplacePlatformsHistory = async (doc) => {
+    addOrReplacePlatformsHistory = async (history) => {
         try {
             await this.init();
-            return await this.dbo.collection("platforms-history").findOneAndReplace({platform: doc.platform}, doc, {upsert: true});
+            return await this.dbo.collection(this.collectionPlatformsHistory)
+                .findOneAndReplace({platform: history.platform}, history, {upsert: true});
         } finally {
             await this.mongoClient.close();
         }
@@ -338,7 +364,7 @@ class MongoHelper {
     findPlatformsHistory = async (platform) => {
         try {
             await this.init();
-            return await this.dbo.collection("platforms-history").findOne({platform: platform});
+            return await this.dbo.collection(this.collectionPlatformsHistory).findOne({platform: platform});
         } finally {
             await this.mongoClient.close();
         }

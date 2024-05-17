@@ -1,7 +1,7 @@
 // Utils functions.
 
 const formatDelim = (value, decimalSeparator) => {
-    if (isNaN(value)) return 'N/A';
+    if (isNaN(value)) return "N/A";
     let i, j, chain, c, deb, fin, mantissa;
     fin = value.indexOf(".");
     if (fin < 0) fin = value.length;
@@ -18,7 +18,7 @@ const formatDelim = (value, decimalSeparator) => {
     if (deb === 1) chain = "-" + chain;
     if (fin >= 0) chain = chain + mantissa;
     chain = chain.replace(".", decimalSeparator)
-    return decimalSeparator === '.' ? chain.replaceAll(' ', ',') : chain;
+    return decimalSeparator === "." ? chain.replaceAll(" ", ",") : chain;
 }
 
 // From W3schools.com
@@ -41,7 +41,7 @@ const includeHTML = async (classTag) => {
                         }
                         element.removeAttribute("w3-include-html");
                         includeHTML(classTag).then(() => {
-                            resolve('ok');
+                            resolve("ok");
                         });
                     }
                 }
@@ -50,7 +50,7 @@ const includeHTML = async (classTag) => {
                 return resolve;
             }
         }
-        resolve('ok');
+        resolve("ok");
     });
 
 }
@@ -70,35 +70,31 @@ const getIconsHtml = (wallet) => {
 }
 
 const getInfoIconHtml = (coin) => {
-    if (coin && coin.id !== 'N/A') {
-        return `<img class="icon" title="Info ${coin.name}" ` +
-            ` src="images/rond-info.png" alt="Info ${coin.name}" ` +
-            `onclick="showInfo('${coin.id}')">`;
+    if (coin && coin.id !== "N/A") {
+        return `<img class="icon clickable" title="Info ${coin.name}"` +
+            ` src="images/rond-info.png" alt="Info ${coin.name}"` +
+            ` onclick="showInfo('${coin.id}')">`;
     } else {
         return "";
     }
 }
 
 const getFormattedDate = (lang, dateAsString) => {
-    if (lang === undefined || lang === '') lang = 'fr-FR';
+    if (lang === undefined || lang === '') lang = "fr-FR";
     let date = (dateAsString === undefined) ? new Date() : new Date(dateAsString);
     return date.toLocaleString(lang, {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: '2-digit',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "2-digit",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
     });
 }
 
 const pad = (o) => {
-    if (o > 9) {
-        return o;
-    } else {
-        return "0" + o;
-    }
+    return (o > 9) ? o : "0" + o;
 }
 
 const getDateFromDate = (d) => {
@@ -111,38 +107,34 @@ const getTimeFromDate = (d) => {
 
 const toggleDarkMode = (checked) => {
     const theme = document.querySelector("#theme");
-    if (checked === true) {
-        theme.href = "/stylesheets/style-dark.css";
-    } else {
-        theme.href = "/stylesheets/style.css";
-    }
+    theme.href = (checked === true) ? "/stylesheets/style-dark.css" : "/stylesheets/style.css";
 }
+
 const handleDarkMode = (checkbox) => {
     let wls = window.localStorage;
     let mode = "false";
     if (wls && wls.getItem("darkmode")) {
-        mode = wls.getItem("darkmode") === 'true';
+        mode = wls.getItem("darkmode") === "true";
         toggleDarkMode(mode);
-        $('#darkmode').attr('checked', mode);
+        $("#darkmode").attr("checked", mode);
     }
-    checkbox.addEventListener('click', () => {
-        let checked = document.getElementById('darkmode').checked;
+    checkbox.addEventListener("click", () => {
+        let checked = document.getElementById("darkmode").checked;
         toggleDarkMode(checked);
         if (wls) {
-            wls.setItem('darkmode', checked);
+            wls.setItem("darkmode", checked);
         }
     });
 }
+
 const sortArray = (a, b) => {
-    if (a.id < b.id) return -1;
-    else if (a.id > b.id) return 1;
-    else return 0;
+    return (a.id < b.id) ? -1 : (a.id > b.id) ? 1 : 0;
 }
+
 const sortArrayOnSymbol = (a, b) => {
-    if (a.symbol < b.symbol) return -1;
-    else if (a.symbol > b.symbol) return 1;
-    else return 0;
+    return (a.symbol < b.symbol) ? -1 : (a.symbol > b.symbol) ? 1 : 0;
 }
+
 const getIndexInArray = (arr, o) => {
     return arr.findIndex(crypto => crypto.id === o.id && crypto.symbol === o.symbol && crypto.name === o.name);
 }
@@ -155,7 +147,7 @@ const getEvolutionFontSize = () => {
 const setEvolutionFontSize = (fontSize) => {
     let wls = window.localStorage;
     if (wls) {
-        wls.setItem('evolutionFontSize', fontSize);
+        wls.setItem("evolutionFontSize", fontSize);
     }
 }
 

@@ -107,7 +107,7 @@ const updateWithCurrentValues = async (allTokens, sortField, sortDirection) => {
 
 const evolution = async (sortField = "symbol", sortDirection = "A") => {
     let wallet = new Wallet();
-    let transactions = await new MongoHelper().findAllTransactions();
+    let transactions = await new MongoHelper().findAllTransactionsSortedOnDate();
     for (let i = 0; i < transactions.length; i++) {
         await handleEvolutionTransaction(wallet, transactions[i]);
     }

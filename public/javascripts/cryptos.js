@@ -1,7 +1,5 @@
 let availableCryptoShown = false;
-
 let myCryptosList = null;
-
 let availableCryptosList = null;
 
 const getTokenIconHtml = (row) => {

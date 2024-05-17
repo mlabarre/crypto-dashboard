@@ -155,8 +155,12 @@ class Wallet {
                 tokenAmount.number -= tokensNb;
                 break;
             } else {
-                tokensNb -= tokenAmount.number;
-                tokenAmount.number = 0;
+                if (i === tokensAmount.length-1) {
+                    tokenAmount.number -= tokensNb;
+                } else {
+                    tokensNb -= tokenAmount.number;
+                    tokenAmount.number = 0;
+                }
             }
         }
     }

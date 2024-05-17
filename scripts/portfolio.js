@@ -126,15 +126,17 @@ const setTotalPerWallet = (tokens) => {
     let tokensWithTotal = [];
     let totalWallet = 0.00;
     if (tokens.length > 0) {
-        let lastWallet = tokens[0].wallet;
+        let previousWallet = tokens[0].wallet;
         for (let i = 0; i < tokens.length; i++) {
             let token = tokens[i];
-            if (token.wallet !== lastWallet) {
+            if (token.wallet !== previousWallet) {
                 tokensWithTotal.push({wallet: "", token: "", nb: "", value: totalWallet});
                 totalWallet = 0.00;
-                lastWallet = token.wallet;
+                previousWallet = token.wallet;
             }
-            totalWallet += parseFloat(token.value);
+            if (!isNaN(token.value)) {
+                totalWallet += parseFloat(token.value);
+            }
             tokensWithTotal.push(token);
         }
         tokensWithTotal.push({wallet: "", token: "", nb: "", value: totalWallet});
