@@ -57,18 +57,22 @@ const removeAllWithZeroTokens = async (stock) => {
     return stock;
 }
 
-const getCryptoQuotation = (symbol, cryptos) => {
+const getCryptoInfo = (symbol, cryptos) => {
     let res = findCrypto(symbol, cryptos);
     if (res != null) {
-        return res.quotation;
+        return [ res.quotation, res.id, (res.info === undefined) ? "" : res.info.image ];
     } else {
-        return 0.00;
+        return [ 0.00, "", "" ];
     }
 }
 
-const valorize = (tokens, mycryptos) => {
+const valorize = (tokens, myCryptos) => {
     for (let i = 0; i < tokens.length; i++) {
-        tokens[i].value = (tokens[i].nb * getCryptoQuotation(tokens[i].token, mycryptos))
+        let quotation, id, image;
+        [ quotation, id, image ] = getCryptoInfo(tokens[i].token, myCryptos);
+        tokens[i].value = (tokens[i].nb * quotation);
+        tokens[i].image = image;
+        tokens[i].id = id;
     }
     return tokens;
 }
@@ -174,19 +178,19 @@ const portfolio = async () => {
     let stock = new Stock();
     let fees = [];
     let transactions = await new MongoHelper().findAllTransactions();
-    let mycryptos = await new MongoHelper().findAllMyCryptos(true);
+    let myCryptos = await new MongoHelper().findAllMyCryptos(true);
     for (let i = 0; i < transactions.length; i++) {
         await handleSummaryTransaction(transactions[i], stock, fees);
     }
     stock = await removeAllWithZeroTokens(stock);
     stock = handleFees(stock, fees);
-    valorize(stock.tokens, mycryptos)
+    valorize(stock.tokens, myCryptos)
     let result = buildValuePerToken(stock.getTokens());
     let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
     return {
         total: result.total,
         perWallet: removeValueForIco(symbols, setTotalPerWallet(stock.getTokens())),
-        perToken: removeValueForIco(symbols, valorize(result.tokensValue, mycryptos).sort(utils.fieldSorter(["token"])))
+        perToken: removeValueForIco(symbols, valorize(result.tokensValue, myCryptos).sort(utils.fieldSorter(["token"])))
     };
 }
 

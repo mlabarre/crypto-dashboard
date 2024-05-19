@@ -13,6 +13,14 @@ const buildRowPerWallet = (crypto, first) => {
     $('#cryptosPerWallet').append(row);
 }
 
+const getTokenIconHtml = (crypto) => {
+    if (crypto.image !== undefined && crypto.image !== "") {
+        return `<img class="icon clickable" src="${crypto.image}" onclick="showInfo('${crypto.id}')">`;
+    } else {
+        return "";
+    }
+}
+
 const buildRowPerToken = (crypto) => {
     let wallets = crypto.wallets.split(",");
     let images = "";
@@ -20,10 +28,14 @@ const buildRowPerToken = (crypto) => {
         images += getIconsHtml(wallets[i]);
     }
     let value = (crypto.value === "N/A") ? "N/A" : formatDelim(((crypto.value * 100) / 100).toFixed(2), ds);
-    let row = `<tr><td><span>${crypto.token}</span></td><td>${images}</td>` +
+    let row = `<tr><td>${getTokenIconHtml(crypto)}</td></td><td><span>${crypto.token}</span></td><td>${images}</td>` +
         `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
         `<td class="num">${value}</td></tr>`;
     $('#cryptosPerToken').append(row);
+}
+
+const showInfo = (coinId) => {
+    window.location = `/showTokenInfo?id=${coinId}&returnUrl=/portfolio&header=h-portfolio`;
 }
 
 const display = (jsonData) => {

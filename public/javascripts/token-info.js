@@ -101,8 +101,8 @@ const init = () => {
     $('#graphButtonDay').on('click', () => {
         showGraph('D');
     })
+    includeHTML(header).then(() => {
+        handleDarkMode(document.getElementById('darkmode'));
+    });
 }
 
-includeHTML("<%= data.header %>").then(() => {
-    handleDarkMode(document.getElementById('darkmode'));
-});

@@ -26,3 +26,7 @@
 .icon {
     margin-right: 5px !important;
 }
+
+.minspace td {
+    padding: 5px;
+}
