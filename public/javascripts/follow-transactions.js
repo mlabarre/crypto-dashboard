@@ -1,4 +1,4 @@
-let sortDirection = "A";
+let sortDirection = "D";
 
 const fill = (data) => {
     $.each(data, (line) => {
