@@ -30,3 +30,11 @@
 .minspace td {
     padding: 5px;
 }
+
+.minus {
+    color: red;
+}
+
+.plus {
+    color: green
+}

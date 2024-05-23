@@ -2,6 +2,7 @@ const config = require('config');
 const MongoHelper = require('./classes/mongo-helper');
 const utils = require('../scripts/utils')
 const {Stock} = require('./classes/portfolio')
+const evolution = require('./evolution')
 
 const handleSummaryPurchaseTransaction = async (tr) => {
     return {"token": tr.symbol, "wallet": tr.wallet, "nb": tr.tokens}
@@ -60,16 +61,16 @@ const removeAllWithZeroTokens = async (stock) => {
 const getCryptoInfo = (symbol, cryptos) => {
     let res = findCrypto(symbol, cryptos);
     if (res != null) {
-        return [ res.quotation, res.id, (res.info === undefined) ? "" : res.info.image ];
+        return [res.quotation, res.id, (res.info === undefined) ? "" : res.info.image];
     } else {
-        return [ 0.00, "", "" ];
+        return [0.00, "", ""];
     }
 }
 
 const valorize = (tokens, myCryptos) => {
     for (let i = 0; i < tokens.length; i++) {
         let quotation, id, image;
-        [ quotation, id, image ] = getCryptoInfo(tokens[i].token, myCryptos);
+        [quotation, id, image] = getCryptoInfo(tokens[i].token, myCryptos);
         tokens[i].value = (tokens[i].nb * quotation);
         tokens[i].image = image;
         tokens[i].id = id;
@@ -174,6 +175,28 @@ const removeValueForIco = (symbolsInMyCryptos, list) => {
     return list;
 }
 
+const getInvestIndexInArray = (arr, symbol) => {
+    return arr.findIndex(crypto => crypto.token === symbol);
+}
+
+const buildInvestPerToken = (evolutionTokens, perToken) => {
+    for (let i = 0; i < evolutionTokens.length; i++) {
+        let tokenIndex = getInvestIndexInArray(perToken, evolutionTokens[i].symbol);
+        let token = perToken[tokenIndex];
+        if (token.hasOwnProperty("invest")) {
+            token.invest += evolutionTokens[i].start_price * evolutionTokens[i].tokens;
+        } else {
+            token.invest = evolutionTokens[i].start_price * evolutionTokens[i].tokens;
+        }
+    }
+}
+
+const computeRoi = (perToken) => {
+    for (let i = 0; i < perToken.length; i++) {
+        perToken[i].roi = perToken[i].value - perToken[i].invest;
+    }
+}
+
 const portfolio = async () => {
     let stock = new Stock();
     let fees = [];
@@ -184,13 +207,17 @@ const portfolio = async () => {
     }
     stock = await removeAllWithZeroTokens(stock);
     stock = handleFees(stock, fees);
-    valorize(stock.tokens, myCryptos)
+    valorize(stock.tokens, myCryptos);
     let result = buildValuePerToken(stock.getTokens());
     let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
+    let perToken = removeValueForIco(symbols, valorize(result.tokensValue, myCryptos).sort(utils.fieldSorter(["token"])));
+    let evolutionResult = await evolution.evolution();
+    buildInvestPerToken(evolutionResult.result.tokens, perToken);
+    computeRoi(perToken)
     return {
         total: result.total,
         perWallet: removeValueForIco(symbols, setTotalPerWallet(stock.getTokens())),
-        perToken: removeValueForIco(symbols, valorize(result.tokensValue, myCryptos).sort(utils.fieldSorter(["token"])))
+        perToken: perToken
     };
 }
 

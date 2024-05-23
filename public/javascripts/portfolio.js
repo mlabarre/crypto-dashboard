@@ -21,6 +21,17 @@ const getTokenIconHtml = (crypto) => {
     }
 }
 
+const buildRoiHtml = (roi) => {
+    if (roi === null) {
+        return "<td></td>"
+    } else {
+        if (roi < 0) {
+            return `<td class="num minus">${roi.toFixed(2)}</td>`;
+        } else {
+            return `<td class="num plus">+${roi.toFixed(2)}</td>`;
+        }
+    }
+}
 const buildRowPerToken = (crypto) => {
     let wallets = crypto.wallets.split(",");
     let images = "";
@@ -30,7 +41,10 @@ const buildRowPerToken = (crypto) => {
     let value = (crypto.value === "N/A") ? "N/A" : formatDelim(((crypto.value * 100) / 100).toFixed(2), ds);
     let row = `<tr><td>${getTokenIconHtml(crypto)}</td></td><td><span>${crypto.token}</span></td><td>${images}</td>` +
         `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
-        `<td class="num">${value}</td></tr>`;
+        `<td class="num">${value}</td>` +
+        `<td class="num">${crypto.invest.toFixed(2)}</td>` +
+        `${buildRoiHtml(crypto.roi)}` +
+        `</tr>`
     $('#cryptosPerToken').append(row);
 }
 
