@@ -78,7 +78,7 @@ const setSelectedInComboWallets = (selectId, value) => {
     let index = wallets.indexOf(value);
     try {
         if (index >= 0) {
-            document.querySelector('#' + selectId).selectedIndex = index;
+            document.querySelector('#' + selectId).selectedIndex = index + 1;
         }
     } catch (e) {
         console.log(document.querySelector('#sendWallet'))
