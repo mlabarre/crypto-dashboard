@@ -35,11 +35,11 @@
             <table id="cryptosPerToken" class="styled-table minspace">
                 <thead>
                 <th></th>
-                <th>Token</th>
+                <th class="clickable" onclick="sortTable('token')">Token</th>
                 <th>Wallet(s)</th>
-                <th class="num"># tokens</th>
-                <th class="num">Valeur <%= fiat_symbol %></th>
-                <th class="num">Invest. <%= fiat_symbol %></th>
+                <th class="num clickable" onclick="sortTable('nb')"># tokens</th>
+                <th class="num clickable" onclick="sortTable('value')">Valeur <%= fiat_symbol %></th>
+                <th class="num clickable" onclick="sortTable('invest')">Invest. <%= fiat_symbol %></th>
                 <th class="num clickable" onclick="sortTable('roi')">ROI <%= fiat_symbol %></th>
                 </thead>
                 <tbody></tbody>
