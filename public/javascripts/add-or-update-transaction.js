@@ -204,6 +204,8 @@ const getNumberTokenForWallet = (wallet, symbol, id) => {
 const handleWalletOrTokenChange = (wallet, tokenId, id) => {
     if (wallet !== "" && tokenId !== "") {
         getNumberTokenForWallet(wallet, tokenId, id);
+    } else {
+        $('#'+id).val('');
     }
 }
 const setNumberTokenListeners = () => {
@@ -271,6 +273,7 @@ const init = () => {
                     })
                     .done((data) => {
                         alert(data);
+                        $('#form')[0].reset();
                     })
                     .fail((error) => {
                         $('#message').text(error);
