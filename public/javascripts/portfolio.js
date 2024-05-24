@@ -1,3 +1,6 @@
+let lastSortField = "token";
+let lastSortDirection = "A";
+
 const buildRowPerWallet = (crypto, first) => {
     let row;
     if (crypto.token === "") { // Total
@@ -72,11 +75,19 @@ const display = (jsonData) => {
     }
 }
 
+const sortTable = (sortField) => {
+    if (sortField === lastSortField) {
+        lastSortDirection = lastSortDirection === "A" ? "D" : "A";
+    }
+    lastSortField = sortField;
+    getTokens();
+}
+
 const getTokens = () => {
     $.ajax(
         {
             type: "GET",
-            url: "/api/portfolio",
+            url: `/api/portfolio?sortField=${lastSortField}&sortDirection=${lastSortDirection}`,
             contentType: "application/json; charset=utf-8",
             accept: "application/json; charset=utf-8"
         })

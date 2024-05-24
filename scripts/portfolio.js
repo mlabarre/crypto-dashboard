@@ -197,29 +197,39 @@ const computeRoi = (perToken) => {
     }
 }
 
-const portfolio = async () => {
+const buildTokensChain = async () => {
     let stock = new Stock();
     let fees = [];
     let transactions = await new MongoHelper().findAllTransactions();
-    let myCryptos = await new MongoHelper().findAllMyCryptos(true);
     for (let i = 0; i < transactions.length; i++) {
         await handleSummaryTransaction(transactions[i], stock, fees);
     }
     stock = await removeAllWithZeroTokens(stock);
-    stock = handleFees(stock, fees);
+    return handleFees(stock, fees);
+}
+
+const portfolio = async (sortField = "token", sortDirection = "A") => {
+    let myCryptos = await new MongoHelper().findAllMyCryptos(true);
+    let stock = await buildTokensChain();
     valorize(stock.tokens, myCryptos);
     let result = buildValuePerToken(stock.getTokens());
     let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
-    let perToken = removeValueForIco(symbols, valorize(result.tokensValue, myCryptos).sort(utils.fieldSorter(["token"])));
+    let sortDirective = sortDirection === "A" ? sortField : "-" + sortField;
+    let perToken = removeValueForIco(symbols, valorize(result.tokensValue, myCryptos));
     let evolutionResult = await evolution.evolution();
     buildInvestPerToken(evolutionResult.result.tokens, perToken);
     computeRoi(perToken)
     return {
         total: result.total,
         perWallet: removeValueForIco(symbols, setTotalPerWallet(stock.getTokens())),
-        perToken: perToken
+        perToken: perToken.sort(utils.fieldSorter([sortDirective]))
     };
 }
 
-exports.portfolio = portfolio
+const getTokensNumberForWalletAndSymbol = async (wallet, symbol) => {
+    let stock = await buildTokensChain();
+    return stock.getTokensNumber(wallet, symbol);
+}
 
+exports.portfolio = portfolio
+exports.getTokensNumberForWalletAndSymbol = getTokensNumberForWalletAndSymbol

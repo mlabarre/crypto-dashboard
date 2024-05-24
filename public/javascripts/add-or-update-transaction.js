@@ -16,7 +16,7 @@ const setCurrentDate = (type) => {
 }
 
 const buildSelectWallets = async (data) => {
-    let options = "";
+    let options = `<option value="">${choice}</option>`;
     $.each(data, (item) => {
         options += `<option value="${data[item].wallet}">${data[item].wallet}</option>`;
         wallets.push(data[item].wallet);
@@ -186,6 +186,46 @@ const validateFields = (prefix) => {
     return validateTokenId(prefix);
 }
 
+const getNumberTokenForWallet = (wallet, symbol, id) => {
+    $.ajax(
+        {
+            type: "GET",
+            url: `/api/portfolio/number-token-for-wallet?wallet=${wallet}&symbol=${symbol}`,
+            contentType: "application/json; charset=utf-8"
+        })
+        .done((data) => {
+            $('#'+id).val(data.number);
+        })
+        .fail((error) => {
+            // do nothing
+        })
+}
+
+const handleWalletOrTokenChange = (wallet, tokenId, id) => {
+    if (wallet !== "" && tokenId !== "") {
+        getNumberTokenForWallet(wallet, tokenId, id);
+    }
+}
+const setNumberTokenListeners = () => {
+    document.querySelector('#saleWallet').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#saleWallet').val(), $('#saleTokenId').val(), "saleTokenNumber");
+    });
+    document.querySelector('#saleTokenId').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#saleWallet').val(), $('#saleTokenId').val(), "saleTokenNumber");
+    });
+    document.querySelector('#swapWallet').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#swapWallet').val(), $('#swapOutputTokenId').val(), "swapOutputTokenNumber");
+    });
+    document.querySelector('#swapOutputTokenId').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#swapWallet').val(), $('#swapOutputTokenId').val(), "swapOutputTokenNumber");
+    });
+    document.querySelector('#sendWallet').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#sendWallet').val(), $('#sendTokenId').val(), "sendTokenNumber");
+    });
+    document.querySelector('#sendTokenId').addEventListener("change", (e) => {
+        handleWalletOrTokenChange($('#sendWallet').val(), $('#sendTokenId').val(), "sendTokenNumber");
+    });
+}
 const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {
         hideAll();
@@ -200,6 +240,7 @@ const init = () => {
             $('#sendContainer').show();
         }
     });
+    setNumberTokenListeners();
     if (trid === '') {
         $('#cancel').hide();
     }

@@ -106,8 +106,13 @@ router
             response.send("ok")
         })
     })
+    .get('/api/portfolio/number-token-for-wallet', function (request, response, next) {
+        portFolio.getTokensNumberForWalletAndSymbol(request.query.wallet, request.query.symbol).then((data) => {
+            response.send(data);
+        })
+    })
     .get('/api/portfolio', function (request, response, next) {
-        portFolio.portfolio().then((data) => {
+        portFolio.portfolio(request.query.sortField, request.query.sortDirection).then((data) => {
             response.send(data);
         })
     })

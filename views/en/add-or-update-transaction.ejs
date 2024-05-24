@@ -41,6 +41,11 @@
                     </div>
                 </div>
                 <div class="input">
+                    <label for="purchaseWallet">Wallet </label>
+                    <select class="selectWalletNode" name="purchaseWallet" id="purchaseWallet">
+                    </select>
+                </div>
+                <div class="input">
                     <div>
                         <label for="purchaseTokenId">Token </label>
                         <select class="selectSymbolNode" id="purchaseTokenId" name="purchaseTokenId">
@@ -62,12 +67,7 @@
                     <label for="purchaseFeeInFiat">Fee (<%= fiat_symbol %>) </label>
                     <input type="number" name="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
                 </div>
-                <div class="input">
-                    <label for="purchaseWallet">Wallet </label>
-                    <select class="selectWalletNode" name="purchaseWallet" id="purchaseWallet">
-                    </select>
-                </div>
-            </div>
+             </div>
 
             <!-- SALE -->
             <div id="saleContainer" class="hide">
@@ -78,6 +78,11 @@
                         <input type="date" name="saleDate" id="saleDate" value="<%= saleDate %>">
                         <input type="time" name="saleTime" id="saleTime" step="1" value="<%= saleTime %>">
                     </div>
+                </div>
+                <div class="input">
+                    <label for="saleWallet ">Wallet </label>
+                    <select class="selectWalletNode" name="saleWallet" id="saleWallet">
+                    </select>
                 </div>
                 <div class="input">
                     <div>
@@ -101,11 +106,6 @@
                     <label for="saleFeeInFiat">Fee (<%= fiat_symbol %>) </label>
                     <input type="number" name="saleFeeInFiat" step="0.01" value="<%= saleFeeInFiat %>">
                 </div>
-                <div class="input">
-                    <label for="saleWallet ">Wallet </label>
-                    <select class="selectWalletNode" name="saleWallet" id="saleWallet">
-                    </select>
-                </div>
             </div>
 
             <!-- SWAP -->
@@ -117,6 +117,11 @@
                         <input type="date" name="swapDate" id="swapDate" value="<%= swapDate %>">
                         <input type="time" name="swapTime" id="swapTime" step="1" value="<%= swapTime %>">
                     </div>
+                </div>
+                <div class="input">
+                    <label for="swapWallet">Wallet </label>
+                    <select class="selectWalletNode" name="swapWallet" id="swapWallet">
+                    </select>
                 </div>
                 <div class="col2">
                     <!-- Output of swap -->
@@ -131,7 +136,7 @@
                         </div>
                         <div class="input">
                             <label for="swapOutputTokenNumber"># tokens&nbsp;&nbsp;&nbsp;</label>
-                            <input type="number" name="swapOutputTokenNumber" step="0.00000001"
+                            <input type="number" name="swapOutputTokenNumber" id="swapOutputTokenNumber" step="0.00000001"
                                    value="<%= swapOutputTokenNumber %>">
                         </div>
                         <div class="input">
@@ -186,11 +191,6 @@
                         <label for="swapFeeCurrencyOpt">Fee currency </label>
                         <input type="text" name="swapFeeCurrencyOpt" value="<%= swapFeeCurrencyOpt %>">
                     </div>
-                    <div class="input">
-                        <label for="swapWallet">Wallet </label>
-                        <select class="selectWalletNode" name="swapWallet">
-                        </select>
-                    </div>
                 </div>
             </div>
 
@@ -215,14 +215,14 @@
                 <div class="col2">
                     <div>
                         <div class="input">
-                            <label for="sendTokenNumber"># Tokens &nbsp;&nbsp;&nbsp;</label>
-                            <input type="number" name="sendTokenNumber" step="0.00000001"
-                                   value="<%= sendTokenNumber %>">
-                        </div>
-                        <div class="input">
                             <label for="sendWallet">Wallet </label>
                             <select class="selectWalletNode" name="sendWallet" id="sendWallet">
                             </select>
+                        </div>
+                        <div class="input">
+                            <label for="sendTokenNumber"># Tokens &nbsp;&nbsp;&nbsp;</label>
+                            <input type="number" name="sendTokenNumber" id="sendTokenNumber" step="0.00000001"
+                                   value="<%= sendTokenNumber %>">
                         </div>
                     </div>
                     <div class="arrow-box">
@@ -230,14 +230,14 @@
                     </div>
                     <div>
                         <div class="input">
-                            <label for="receiveTokenNumber"># Tokens &nbsp;&nbsp;&nbsp;</label>
-                            <input type="number" name="receiveTokenNumber" step="0.00000001"
-                                   value="<%= receiveTokenNumber %>">
-                        </div>
-                        <div class="input">
                             <label for="receiveWallet">Wallet </label>
                             <select class="selectWalletNode" name="receiveWallet" id="receiveWallet">
                             </select>
+                        </div>
+                        <div class="input">
+                            <label for="receiveTokenNumber"># Tokens &nbsp;&nbsp;&nbsp;</label>
+                            <input type="number" name="receiveTokenNumber" step="0.00000001"
+                                   value="<%= receiveTokenNumber %>">
                         </div>
                     </div>
                 </div>
@@ -322,8 +322,7 @@
     let coherenceMsg2 = "Wallets must differ !";
     let coherenceMsg3 = "If a blockchain is selected you must enter a transaction number and vice versa";
     let validateFieldsMsg = "At least one value is missing or invalid...";
-
-
+    let choice = "Select";
 
     $(() => {
         init();

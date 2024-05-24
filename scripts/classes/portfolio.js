@@ -23,6 +23,7 @@ class Stock {
             });
         }
     }
+
     addOrUpdateDouble = (data) => {
         this.addOrUpdateSimple(data[0]);
         this.addOrUpdateSimple(data[1]);
@@ -34,6 +35,16 @@ class Stock {
 
     setTokens = (tokens) => {
         this.tokens = tokens;
+    }
+
+    getTokensNumber = (wallet, symbol) => {
+        let nb = 0;
+        for (let i=0; i<this.tokens.length; i++) {
+            if (this.tokens[i].wallet === wallet && this.tokens[i].token === symbol) {
+                nb += this.tokens[i].nb;
+            }
+        }
+        return { number: nb };
     }
 }
 
