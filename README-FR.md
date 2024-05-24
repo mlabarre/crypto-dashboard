@@ -71,6 +71,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 C'est l'installation la plus simple.
 
+La documentation est dans l'overview de l'image docker [labarrem/crypto-dashboard-ui](https://hub.docker.com/r/labarrem/crypto-dashboard-ui)
+
 La première chose à faire est de choisir le répertoire de base pour l'installation. Appelons-le *CRYPTO_HOME*.
 
 Dans un terminal, passer les commandes suivantes:
