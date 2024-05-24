@@ -424,7 +424,7 @@ sudo docker compose up -d
 
 With MACOS, if the docker compose command fails, try without *sudo*.
 
-## Alertes
+## Alerts
 
 It is possible to define alerts on the *Evolution* and *survey* views.
 
