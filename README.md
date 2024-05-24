@@ -81,7 +81,7 @@ mkdir -p $CRYPTO_HOME/dashboard/mongodb
 mkdir -p $CRYPTO_HOME/dashboard/config
 ```
 
-In <CRYPTO_HOME>/config create a file named *default.json* with the following content (content visible in this project in demo/default.json):
+In <CRYPTO_HOME>/dashboard/config create a file named *default.json* with the following content (content visible in this project in demo/default.json):
 ```
 {
     "language": "fr",
@@ -150,25 +150,25 @@ services:
     depends_on:
       - mongo
     volumes:
-      - /datas/dashboard/icons:/home/node/app/public/images/icons
-      - /datas/dashboard/config:/home/node/app/config
+      - <CRYPTO_HOME>/dashboard/icons:/home/node/app/public/images/icons
+      - <CRYPTO_HOME>/dashboard/config:/home/node/app/config
     restart: unless-stopped
   updater:
     image: labarrem/crypto-dashboard-data:stable
     depends_on:
       - mongo
     volumes:
-      - /datas/dashboard/config:/home/node/app/config
+      - <CRYPTO_HOME>/dashboard/config:/home/node/app/config
     restart: unless-stopped
   mongo:
     image: mongo:4.4
     volumes:
-      - /datas/mongodb:/data/db
+      - <CRYPTO_HOME>/dashboard/mongodb:/data/db
     ports:
       - "27017:27017"
     restart: unless-stopped
 ```
-by replacing all the strings '/datas/dashboard' with the chosen directory (<CRYPTO_HOME>) above.
+by replacing all the strings '<CRYPTO_HOME>' with the chosen directory (value of CRYPTO_HOME) above.
 
 Note: the dashboard service listen port depends on the information coded in this *docker-compose-images.yml* file but
 also in the *default.json* configuration file.
@@ -257,7 +257,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 | language                   | Language used: _**fr**_ (French) or _**en**_ (English) only.                                            |
 | fiat_currency              | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.   |
 | fiat_symbol                | Currency of symbol above. This can be €, $, £, etc...                                                   |
-| decimal_separator          | Decimal separator charcater                                                                             |
+| decimal_separator          | Decimal separator character                                                                             |
 | mongodb_uri                | This is the connection URL to the mongodb server. Don't change anything.                                |
 | mongodb_database           | Name you want to give to the mongo database. Here it is _**crypto**_.                                   |
 | server_port                | Node server listening port. Here 8080.                                                                  |
@@ -304,7 +304,7 @@ You need to specify where wallets icons reside.
 You must create the local directory where icons will be stored.
 
 ```
-mkdir <CRYPTO_HOME>/icons
+mkdir <CRYPTO_HOME>/dashboard/icons
 ```
 
 You then need to edit the docker-compose.yml file. It should look like this:
@@ -329,7 +329,7 @@ services:
   mongo:
     image: mongo:4.4
     volumes:
-      - /datas/mongodb:/data/db
+      - /datas/dashboard/mongodb:/data/db
     ports:
       - "27017:27017"
 ```
@@ -342,7 +342,7 @@ You must replace:
 by
 ```
      volumes:
-       - <CRYPTO_HOME>/icons:/home/node/app/public/images/icons
+       - <CRYPTO_HOME>/dashboard/icons:/home/node/app/public/images/icons
 ```
 
 always replacing <CRYPTO_HOME> by the chosen path, of course.
@@ -357,7 +357,7 @@ before the ':' character.
 To initialize the folder with the icons supplied in project *crypto-dashboard* enter the following command :
 
 ```
-cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
+cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/dashboard/icons
 ```
 
 replacing <CRYPTO_HOME> by the chosen path.
@@ -369,7 +369,7 @@ You now need to specify where the MongoDB database named in the previous two fil
 For example, we could design *<CRYPTO_HOME>/mongodb* to put the database in the directory you created above.
 
 ```
-mkdir <CRYPTO_HOME>/mongodb
+mkdir <CRYPTO_HOME>/dashboard/mongodb
 ```
 
 You then need to edit the docker-compose.yml file. It should look like this:
@@ -393,7 +393,7 @@ services:
    mongo:
      image: mongo
      volumes:
-       - /datas/mongodb:/data/db
+       - /datas/dashboard/mongodb:/data/db
      ports:
        - "27017:27017"
 ```
@@ -401,12 +401,12 @@ services:
 You must replace:
 ```
      volumes:
-       - /datas/mongodb:/data/db
+       - /datas/dashboard/mongodb:/data/db
 ```
 by
 ```
      volumes:
-       - <CRYPTO_HOME>/mongodb:/data/db
+       - <CRYPTO_HOME>/dashboard/mongodb:/data/db
 ```
 always replacing <CRYPTO_HOME> by the chosen path.
 

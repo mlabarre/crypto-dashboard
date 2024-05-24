@@ -82,7 +82,7 @@ mkdir -p $CRYPTO_HOME/dashboard/mongodb
 mkdir -p $CRYPTO_HOME/dashboard/config
 ```
 
-Dans <CRYPTO_HOME>/config créer un fichier nommé *default.json* avec le contenu suivant (contenu visible dans ce projet dans demo/default.json):
+Dans <CRYPTO_HOME>/dashboard/config créer un fichier nommé *default.json* avec le contenu suivant (contenu visible dans ce projet dans demo/default.json):
 ```
 {
     "language": "fr",
@@ -164,12 +164,12 @@ services:
   mongo:
     image: mongo:4.4
     volumes:
-      - /datas/mongodb:/data/db
+      - /datas/dashboard/mongodb:/data/db
     ports:
       - "27017:27017"
     restart: unless-stopped
 ```
-en remplaçant toutes les chaines '/datas/dashboard' par le répertoire choisi (<CRYPTO_HOME>) ci-dessus.
+en remplaçant toutes les chaines '/datas/dashboard' par le répertoire choisi (valeur de CRYPTO_HOME) ci-dessus.
 
 Note: le port d'écoute du service dashboard dépend des informations codées dans ce fichier *docker-compose-images.yml* mais
 aussi dans le fichier de configuration *default.json*.
@@ -306,7 +306,7 @@ Vous devez indiquer un répertoire où seront stockées les icônes des wallets.
 Créer ce répertoire
 
 ```
-mkdir <CRYPTO_HOME>/icons
+mkdir <CRYPTO_HOME>/dashboard/icons
 ```
 
 Vous devez ensuite éditer le fichier docker-compose.yml. Il doit ressembler à cela:
@@ -331,7 +331,7 @@ services:
   mongo:
     image: mongo
     volumes:
-      - /datas/mongodb:/data/db
+      - /datas/dashboard/mongodb:/data/db
     ports:
       - "27017:27017"
 ```
@@ -343,7 +343,7 @@ Vous devez remplacer :
 par
 ```
      volumes:
-       - <CRYPTO_HOME>/icons:/home/node/app/public/images/icons
+       - <CRYPTO_HOME>/dashboard/icons:/home/node/app/public/images/icons
 ```
 
 en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
@@ -351,7 +351,7 @@ en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
 Pour initialiser le répertoire avec les icônes fournies dans le projet *crypto-dashboard* effectuer la commande suivante :
 
 ```
-cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/icons
+cp <CRYPTO_HOME>/crypto-dashboard/public/images/icons/* <CRYPTO_HOME>/dashboard/icons
 ```
 en remplaçant toujours <CRYPTO_HOME> par le chemin choisi.
 
@@ -362,7 +362,7 @@ Vous devez maintenant spécifier où doit se trouvera la base de données MongoD
 On pourrait concevoir par exemple *<CRYPTO_HOME>/mongodb* pour mettre la base de données dans le répertoire que vous avez créé plus haut.
 
 ```
-mkdir <CRYPTO_HOME>/mongodb
+mkdir <CRYPTO_HOME>/dashboard/mongodb
 ```
 
 Vous devez ensuite éditer le fichier docker-compose.yml. Il doit ressembler à cela:
@@ -386,7 +386,7 @@ services:
   mongo:
     image: mongo
     volumes:
-      - /datas/mongodb:/data/db
+      - /datas/dashboard/mongodb:/data/db
     ports:
       - "27017:27017"
 ```
@@ -394,12 +394,12 @@ services:
 Vous devez remplacer :
 ```
     volumes:
-      - /datas/mongodb:/data/db
+      - /datas/dashboard/mongodb:/data/db
 ```
 par 
 ```
     volumes:
-      - <CRYPTO_HOME>/mongodb:/data/db
+      - <CRYPTO_HOME>/dashboard/mongodb:/data/db
 ```
 en remplaçant toujours <CRYPTO_HOME> par le chemin choisi, bien entendu.
 
