@@ -122,9 +122,14 @@ router
         })
     })
     .get('/api/follow-token-on-wallet', function (request, response, next) {
-        followTransactions.follow(request.query.lang, request.query.token, request.query.wallet, request.query.sortDirection).then((data) => {
-            response.send(data);
-        })
+        followTransactions.follow(request.query.lang,
+            request.query.token,
+            request.query.wallet,
+            request.query.action,
+            request.query.sortDirection)
+            .then((data) => {
+                response.send(data);
+            })
     })
     .get('/api/get-all-symbols', function (request, response, next) {
         followTransactions.getAllSymbols(request.query.token, request.query.wallet).then((data) => {

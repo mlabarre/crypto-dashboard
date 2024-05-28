@@ -35,6 +35,7 @@ const buildRoiHtml = (roi) => {
         }
     }
 }
+
 const buildRowPerToken = (crypto) => {
     let wallets = crypto.wallets.split(",");
     let images = "";

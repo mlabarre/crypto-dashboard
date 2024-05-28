@@ -7,20 +7,20 @@ const getAllTransactionsOnDate = async (direction) => {
     return await new MongoHelper().findAllTransactionsSortedOnDate(direction);
 }
 
-const handleTransaction = (transaction, token, wallet) => {
-    if (transaction.type === "purchase") {
+const handleTransaction = (transaction, token, wallet, action) => {
+    if (transaction.type === "purchase" && (action === "" || action === "purchase")) {
         if ((wallet === "" || transaction.wallet === wallet) && (transaction.symbol === token || token === "")) {
             return true;
         }
-    } else if (transaction.type === "sale") {
+    } else if (transaction.type === "sale" && (action === "" || action === "sale")) {
         if ((wallet === "" || transaction.wallet === wallet) && (transaction.symbol === token || token === "")) {
             return true;
         }
-    } else if (transaction.type === "swap") {
+    } else if (transaction.type === "swap" && (action === "" || action === "swap")) {
         if ((wallet === "" || transaction.wallet === wallet) && (transaction.outputSymbol === token || transaction.inputSymbol === token || token === "")) {
             return true;
         }
-    } else if (transaction.type === "send") {
+    } else if (transaction.type === "send" && (action === "" || action === "send")) {
         if ((transaction.symbol === token || token === "") && (wallet === "" || transaction.sendWallet === wallet || transaction.receiveWallet === wallet)) {
             return true;
         }
@@ -203,11 +203,11 @@ const getAllWallets = async () => {
 /*
  Follow transactions on a specified token and a specified wallet
  */
-const follow = async (lang, token, wallet, sortDirection, noInterpret) => {
+const follow = async (lang, token, wallet, action, sortDirection, noInterpret) => {
     let actions = [];
     let transactions = await getAllTransactionsOnDate(sortDirection === "A" ? 1 : -1);
     for (let i = 0; i < transactions.length; i++) {
-        let res = handleTransaction(transactions[i], token.toUpperCase(), wallet);
+        let res = handleTransaction(transactions[i], token.toUpperCase(), wallet, action);
         if (res === true) {
             if (noInterpret === undefined) {
                 actions.push(interpretFlow(lang, transactions[i], wallet));

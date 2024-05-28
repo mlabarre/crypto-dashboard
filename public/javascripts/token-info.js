@@ -94,13 +94,13 @@ const showGraph = (period) => {
 const init = () => {
     $('#returnButton').on('click', () => {
         window.location = returnUrl;
-    })
+    });
     $('#graphButtonHour').on('click', () => {
         showGraph('H');
-    })
+    });
     $('#graphButtonDay').on('click', () => {
         showGraph('D');
-    })
+    });
     includeHTML(header).then(() => {
         handleDarkMode(document.getElementById('darkmode'));
     });

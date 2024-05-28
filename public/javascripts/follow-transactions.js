@@ -62,8 +62,10 @@ const getDatas = () => {
     $.ajax(
         {
             type: "GET",
-            url: `/api/follow-token-on-wallet?lang=fr&sortDirection=${sortDirection}&token=${document.getElementById("token").value}` +
-                `&wallet=${document.getElementById("wallet").value}`,
+            url: `/api/follow-token-on-wallet?lang=fr&sortDirection=${sortDirection}` +
+                `&token=${document.getElementById("token").value}` +
+                `&wallet=${document.getElementById("wallet").value}` +
+                `&action=${document.getElementById("action").value}`,
             contentType: "application/json; charset=utf-8"
         })
         .done((data) => {
@@ -131,6 +133,7 @@ const init = () => {
     $('#reset').on('click', () => {
         $('#token').val('');
         $('#wallet').val('');
+        $('#action').val('');
         getDatas();
     });
     $('#downloadCsv').on('click', () => {
@@ -148,6 +151,10 @@ const init = () => {
         }
     )
     $('#wallet').on('change', () => {
+            getDatas();
+        }
+    )
+    $('#action').on('change', () => {
             getDatas();
         }
     )

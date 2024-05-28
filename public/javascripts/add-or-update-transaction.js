@@ -208,6 +208,7 @@ const handleWalletOrTokenChange = (wallet, tokenId, id) => {
         $('#'+id).val('');
     }
 }
+
 const setNumberTokenListeners = () => {
     document.querySelector('#saleWallet').addEventListener("change", (e) => {
         handleWalletOrTokenChange($('#saleWallet').val(), $('#saleTokenId').val(), "saleTokenNumber");
@@ -228,6 +229,7 @@ const setNumberTokenListeners = () => {
         handleWalletOrTokenChange($('#sendWallet').val(), $('#sendTokenId').val(), "sendTokenNumber");
     });
 }
+
 const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {
         hideAll();
