@@ -1,6 +1,18 @@
 let lastSortField = "token";
 let lastSortDirection = "A";
 
+const signRate = (rate) => {
+    if (rate) {
+        if (rate >= 0) {
+            return '<span class="minus">&searr;&nbsp;' + Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
+        } else {
+            return '<span class="plus">&nearr;&nbsp;' + Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
+        }
+    } else {
+        return "";
+    }
+}
+
 const buildRowPerWallet = (crypto, first) => {
     let row;
     if (crypto.token === "") { // Total
@@ -48,6 +60,7 @@ const buildRowPerToken = (crypto) => {
         `<td class="num">${value}</td>` +
         `<td class="num">${crypto.invest.toFixed(2)}</td>` +
         `${buildRoiHtml(crypto.roi)}` +
+        `<td>${signRate(crypto.price24Percent)}</td>`+
         `</tr>`
     $('#cryptosPerToken').append(row);
 }

@@ -61,19 +61,25 @@ const removeAllWithZeroTokens = async (stock) => {
 const getCryptoInfo = (symbol, cryptos) => {
     let res = findCrypto(symbol, cryptos);
     if (res != null) {
-        return [res.quotation, res.id, (res.info === undefined) ? "" : res.info.image];
+        return [
+            res.quotation,
+            res.id,
+            (res.info === undefined) ? "" : res.info.image,
+            (res.info === undefined) ? "" : res.info.price_change_percentage_24h
+        ];
     } else {
-        return [0.00, "", ""];
+        return [0.00, "", "", ""];
     }
 }
 
 const valorize = (tokens, myCryptos) => {
     for (let i = 0; i < tokens.length; i++) {
-        let quotation, id, image;
-        [quotation, id, image] = getCryptoInfo(tokens[i].token, myCryptos);
+        let quotation, id, image, price24h;
+        [quotation, id, image, price24h] = getCryptoInfo(tokens[i].token, myCryptos);
         tokens[i].value = (tokens[i].nb * quotation);
         tokens[i].image = image;
         tokens[i].id = id;
+        tokens[i].price24Percent = price24h;
     }
     return tokens;
 }
