@@ -4,9 +4,11 @@ let lastSortDirection = "A";
 const signRate = (rate) => {
     if (rate) {
         if (rate >= 0) {
-            return '<span class="minus">&searr;&nbsp;' + Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
+            return '<span class="plus">&nearr;&nbsp;' +
+                Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
         } else {
-            return '<span class="plus">&nearr;&nbsp;' + Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
+            return '<span class="minus">&searr;&nbsp;' +
+                Math.abs(rate).toFixed(2).replace(".", ds) + ' %' + '</span>';
         }
     } else {
         return "";
@@ -55,12 +57,13 @@ const buildRowPerToken = (crypto) => {
         images += getIconsHtml(wallets[i]);
     }
     let value = (crypto.value === "N/A") ? "N/A" : formatDelim(((crypto.value * 100) / 100).toFixed(2), ds);
-    let row = `<tr><td>${getTokenIconHtml(crypto)}</td></td><td><span>${crypto.token}</span></td><td>${images}</td>` +
+    let row = `<tr><td>${getTokenIconHtml(crypto)}</td>` +
+        `</td><td><span>${crypto.token}</span></td><td>${images}</td>` +
         `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
         `<td class="num">${value}</td>` +
         `<td class="num">${crypto.invest.toFixed(2)}</td>` +
         `${buildRoiHtml(crypto.roi)}` +
-        `<td>${signRate(crypto.price24Percent)}</td>`+
+        `<td>${signRate(crypto.price24Percent)}</td>` +
         `</tr>`
     $('#cryptosPerToken').append(row);
 }

@@ -1,226 +1,228 @@
 
 * {
-  font-family: Helvetica, sans-serif;
+    font-family: Helvetica, sans-serif;
 }
 
 
 body {
-  font: 14px Helvetica, Arial, sans-serif;
-  background-color: black;
-  color: antiquewhite;
-  font-size: 16px;
-  font-weight: lighter;
+    font: 14px Helvetica, Arial, sans-serif;
+    background-color: black;
+    color: antiquewhite;
+    font-size: 16px;
+    font-weight: lighter;
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .styled-table {
-  border-collapse: collapse;
-  margin: auto auto;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-collapse: collapse;
+    margin: auto auto;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .styled-table thead tr {
-  background-color: cadetblue;
-  color: #ffffff;
-  text-align: left;
+    background-color: cadetblue;
+    color: #ffffff;
+    text-align: left;
 }
 
 .styled-table th,
 .styled-table td {
-  padding: 4px 15px;
+    padding: 4px 15px;
 }
 
 .styled-table tbody tr {
-  border-bottom: 1px solid #dddddd;
-  color: black;
-  background-color: lightgrey;
+    border-bottom: 1px solid #dddddd;
+    color: black;
+    background-color: lightgrey;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
-  color: black;
+    background-color: #f3f3f3;
+    color: black;
 }
 
 .styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid cadetblue;
+    border-bottom: 2px solid cadetblue;
 }
 
 .styled-table tr:hover td {
-  background-color: #B0B0B0;
+    background-color: #B0B0B0;
 }
 
 .button {
-  font-size: 18px;
-  padding: 3px 10px;
-  font-weight: normal;
-  border: solid 1px cadetblue;
-  background-color: black;
-  border-radius: 10px;
-  color: cadetblue;
-  margin-top: 20px;
-  cursor: pointer;
+    font-size: 18px;
+    padding: 3px 10px;
+    font-weight: normal;
+    border: solid 1px cadetblue;
+    background-color: black;
+    border-radius: 10px;
+    color: cadetblue;
+    margin-top: 20px;
+    cursor: pointer;
 }
 
 .return-button {
-  margin-left: 30px;
-  margin-top: 0px;
+    margin-left: 30px;
+    margin-top: 0px;
 }
 
 .current {
-  background-color: black !important;
-  color: antiquewhite !important;
+    background-color: black !important;
+    color: antiquewhite !important;
 }
 
 .title {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .container-menu {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .bloc-menu {
-  color: black;
-  display: flex;
-  margin: 0px 10px;
-  padding: 8px 15px;
-  border: 1px solid cadetblue;
-  border-radius: 10px;
-  background-color: cadetblue;
-  cursor: pointer;
+    color: black;
+    display: flex;
+    margin: 0px 10px;
+    padding: 8px 15px;
+    border: 1px solid cadetblue;
+    border-radius: 10px;
+    background-color: cadetblue;
+    cursor: pointer;
 }
 
 .icon {
-  height: 25px;
-  vertical-align: middle;
-  margin-right: 2px;
+    height: 25px;
+    vertical-align: middle;
+    margin-right: 2px;
 }
 
 .clickable {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .indic-moins, .indic-plus {
-  font-weight: bold;
-  font-size: 14px;
+    font-weight: bold;
+    font-size: 14px;
 }
+
 .indic-moins {
-  color: red;
+    color: red;
 }
 
 .indic-plus {
-  color: green;
+    color: green;
 }
 
 select {
-  min-height: 25px;
+    min-height: 25px;
 }
+
 .button-inline {
-  font-size: 18px;
-  padding: 3px 10px;
-  font-weight: normal;
-  border: solid 1px black;
-  background-color: cadetblue;
-  border-radius: 10px;
-  color: black;
+    font-size: 18px;
+    padding: 3px 10px;
+    font-weight: normal;
+    border: solid 1px black;
+    background-color: cadetblue;
+    border-radius: 10px;
+    color: black;
 }
 
 .red {
-  color: red;
+    color: red;
 }
 
 .green {
-  color: green;
+    color: green;
 }
 
 .button {
-  font-weight: lighter;
-  padding: 10px 10px;
+    font-weight: lighter;
+    padding: 10px 10px;
 }
 
 .button-box {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .switch {
-  display: inline-block;
-  position: relative;
-  width: 70px;
-  height: 35px;
-  cursor: pointer;
-  overflow: hidden;
+    display: inline-block;
+    position: relative;
+    width: 70px;
+    height: 35px;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 .switch input {
-  position: absolute;
-  top: -10px;
-  left: -30px;
-  width: 0;
-  height: 0;
+    position: absolute;
+    top: -10px;
+    left: -30px;
+    width: 0;
+    height: 0;
 }
 
 .switch input + span {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: black;
-  border-radius: 20px;
-  border: 1px solid cadetblue;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: black;
+    border-radius: 20px;
+    border: 1px solid cadetblue;
 }
 
 .switch input:checked + span {
-  background: black;
-  border: 1px solid cadetblue;
+    background: black;
+    border: 1px solid cadetblue;
 }
 
 .switch input + span:before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  left: 4px;
-  width: 26px;
-  height: 26px;
-  background: cadetblue;
-  border-radius: 50%;
-  transform: translateY(-50%);
-  transition: all .5s;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 26px;
+    height: 26px;
+    background: cadetblue;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: all .5s;
 }
 
 .switch input:checked + span:before {
-  left: 39px;
+    left: 39px;
 }
 
 .message {
-  color: antiquewhite;
+    color: antiquewhite;
 }
 
 .checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .orange {
-  color: orange !important;
+    color: orange !important;
 }

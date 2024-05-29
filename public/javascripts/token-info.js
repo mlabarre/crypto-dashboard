@@ -13,20 +13,12 @@ const buildGraphs = (data, period) => {
                 textColor: 'white',
                 background: {type: 'solid', color: 'black'},
             },
-            rightPriceScale: {
-                borderVisible: false,
-            },
+            rightPriceScale: {borderVisible: false},
             grid: {
-                horzLines: {
-                    visible: false
-                },
-                vertLines: {
-                    visible: false
-                }
+                horzLines: {visible: false},
+                vertLines: {visible: false}
             },
-            timeScale: {
-                timeVisible: period === 'H'
-            }
+            timeScale: {timeVisible: period === 'H'}
         }
     );
     const priceSeries = chart.addLineSeries(
@@ -38,7 +30,6 @@ const buildGraphs = (data, period) => {
     priceSeries.priceScale().applyOptions(
         {
             scaleMargins: {
-                // positioning the price scale for the area series
                 top: 0.1,
                 bottom: 0.4,
             },
@@ -59,10 +50,9 @@ const buildGraphs = (data, period) => {
             priceFormat: {
                 type: 'volume',
             },
-            priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-            // set the positioning of the volume series
+            priceScaleId: '',
             scaleMargins: {
-                top: 0.7, // highest point of the series will be 70% away from the top
+                top: 0.7,
                 bottom: 0,
             },
         }
@@ -70,7 +60,7 @@ const buildGraphs = (data, period) => {
     volumeSeries.priceScale().applyOptions(
         {
             scaleMargins: {
-                top: 0.7, // highest point of the series will be 70% away from the top
+                top: 0.7,
                 bottom: 0,
             },
         }

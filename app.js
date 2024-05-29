@@ -24,7 +24,7 @@ const app = express()
     })
     .use((error, request, response, next) => {
         response.locals.message = error.message;
-        response.locals.error = request.app.get('env') === 'development' ? error : {};
+        response.locals.error = error;
         response.status(error.status || 500);
         response.render('error');
     });

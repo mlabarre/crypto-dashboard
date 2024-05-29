@@ -13,16 +13,20 @@
 .col2 {
     margin-left: 30px;
 }
+
 .num {
     text-align: right;
 }
+
 .total {
     font-weight: bold;
     font-style: italic;
 }
+
 .title {
     font-size: 18px;
 }
+
 .icon {
     margin-right: 5px !important;
 }
@@ -37,4 +41,8 @@
 
 .plus {
     color: green
+}
+
+.styled-table tbody tr {
+    height: 36px;
 }

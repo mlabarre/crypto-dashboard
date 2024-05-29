@@ -180,25 +180,25 @@ class Binance {
     getWithdrawListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
-            this.buildWithdrawUrl,this.IS_WITHDRAW, false);
+            this.buildWithdrawUrl, this.IS_WITHDRAW, false);
     }
 
     getPurchaseListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRangeForPurchase,
-            this.buildPurchaseUrl, this.IS_PURCHASE,false);
+            this.buildPurchaseUrl, this.IS_PURCHASE, false);
     }
 
     getSaleListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRangeForSale,
-            this.buildSaleUrl, this.IS_SALE,false);
+            this.buildSaleUrl, this.IS_SALE, false);
     }
 
     getConvertListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
-            this.buildConvertUrl, this.IS_CONVERT,false);
+            this.buildConvertUrl, this.IS_CONVERT, false);
     }
 
     /*
@@ -212,17 +212,17 @@ class Binance {
 
     getPurchaseListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForPurchase,
-            this.buildPurchaseUrl, this.IS_PURCHASE,true);
+            this.buildPurchaseUrl, this.IS_PURCHASE, true);
     }
 
     getSaleListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForSale,
-            this.buildSaleUrl, this.IS_SALE,true);
+            this.buildSaleUrl, this.IS_SALE, true);
     }
 
     getConvertListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
-            this.buildConvertUrl, this.IS_CONVERT,true);
+            this.buildConvertUrl, this.IS_CONVERT, true);
     }
 }
 
