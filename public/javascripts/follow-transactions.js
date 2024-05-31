@@ -62,7 +62,7 @@ const getDatas = () => {
     $.ajax(
         {
             type: "GET",
-            url: `/api/follow-token-on-wallet?lang=fr&sortDirection=${sortDirection}` +
+            url: `/api/follow-token-on-wallet?lang=${lang}&sortDirection=${sortDirection}` +
                 `&token=${document.getElementById("token").value}` +
                 `&wallet=${document.getElementById("wallet").value}` +
                 `&action=${document.getElementById("action").value}`,

@@ -118,7 +118,7 @@ const interpretFlowFr = (t, wallet) => {
 
 const interpretFlowEn = (t, wallet) => {
     let comment = (t.comment) ? t.comment : "";
-    let d = t.date.toLocaleString('en-EN')
+    let d = utils.getDateTimeForenEN(t.date);
     let sup = "";
     if (wallet === "") {
         sup = `from wallet ${t.wallet} `;

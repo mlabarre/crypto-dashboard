@@ -21,7 +21,7 @@ const formatDelim = (value, decimalSeparator) => {
     return decimalSeparator === '.' ? chain.replaceAll(' ', ',') : chain;
 }
 
-const fieldSorter = (fields) => (a, b) => fields.map(o => {
+const   fieldSorter = (fields) => (a, b) => fields.map(o => {
     let dir = 1;
     if (o[0] === '-') {
         dir = -1;
@@ -69,6 +69,20 @@ const getTimeFromDate = (d) => {
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
+const formatAMPM = (date) => {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds) + ' ' + ampm;
+}
+
+const getDateTimeForenEN = (d) => {
+    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${formatAMPM(d)}`;
+}
+
 const buildIconsDir = async () => {
     let srcIcons = path.join(__dirname, '../demo/icons/');
     let destIcons = path.join(__dirname, '../public/images/icons/');
@@ -97,3 +111,4 @@ exports.getFormattedDate = getFormattedDate
 exports.formatDelim = formatDelim
 exports.storeUniqueInArray = storeUniqueInArray
 exports.getDateAsAAAAMMDD = getDateAsAAAAMMDD
+exports.getDateTimeForenEN = getDateTimeForenEN;
