@@ -122,7 +122,7 @@ const signRate = (rate) => {
     if (rate.indexOf("-") >= 0) {
         return `<span class="down">&searr;&nbsp;${rate.substring(1).replace(".", ds)} % </span>`;
     } else {
-        return `<span class="up">&nearr;&nbsp;'${rate.replace(".", ds)} %</span>`;
+        return `<span class="up">&nearr;&nbsp;${rate.replace(".", ds)} %</span>`;
     }
 }
 
