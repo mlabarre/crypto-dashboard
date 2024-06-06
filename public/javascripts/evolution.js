@@ -25,9 +25,10 @@ const initAlerts = () => {
 // Called by icon click.
 const showAlertPanel = (token) => {
     tokenAlert = token;
+    let alertDel = $('#alertDel');
     $('.alerts').show();
     $('.non-alerts').hide();
-    $('#alertDel').hide();
+    alertDel.hide();
     setRefreshOff();
     if (token === '_all_tokens_') {
         showAllTokenAlertTitle();
@@ -38,10 +39,10 @@ const showAlertPanel = (token) => {
     let alertToken = findAlertInArray(token);
     if (alertToken !== undefined) {
         setAlertsVariables(alertToken);
-        $('#alertDel').show();
+        alertDel.show();
     } else {
         initAlertsVariables();
-        $('#alertDel').hide();
+        alertDel.hide();
     }
 }
 
@@ -67,23 +68,12 @@ const cancelAlert = () => {
 }
 
 const addOrUpdateAlert = () => {
-    let json = {
-        token: tokenAlert,
-        gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
-        lt5mn: $('#alert_lt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_lt_5mn').val()),
-        gt1h: $('#alert_gt_1h').val() === '' ? -1.0 : parseFloat($('#alert_gt_1h').val()),
-        lt1h: $('#alert_lt_1h').val() === '' ? -1.0 : parseFloat($('#alert_lt_1h').val()),
-        gt24h: $('#alert_gt_24h').val() === '' ? -1.0 : parseFloat($('#alert_gt_24h').val()),
-        lt24h: $('#alert_lt_24h').val() === '' ? -1.0 : parseFloat($('#alert_lt_24h').val()),
-        gt1w: $('#alert_gt_1w').val() === '' ? -1.0 : parseFloat($('#alert_gt_1w').val()),
-        lt1w: $('#alert_lt_1w').val() === '' ? -1.0 : parseFloat($('#alert_lt_1w').val())
-    }
     $.ajax(
         {
             url: "/api/alert",
             method: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(json),
+            data: JSON.stringify(getAlertJson()),
             success: (data) => {
                 getDatas();
                 hideAlertPanel();
@@ -130,9 +120,9 @@ let fontSize = 14;
 
 const signRate = (rate) => {
     if (rate.indexOf("-") >= 0) {
-        return '<span class="down">&searr;&nbsp;' + rate.substring(1).replace(".", ds) + ' %' + '</span>';
+        return `<span class="down">&searr;&nbsp;${rate.substring(1).replace(".", ds)} % </span>`;
     } else {
-        return '<span class="up">&nearr;&nbsp;' + rate.replace(".", ds) + ' %' + '</span>';
+        return `<span class="up">&nearr;&nbsp;'${rate.replace(".", ds)} %</span>`;
     }
 }
 
@@ -149,23 +139,23 @@ const fill = (data) => {
     $.each(tokens, (no) => {
         let coin = tokens[no];
         if (coin.id !== "N/A" || coin.ico === true) {
-            $('#cryptos').append('<tr><td>' + coin.name + '</td>' +
-                '<td class="rate">' + coin.symbol.toUpperCase() + '</td>' +
-                '<td class="num">' + formatDelim(((coin.start_price * 100) / 100).toFixed(8), ds) + '</td>' +
-                '<td class="num">' + formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8), ds) + '</td>' +
-                '<td class="num">' + formatDelim(((coin.quotation * 100) / 100).toFixed(8), ds) + '</td>' +
-                '<td class="num">' + formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8), ds) + '</td>' +
-                '<td class="num">' + formatDelim(((coin.tokens * 10000) / 10000).toFixed(4), ds) + '</td>' +
-                '<td class="num">' + formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + signRate(((coin.variation * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2), ds) + '</td>' +
-                '<td class="rate">' + getIconsHtml(coin.wallet) + '</td>' +
-                '<td class="rate">' + buildAlertIconHtml(coin.symbol.toUpperCase()) + '</td>' +
-                '<td class="rate">' + getInfoIconHtml(coin) + '</td>' +
-                '</tr>');
+            $('#cryptos').append(`<tr><td>' + coin.name + '</td>` +
+                `<td class="rate">${coin.symbol.toUpperCase()}</td>` +
+                `<td class="num">${formatDelim(((coin.start_price * 100) / 100).toFixed(8), ds)}</td>` +
+                `<td class="num">${formatDelim(((coin.start_price_usdt * 100) / 100).toFixed(8), ds)}</td>` +
+                `<td class="num">${formatDelim(((coin.quotation * 100) / 100).toFixed(8), ds)}</td>` +
+                `<td class="num">${formatDelim(((coin.quotation_usdt * 100) / 100).toFixed(8), ds)}</td>` +
+                `<td class="num">${formatDelim(((coin.tokens * 10000) / 10000).toFixed(4), ds)}</td>` +
+                `<td class="num">${formatDelim((((coin.tokens * coin.quotation) * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${signRate(((coin.variation * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${signRate(((coin.variation_on_five_minutes * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${signRate(((coin.variation_on_one_hour * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${signRate(((coin.variation_on_one_day * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${signRate(((coin.variation_on_one_week * 100) / 100).toFixed(2), ds)}</td>` +
+                `<td class="rate">${getIconsHtml(coin.wallet)}</td>` +
+                `<td class="rate">${buildAlertIconHtml(coin.symbol.toUpperCase())}</td>` +
+                `<td class="rate">${getInfoIconHtml(coin)}</td>` +
+                `</tr>`);
         } else {
             $('#cryptos').append(`<tr><td></td><td class="rate">${coin.symbol.toUpperCase()}</td>` +
                 `<td colspan="11">` +
@@ -197,7 +187,7 @@ const getDatas = () => {
     initAlerts();
     $.ajax(
         {
-            url: "/api/evolution?sortField=" + lastSortField + "&sortDirection=" + lastSortDirection,
+            url: `/api/evolution?sortField=${lastSortField}&sortDirection=${lastSortDirection}`,
             method: "GET",
             dataType: "json",
             success: (data) => {

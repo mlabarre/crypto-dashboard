@@ -37,7 +37,7 @@ router
     })
     .get('/updateTransaction', function (request, response, next) {
         prepareTransactionUpdate(request.query.id, request.query.sortDirection,
-            request.query.token, request.query.wallet, request.query.lang).then((options) => {
+            request.query.token, request.query.wallet, request.query.action, request.query.lang).then((options) => {
             response.render(config.get('language') + '/add-or-update-transaction', options);
         })
     })
@@ -47,14 +47,16 @@ router
                 sortDirection: request.query.sortDirection,
                 token: request.query.token,
                 decimal_separator: config.get('decimal_separator'),
-                wallet: request.query.wallet
+                wallet: request.query.wallet,
+                action: request.query.action
             });
         } else {
             response.render(config.get('language') + '/follow-transactions', {
                 sortDirection: "",
                 token: "",
                 decimal_separator: config.get('decimal_separator'),
-                wallet: ""
+                wallet: "",
+                action: ""
             });
         }
     })

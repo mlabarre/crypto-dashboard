@@ -2,14 +2,18 @@ let sortDirection = "D";
 
 const fill = (data) => {
     $.each(data, (line) => {
-        let row = `<tr><td style="display:none">${data[line].id}</td><td>${data[line].msg}</td>`;
+        let row = `<tr><td style="display:none" onclick="editTransaction('${data[line].id}')">${data[line].id}</td>` +
+            `<td>${data[line].msg}</td>`;
         if (data[line].chainUrl !== null) {
-            row += `<td><i onclick="showTransaction('${data[line].chainUrl}')" class="fa-solid fa-chart-line green clickable" title="${titleFill3}"></i></td>`
+            row += `<td><i onclick="showTransaction('${data[line].chainUrl}')" ` +
+                `class="fa-solid fa-chart-line green clickable" title="${titleFill3}"></i></td>`
         } else {
             row += "<td></td>";
         }
-        row += `<td><i onclick="deleteTransaction('${data[line].id}')" class="fa-regular fa-trash-can red clickable" title="${titleFill1}"></i></td>`
-        row += `<td><i onclick="editTransaction('${data[line].id}')" class="fas fa-edit green clickable" title="${titleFill2}"></i></td>`
+        row += `<td><i onclick="deleteTransaction('${data[line].id}')" ` +
+            `class="fa-regular fa-trash-can red clickable" title="${titleFill1}"></i></td>`
+        row += `<td><i onclick="editTransaction('${data[line].id}')" ` +
+            `class="fas fa-edit green clickable" title="${titleFill2}"></i></td>`
         row += '</tr>';
         $('#transactions').append(row);
     })
@@ -53,8 +57,10 @@ const deleteTransaction = (id) => {
 }
 
 const editTransaction = (id) => {
-    document.location.href = `/updateTransaction?id=${id}&lang=fr&sortDirection=${sortDirection}&token=${document.getElementById("token").value}` +
-        `&wallet=${document.getElementById("wallet").value}`;
+    document.location.href = `/updateTransaction?id=${id}&lang=fr&sortDirection=${sortDirection}` +
+        `&token=${document.getElementById("token").value}` +
+        `&wallet=${document.getElementById("wallet").value}` +
+        `&action=${document.getElementById("action").value}`;
 }
 
 const getDatas = () => {
@@ -100,6 +106,9 @@ const setSymbols = () => {
         })
         .done((data) => {
             fillComboSymbols(data);
+            if (returnedToken !== "") {
+                document.getElementById('token').value = returnedToken;
+            }
         })
         .fail((error) => {
             $('#message').text('error');
@@ -119,6 +128,9 @@ const setWallets = () => {
         })
         .done((data) => {
             fillComboWallets(data);
+            if (returnedWallet !== "") {
+                document.getElementById('wallet').value = returnedWallet;
+            }
         })
         .fail((error) => {
             $('#message').text('error');
@@ -158,14 +170,13 @@ const init = () => {
             getDatas();
         }
     )
-    if (returnedSortDirection !== "") {
-        sortDirection = returnedSortDirection;
-        $('#token').val(returnedToken);
-        $('#wallet').val(returnedWallet);
-    }
-    getDatas();
     setSymbols();
     setWallets();
+    if (returnedSortDirection !== "") {
+        sortDirection = returnedSortDirection;
+        document.getElementById('action').value = returnedAction;
+    }
+    getDatas();
 }
 
 includeHTML("h-follow").then(() => {

@@ -311,7 +311,7 @@ const getChainExplorers = () => {
     }
 }
 
-const prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) => {
+const prepareTransactionUpdate = async (id, sortDirection, token, wallet, action, lang) => {
     let transaction = await new MongoHelper().findTransaction(id);
     let initData = getBodyValuesForCreation();
     initData = updateFieldForTransactionUpdate(transaction, initData)
@@ -320,6 +320,7 @@ const prepareTransactionUpdate = async (id, sortDirection, token, wallet, lang) 
     initData.sortDirection = sortDirection;
     initData.token = token;
     initData.wallet = wallet;
+    initData.action = action;
     initData.lang = lang;
     initData.chainExplorers = getChainExplorers();
     return initData;
@@ -332,6 +333,7 @@ const prepareTransactionCreation = async () => {
     initData.sortDirection = "";
     initData.token = "";
     initData.wallet = "";
+    initData.action = "";
     initData.lang = "";
     initData.chainExplorers = getChainExplorers();
     return initData;

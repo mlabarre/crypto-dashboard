@@ -194,7 +194,7 @@ const getNumberTokenForWallet = (wallet, symbol, id) => {
             contentType: "application/json; charset=utf-8"
         })
         .done((data) => {
-            $('#'+id).val(data.number);
+            $('#' + id).val(data.number);
         })
         .fail((error) => {
             // do nothing
@@ -205,7 +205,7 @@ const handleWalletOrTokenChange = (wallet, tokenId, id) => {
     if (wallet !== "" && tokenId !== "") {
         getNumberTokenForWallet(wallet, tokenId, id);
     } else {
-        $('#'+id).val('');
+        $('#' + id).val('');
     }
 }
 
@@ -290,8 +290,8 @@ const init = () => {
                     })
                     .done((data) => {
                         // Updated : returns to transactions list
-                        document.location.href = `/followTransactions?lang=fr&sortDirection=${sortDirection}&token=${token}` +
-                            `&wallet=${wallet}`;
+                        document.location.href = `/followTransactions?lang=fr&sortDirection=${sortDirection}` +
+                            `&token=${token}&wallet=${wallet}&action=${action}`;
                     })
                     .fail((error) => {
                         $('#message').text(error);

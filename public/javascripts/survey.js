@@ -70,25 +70,14 @@ const cancelAlert = () => {
     showEvolutionPanel();
 }
 
+
 const addOrUpdateAlert = () => {
-    let json = {
-        token: tokenAlert,
-        gt5mn: $('#alert_gt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_gt_5mn').val()),
-        lt5mn: $('#alert_lt_5mn').val() === '' ? -1.0 : parseFloat($('#alert_lt_5mn').val()),
-        gt1h: $('#alert_gt_1h').val() === '' ? -1.0 : parseFloat($('#alert_gt_1h').val()),
-        lt1h: $('#alert_lt_1h').val() === '' ? -1.0 : parseFloat($('#alert_lt_1h').val()),
-        gt24h: $('#alert_gt_24h').val() === '' ? -1.0 : parseFloat($('#alert_gt_24h').val()),
-        lt24h: $('#alert_lt_24h').val() === '' ? -1.0 : parseFloat($('#alert_lt_24h').val()),
-        gt1w: $('#alert_gt_1w').val() === '' ? -1.0 : parseFloat($('#alert_gt_1w').val()),
-        lt1w: $('#alert_lt_1w').val() === '' ? -1.0 : parseFloat($('#alert_lt_1w').val())
-    }
-    console.log(JSON.stringify(json))
     $.ajax(
         {
             url: "/api/alert-survey",
             method: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(json),
+            data: JSON.stringify(getAlertJson()),
             success: (data) => {
                 getDatas();
                 showEvolutionPanel();
@@ -228,7 +217,8 @@ const showCryptosPanel = () => {
 }
 
 const addAvailableCryptosRow = async (row) => {
-    let r = `<tr><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td><td id="name">${row.name}</td>` +
+    let r = `<tr><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td>` +
+        `<td id="name">${row.name}</td>` +
         `<td class="action" onclick="addSurveyCrypto(this)">` +
         `<span class="indic-plus" title="${msgAddAvailable}">+</span></td></tr>`
     $('#availableCryptosTable').append(r);

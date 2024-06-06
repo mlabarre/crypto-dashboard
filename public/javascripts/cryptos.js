@@ -109,14 +109,21 @@ const removeFromCollection = (crypto) => {
 
 const addMyCryptosRow = (row) => {
     let infoHtml = getInfoIconHtml(row);
-    let r = `<tr><td>${infoHtml}</td><td>${getTokenIconHtml(row)}</td><td>${row.id}</td><td>${row.symbol}</td><td>${row.name}</td><td class="action" ` +
+    let r = `<tr><td>${infoHtml}</td>` +
+        `<td>${getTokenIconHtml(row)}</td>` +
+        `<td>${row.id}</td>` +
+        `<td>${row.symbol}</td>` +
+        `<td>${row.name}</td>` +
+        `<td class="action" ` +
         `onclick="suppressMyCrypto(this)"><span class="indic-moins" title="${titleMinusAdd}">-</span></td></tr>`
     $('#myCryptosTable').append(r);
 }
 
 const addAvailableCryptosRow = async (row) => {
     let r = `<tr><td class="action" onclick="addMyCrypto(this)"><span class="indic-plus" ` +
-        `title="${titleAvailableAdd}">+</span></td><td id="id">${row.id}</td><td id="symbol">${row.symbol}</td>` +
+        `title="${titleAvailableAdd}">+</span></td>` +
+        `<td id="id">${row.id}</td>` +
+        `<td id="symbol">${row.symbol}</td>` +
         `<td id="name">${row.name}</td></tr>`
     $('#availableCryptosTable').append(r);
 }
@@ -200,14 +207,16 @@ const cancelIco = () => {
 }
 
 const addNotListed = () => {
-    if ($('#symbol').val() === '' || $('#name').val() === '') {
+    let symbol = $('#symbol');
+    let name = $('#name');
+    if (symbol.val() === '' || name.val() === '') {
         alert(msgFieldsRequired);
         return;
     }
     let crypto = {
         id: 'N/A',
-        symbol: $('#symbol').val().toLowerCase(),
-        name: $('#name').val(),
+        symbol: symbol.val().toLowerCase(),
+        name: name.val(),
         ico_network: $('#network').val(),
         ico_address: $('#address').val()
     }

@@ -9,26 +9,48 @@ const showOneTokenAlertTitle = () => {
     $('.one_token').show();
 }
 
-const initAlertsVariables = () => {
-    $('#alert_gt_5mn').val('');
-    $('#alert_lt_5mn').val('');
-    $('#alert_gt_1h').val('');
-    $('#alert_lt_1h').val('');
-    $('#alert_gt_24h').val('');
-    $('#alert_lt_24h').val('');
-    $('#alert_gt_1w').val('');
-    $('#alert_lt_1w').val('');
+const setAlertValue = (field, value) => {
+    $('#alert_' + field).val(value);
 }
 
-const setAlertsVariables = (alertToken) => {
-    $('#alert_gt_5mn').val(alertToken.gt5mn < 0 ? '' : alertToken.gt5mn);
-    $('#alert_lt_5mn').val(alertToken.lt5mn < 0 ? '' : alertToken.lt5mn);
-    $('#alert_gt_1h').val(alertToken.gt1h < 0 ? '' : alertToken.gt1h);
-    $('#alert_lt_1h').val(alertToken.lt1h < 0 ? '' : alertToken.lt1h);
-    $('#alert_gt_24h').val(alertToken.gt24h < 0 ? '' : alertToken.gt24h);
-    $('#alert_lt_24h').val(alertToken.lt24h < 0 ? '' : alertToken.lt24h);
-    $('#alert_gt_1w').val(alertToken.gt1w < 0 ? '' : alertToken.gt1w);
-    $('#alert_lt_1w').val(alertToken.lt1w < 0 ? '' : alertToken.lt1w);
+const getAlertValue = (field) => {
+    return $('#alert_' + field).val();
+}
+
+const initAlertsVariables = () => {
+    setAlertValue('gt_5mn', '');
+    setAlertValue('lt_5mn', '');
+    setAlertValue('gt_1h', '');
+    setAlertValue('lt_1h', '');
+    setAlertValue('gt_24h', '');
+    setAlertValue('lt_24h', '');
+    setAlertValue('gt_1w', '');
+    setAlertValue('lt_1w', '');
+}
+
+const setAlertsVariables = (tokenAlert) => {
+    setAlertValue('gt_5mn', tokenAlert.gt5mn < 0 ? '' : tokenAlert.gt5mn);
+    setAlertValue('lt_5mn', tokenAlert.lt5mn < 0 ? '' : tokenAlert.lt5mn);
+    setAlertValue('gt_1h', tokenAlert.gt1h < 0 ? '' : tokenAlert.gt1h);
+    setAlertValue('lt_1h', tokenAlert.lt1h < 0 ? '' : tokenAlert.lt1h);
+    setAlertValue('gt_24h', tokenAlert.gt24h < 0 ? '' : tokenAlert.gt24h);
+    setAlertValue('lt_24h', tokenAlert.lt24h < 0 ? '' : tokenAlert.lt24h);
+    setAlertValue('gt_1w', tokenAlert.gt1w < 0 ? '' : tokenAlert.gt1w);
+    setAlertValue('lt_1w', tokenAlert.lt1w < 0 ? '' : tokenAlert.lt1w);
+}
+
+const getAlertJson = () => {
+    return {
+        token: tokenAlert,
+        gt5mn: getAlertValue('gt_5mn') === '' ? -1.0 : parseFloat(getAlertValue('gt_5mn')),
+        lt5mn: getAlertValue('lt_5mn') === '' ? -1.0 : parseFloat(getAlertValue('lt_5mn')),
+        gt1h:  getAlertValue('gt_1h') === '' ? -1.0 : parseFloat(getAlertValue('gt_1h')),
+        lt1h:  getAlertValue('lt_1h') === '' ? -1.0 : parseFloat(getAlertValue('lt_1h')),
+        gt24h: getAlertValue('gt_24h') === '' ? -1.0 : parseFloat(getAlertValue('gt_24h')),
+        lt24h: getAlertValue('lt_24h') === '' ? -1.0 : parseFloat(getAlertValue('lt_24h')),
+        gt1w:  getAlertValue('gt_1w') === '' ? -1.0 : parseFloat(getAlertValue('gt_1w')),
+        lt1w:  getAlertValue('lt_1w') === '' ? -1.0 : parseFloat(getAlertValue('lt_1w'))
+    }
 }
 
 const findAlertInArray = (token) => {
