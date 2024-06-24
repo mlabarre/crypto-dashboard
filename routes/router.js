@@ -259,6 +259,11 @@ router
             response.send(data);
         })
     })
+    .get('/api/binance/mytrades', function( request, response, next) {
+        platforms.getMyTrades(request.query.pair, request.query.buy === "true").then( (data) => {
+            response.send(data);
+        })
+    })
     // 2. Coinbase
     .get('/api/coinbase/accounts', function (request, response, next) {
         platforms.getCoinbaseAccounts().then((data) => {

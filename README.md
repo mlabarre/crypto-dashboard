@@ -87,6 +87,7 @@ In <CRYPTO_HOME>/dashboard/config create a file named *default.json* with the fo
 ```
 {
     "language": "fr",
+    "timezone": "Europe/Paris",
     "fiat_currency" : "EUR",
     "fiat_symbol": "€",
     "decimal_separator": ",",
@@ -208,6 +209,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 ```
 {
     "language": "fr",
+    "timezone": "Europe/Paris",
     "fiat_currency" : "EUR",
     "fiat_symbol": "€",
     "decimal_separator": ",",
@@ -257,6 +259,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
 | variable                   | Description                                                                                             |
 |:---------------------------|:--------------------------------------------------------------------------------------------------------|
 | language                   | Language used: _**fr**_ (French) or _**en**_ (English) only.                                            |
+| timezone                   | Time zone (ie Europe/Paris).                                                                            |
 | fiat_currency              | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.   |
 | fiat_symbol                | Currency of symbol above. This can be €, $, £, etc...                                                   |
 | decimal_separator          | Decimal separator character                                                                             |

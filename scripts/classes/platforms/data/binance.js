@@ -6,6 +6,8 @@ const MongoHelper = require('../../mongo-helper');
 const config = require('config');
 const crypto = require('node:crypto');
 const axios = require('axios');
+const {getMyTrades} = require("../../../platforms");
+const utils = require('../../../utils')
 
 class Binance {
 
@@ -46,6 +48,10 @@ class Binance {
         return queryString;
     }
 
+    buildQueryStringTradesHisto = (pair) => {
+        return `timestamp=${tools.getCurrentTimestamp()}&symbol=${pair}`;
+    }
+
     buildQueryStringWithRangeForPurchase = (timestamp, start, end) => {
         return `${this.buildQueryStringWithRange(timestamp, start, end)}&transactionType=0`;
     }
@@ -68,6 +74,10 @@ class Binance {
 
     buildConvertUrl = (queryString, signature) => {
         return `${this.config.get('convert_url')}?${queryString}&signature=${signature}`;
+    }
+
+    buildTradesHistoUrl = (queryString, signature) => {
+        return `${this.config.get('trades_histo_url')}?${queryString}&signature=${signature}`;
     }
 
     get = async (url) => {
@@ -127,6 +137,7 @@ class Binance {
         let history = await new MongoHelper().findPlatformsHistory("binance");
         return (history === null) ? tools.getTimestampFromDateString("2010-01-01") : history.timestamp;
     }
+
     sendFromStartDateRequest = async (startTimestamp, buildQueryFunction, buildUrlFunction, type, saveHistory) => {
         let result = [];
         let done = false;
@@ -223,6 +234,99 @@ class Binance {
     getConvertListFromHistory = async () => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
             this.buildConvertUrl, this.IS_CONVERT, true);
+    }
+
+    initializeTrade = (trade, trades, symbolCurrency) => {
+        for (let i = 0; i < trades.length; i++) {
+            if (trades[i].orderId === trade.orderId) {
+                return i;
+            }
+        }
+        trades.push({
+            orderId: trade.orderId,
+            outputSymbol: trade.isBuyer === true ? symbolCurrency.currency : symbolCurrency.symbol,
+            inputSymbol: trade.isBuyer === true ? symbolCurrency.symbol : symbolCurrency.currency,
+            qty: 0,
+            price: 0.0,
+            quoteQty: 0.0,
+            date: "",
+            fee: 0.0,
+            feeCurrency: ""
+        });
+        return trades.length - 1;
+    }
+
+    determinesPairCurrency = (pair) => {
+        if (pair.indexOf("USDT") > 0) {
+            return ({
+                currency: "USDT",
+                symbol: pair.replace("USDT", "")
+            })
+        }
+        if (pair.indexOf("BNB") > 0) {
+            return ({
+                currency: "BNB",
+                symbol: pair.replace("BNB", "")
+            })
+        } else {
+            return ({currency: "", symbol: ""})
+
+        }
+    }
+
+    ensureNotAlreadyStored = async (trade, symbolCurrency) => {
+        if (symbolCurrency.currency === "") return false;
+        let inputSymbol, outputSymbol;
+        if (trade.isBuyer === true) {
+            outputSymbol = symbolCurrency.currency;
+            inputSymbol = symbolCurrency.symbol;
+        } else {
+            inputSymbol = symbolCurrency.currency;
+            outputSymbol = symbolCurrency.symbol;
+        }
+        let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol,
+            this.getTradeDateTime(trade.time));
+        return res === null;
+    }
+
+    getTradeDateTime = (timestamp) => {
+        return new Date(Math.trunc(timestamp/1000)*1000);
+        //return `${d.getFullYear()}-${utils.pad(d.getMonth() + 1)}-${utils.pad(d.getDate())}T` +
+        //    `${utils.pad(d.getHours())}:${utils.pad(d.getMinutes())}:${utils.pad(d.getSeconds())}.000Z`;
+    }
+
+    handleTrade = async (trade, buy, trades) => {
+        let symbolCurrency = this.determinesPairCurrency(trade.symbol);
+        if (await this.ensureNotAlreadyStored(trade, symbolCurrency) === true && trade.isBuyer === buy) {
+            let nTrade = trades[this.initializeTrade(trade, trades, symbolCurrency)];
+            nTrade.qty += parseFloat(trade.qty);
+            nTrade.price = parseFloat(trade.price);
+            nTrade.quoteQty += parseFloat(trade.quoteQty);
+            nTrade.date = new Date(this.getTradeDateTime(trade.time));
+            nTrade.fee += parseFloat(trade.commission);
+            nTrade.feeCurrency = trade.commissionAsset;
+        }
+    }
+
+    getMyTrades = async (pair, buy) => {
+        let queryString = this.buildQueryStringTradesHisto(pair);
+        let signature = this.getSignature(queryString);
+        let url = this.buildTradesHistoUrl(queryString, signature);
+        let tradesResult = await this.get(url);
+        let usdt = await new MongoHelper().getUSDTValueInFiat();
+        let bnb = await new MongoHelper().getBNBValueInFiat();
+        let result = {
+            usdtEuroValue: usdt.value,
+            bnbEuroValue: bnb.value,
+            trades: []
+        }
+        if (tradesResult.error === false) {
+            let trades = tradesResult.data;
+            for (let i = 0; i < trades.length; i++) {
+                await this.handleTrade(trades[i], buy, result.trades);
+            }
+        }
+        return result;
     }
 }
 

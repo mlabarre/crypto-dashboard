@@ -29,6 +29,8 @@ const app = express()
         response.render('error');
     });
 
+process.env.TZ = config.get('timezone');
+
 buildIconsDir().then(() => {
     new MongoHelper().walletsInitialize().then((nb) => {
         console.log(`${nb} wallets initialisées`)

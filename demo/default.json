@@ -1,5 +1,6 @@
 {
   "language": "fr",
+  "timezone": "Europe/Paris",
   "fiat_currency": "EUR",
   "fiat_symbol": "€",
   "decimal_separator": ",",
@@ -55,7 +56,8 @@
       "secret_key": "<BINANCE_SECRET-KEY>",
       "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
       "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
-      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow"
+      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
     },
     "coinbase": {
       "api_key": "<COINBASE_API_KEY>",

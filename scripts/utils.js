@@ -112,3 +112,4 @@ exports.formatDelim = formatDelim
 exports.storeUniqueInArray = storeUniqueInArray
 exports.getDateAsAAAAMMDD = getDateAsAAAAMMDD
 exports.getDateTimeForenEN = getDateTimeForenEN;
+exports.pad = pad

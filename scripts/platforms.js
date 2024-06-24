@@ -35,6 +35,9 @@ const getBinanceTransactions = async () => {
     }
 }
 
+const getMyTrades = async (pair, buy) => {
+    return new Binance().getMyTrades(pair, buy);
+}
 // Coinbase
 
 const getCoinbaseAccounts = async () => {
@@ -58,6 +61,7 @@ const getBitpandaTransactions = async () => {
 exports.getBinanceTransactionsForLast90Days = getBinanceTransactionsForLast90Days
 exports.getBinanceTransactionsFrom2010 = getBinanceTransactionsFrom2010
 exports.getBinanceTransactions = getBinanceTransactions
+exports.getMyTrades = getMyTrades
 exports.getCoinbaseAccounts = getCoinbaseAccounts
 exports.getCoinbaseTransactions = getCoinbaseTransactions
 exports.getCoinbaseAddresses = getCoinbaseAddresses

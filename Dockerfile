@@ -8,6 +8,8 @@ COPY package*.json ./
 
 RUN npm install
 
+RUN apk add --no-cache tzdata
+
 USER node
 
 COPY --chown=node:node . .

@@ -155,6 +155,16 @@ class MongoHelper {
         return allNames;
     }
 
+    findBinanceSwapTransaction = async (outputToken, inputToken, date) => {
+        let criteria = {type: "swap", outputSymbol: outputToken, inputSymbol: inputToken, date: new Date(date)};
+        console.log("criteria", criteria)
+        try {
+            await this.init();
+            return await this.dbo.collection(this.collectionTransactions).findOne(criteria);
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
     // my-cryptos
 
     findAllSymbolsInMyCryptos = async (ico) => {
@@ -251,6 +261,14 @@ class MongoHelper {
         }
     }
 
+    getBNBValueInFiat = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection(this.collectionParams).findOne({id: "bnb"})
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
     // alerts
 
     getAlerts = async () => {
