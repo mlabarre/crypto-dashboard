@@ -235,8 +235,6 @@ let isBuy, binanceTrades;
 let supportedBinanceTokens = [];
 
 const getSupportedTokenInBinanceTrade = (t) => {
-    console.log("getSupportedTokenInBinanceTrade", JSON.stringify(t))
-    console.log("getSupportedTokenInBinanceTrade", supportedBinanceTokens)
     for (let i=0; i<supportedBinanceTokens.length; i++) {
         if (supportedBinanceTokens[i].symbol === t.toUpperCase()) {
             return supportedBinanceTokens[i];
@@ -311,7 +309,6 @@ const fillTradesTable = (data) => {
 }
 
 const showBinanceTrades = (params) => {
-    console.log("showBinanceTrades", JSON.stringify(params))
     $.ajax(
         {
             type: "GET",
@@ -337,12 +334,10 @@ const determineTradeType = (outputToken, inputToken) => {
     } else {
         res.possible = false;
     }
-    console.log("determineTradeType", JSON.stringify(res))
     return res;
 }
 
 const showTradesIfPossible = () => {
-    console.log("showTradesIfPossible");
     if (document.querySelector('#type').value === "swap") {
         console.log("ok");
         let wallet = document.querySelector('#swapWallet').value;
