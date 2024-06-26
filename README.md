@@ -138,7 +138,27 @@ In <CRYPTO_HOME>/dashboard/config create a file named *default.json* with the fo
       "name": "XRP",
       "url": "https://bithomp.com/explorer/"
     }
-  ]
+  ],
+  "platforms_api": {
+    "binance": {
+      "api_key": "<BINANCE_API-KEY>",
+      "secret_key": "<BINANCE_SECRET-KEY>",
+      "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
+      "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
+    },
+    "coinbase": {
+      "api_key": "<COINBASE_API_KEY>",
+      "secret_key": "<COINBASE_PRIVATE_KEY",
+      "host": "api.coinbase.com",
+      "accounts_path": "/v2/accounts"
+    },
+    "bitpanda": {
+      "api_key": "<BITPANDA_API_KEY>",
+      "base_url": "https://api.bitpanda.com/v1"
+    }
+  }
 }
 ```
 Refer to the description of the values in the *Manual installation* chapter below for dashboard and updater.
@@ -254,24 +274,45 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
       "name": "XRP",
       "url": "https://bithomp.com/explorer/"
     }
-  ]
+  ],
+  "platforms_api": {
+    "binance": {
+      "api_key": "<BINANCE_API-KEY>",
+      "secret_key": "<BINANCE_SECRET-KEY>",
+      "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
+      "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
+    },
+    "coinbase": {
+      "api_key": "<COINBASE_API_KEY>",
+      "secret_key": "<COINBASE_PRIVATE_KEY",
+      "host": "api.coinbase.com",
+      "accounts_path": "/v2/accounts"
+    },
+    "bitpanda": {
+      "api_key": "<BITPANDA_API_KEY>",
+      "base_url": "https://api.bitpanda.com/v1"
+    }
+  }
 }
 ```
 
-| variable                   | Description                                                                                             |
-|:---------------------------|:--------------------------------------------------------------------------------------------------------|
-| language                   | Language used: _**fr**_ (French) or _**en**_ (English) only.                                            |
-| timezone                   | Time zone (ie Europe/Paris).                                                                            |
-| fiat_currency              | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.   |
-| fiat_symbol                | Currency of symbol above. This can be €, $, £, etc...                                                   |
-| decimal_separator          | Decimal separator character                                                                             |
-| mongodb_uri                | This is the connection URL to the mongodb server. Don't change anything.                                |
-| mongodb_database           | Name you want to give to the mongo database. Here it is _**crypto**_.                                   |
-| server_port                | Node server listening port. Here 8080.                                                                  |
-| refresh_in_seconds         | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes |
-| coingecko_chart_api        | API for graphs. Do not modify.                                                                          |
-| geckoterminal_networks_url | URL to get networks from geckoterminal. Don't change anything.                                          |
-| chain_explorers            | URLs of major blockchain explorers. You can add more.                                                   |
+| variable                   | Description                                                                                                |
+|:---------------------------|:-----------------------------------------------------------------------------------------------------------|
+| language                   | Language used: _**fr**_ (French) or _**en**_ (English) only.                                               |
+| timezone                   | Time zone (ie Europe/Paris).                                                                               |
+| fiat_currency              | This is the Fiat currency (here EUR) with which you buy your cryptos. This can be EUR, USD, GBP, etc.      |
+| fiat_symbol                | Currency of symbol above. This can be €, $, £, etc...                                                      |
+| decimal_separator          | Decimal separator character                                                                                |
+| mongodb_uri                | This is the connection URL to the mongodb server. Don't change anything.                                   |
+| mongodb_database           | Name you want to give to the mongo database. Here it is _**crypto**_.                                      |
+| server_port                | Node server listening port. Here 8080.                                                                     |
+| refresh_in_seconds         | The portfolio and dashboard views are displayed with a refresh. Here the latter will be every 5 minutes    |
+| coingecko_chart_api        | API for graphs. Do not modify.                                                                             |
+| geckoterminal_networks_url | URL to get networks from geckoterminal. Don't change anything.                                             |
+| chain_explorers            | URLs of major blockchain explorers. You can add more.                                                      |
+| platforms_api              | For experimentation. Automatic retrieving of binance trades requires the binance block with correct values |
 
 
 Edit the <CRYPTO_HOME>/crypto-updater/config/default.json file and modify it according to your environment

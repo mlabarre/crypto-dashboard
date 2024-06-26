@@ -139,7 +139,27 @@ Dans <CRYPTO_HOME>/dashboard/config créer un fichier nommé *default.json* avec
       "name": "XRP",
       "url": "https://bithomp.com/explorer/"
     }
-  ]
+  ],
+  "platforms_api": {
+    "binance": {
+      "api_key": "<BINANCE_API-KEY>",
+      "secret_key": "<BINANCE_SECRET-KEY>",
+      "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
+      "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
+    },
+    "coinbase": {
+      "api_key": "<COINBASE_API_KEY>",
+      "secret_key": "<COINBASE_PRIVATE_KEY",
+      "host": "api.coinbase.com",
+      "accounts_path": "/v2/accounts"
+    },
+    "bitpanda": {
+      "api_key": "<BITPANDA_API_KEY>",
+      "base_url": "https://api.bitpanda.com/v1"
+    }
+  }
 }
 ```
 Se référer à la description des valeurs dans le chapitre *Installation manuelle* ci-dessous pour dashboard et updater.
@@ -256,24 +276,45 @@ Editer le fichier <CRYPTO_HOME>/crypto-dashboard/config/default.json et le modif
       "name": "XRP",
       "url": "https://bithomp.com/explorer/"
     }
-  ]
+  ],
+  "platforms_api": {
+    "binance": {
+      "api_key": "<BINANCE_API-KEY>",
+      "secret_key": "<BINANCE_SECRET-KEY>",
+      "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
+      "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
+    },
+    "coinbase": {
+      "api_key": "<COINBASE_API_KEY>",
+      "secret_key": "<COINBASE_PRIVATE_KEY",
+      "host": "api.coinbase.com",
+      "accounts_path": "/v2/accounts"
+    },
+    "bitpanda": {
+      "api_key": "<BITPANDA_API_KEY>",
+      "base_url": "https://api.bitpanda.com/v1"
+    }
+  }
 }
 ```
 
-| variable                   | Description                                                                                                       |
-|:---------------------------|:------------------------------------------------------------------------------------------------------------------|
-| language                   | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                           |
-| timezone                   | Time zone (ex Europe/Paris)                                                                                       |
-| fiat_currency              | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc. |
-| fiat_symbol                | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                            |
-| decimal_separator          | Caractère séparateur de décimales.                                                                                |
-| mongodb_uri                | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                     |
-| mongodb_database           | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                           |
-| server_port                | Port d'écoute du serveur node. Ici 8080                                                                           |
-| refresh_in_seconds         | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn       |
-| coingecko_chart_api        | API coingecko pour les graphiques. Ne pas modifier.                                                               |
-| geckoterminal_networks_url | URL pour la liste des réseaux sur geckoterminal. Ne rien changer.                                                 |
-| chain_explorers            | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                            |
+| variable                   | Description                                                                                                                               |
+|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|
+| language                   | Langue utilisée : _**fr**_ (français) ou _**en**_ (anglais) uniquement.                                                                   |
+| timezone                   | Time zone (ex Europe/Paris)                                                                                                               |
+| fiat_currency              | Il s'agit de la monnaie Fiat (ici EUR) avec laquelle vous achetez vos cryptos. Cela peut être EUR, USD, GBP, etc.                         |
+| fiat_symbol                | Symbole relatif à la monnaie ci-dessus. Cela peut être €, $, £, etc...                                                                    |
+| decimal_separator          | Caractère séparateur de décimales.                                                                                                        |
+| mongodb_uri                | C'est l'URL de connexion au serveur mongodb. Ne rien changer.                                                                             |
+| mongodb_database           | Nom que vous voulez donner à la database mongo. Ici c'est _**crypto**_.                                                                   |
+| server_port                | Port d'écoute du serveur node. Ici 8080                                                                                                   |
+| refresh_in_seconds         | Les vues portfolio et dashboard sont affichées avec un rafraichissement. Ici ce dernier sera toutes les 5mn                               |
+| coingecko_chart_api        | API coingecko pour les graphiques. Ne pas modifier.                                                                                       |
+| geckoterminal_networks_url | URL pour la liste des réseaux sur geckoterminal. Ne rien changer.                                                                         |
+| chain_explorers            | URL des principaux explorateurs de blockchain. Vous pouvez en ajouter.                                                                    |
+ | platforms_api              | Pour expérimentation. Pour utiliser la saisie automatique des trades sur Binance, le bloc "binance" est requis avec des valeurs correctes |
 
 Editer le fichier <CRYPTO_HOME>/crypto-updater/config/default.json et le modifier selon votre environnement
 
