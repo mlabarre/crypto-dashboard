@@ -39,6 +39,7 @@ Pour l'utiliser, il suffit d'une machine disposant d'un docker installé.
 Le projet utilise
 * les API coingecko
 * les API geckoterminal
+* les API binance
 * la bibliothèque de graphes de TradingView
 
 ## Installation

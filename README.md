@@ -37,6 +37,7 @@ As a user of the Binance platform, among others, I have implemented the possibil
 The project use
 * API coingecko
 * API geckoterminal
+* API binance
 * Graph library of TradingView
 
 ## Installation
