@@ -283,18 +283,13 @@ class Binance {
             inputSymbol = symbolCurrency.currency;
             outputSymbol = symbolCurrency.symbol;
         }
-        return true;
-        /* FORCE display
         let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol,
             this.getTradeDateTime(trade.time));
         return res === null;
-         */
     }
 
     getTradeDateTime = (timestamp) => {
-        return new Date(Math.trunc(timestamp/1000)*1000);
-        //return `${d.getFullYear()}-${utils.pad(d.getMonth() + 1)}-${utils.pad(d.getDate())}T` +
-        //    `${utils.pad(d.getHours())}:${utils.pad(d.getMinutes())}:${utils.pad(d.getSeconds())}.000Z`;
+        return new Date(Math.trunc(timestamp / 1000) * 1000);
     }
 
     handleTrade = async (trade, buy, trades) => {
