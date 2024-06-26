@@ -32,6 +32,8 @@ J'ai commencé à regarder l'alimentation automatique via les APIs des principal
 
 Mais en tant que jeune retraité après 46 ans dans l'informatique dont 20 ans d'IT, il faut bien que je m'occupe :)
 
+Etant utilisateur en autres de la plateforme Binance, j'ai implémenté la possibilité de saisir de manière quasi automatique tous les trades effectués avec les paires *USDT et *BNB.
+
 Pour l'utiliser, il suffit d'une machine disposant d'un docker installé.
 
 Le projet utilise

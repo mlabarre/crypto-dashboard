@@ -32,6 +32,8 @@ To use it, all you need is a machine with docker installed.
 
 But as a young retiree after 46 years in computer sciences, including 20 years in IT, I have to keep busy :)
 
+As a user of the Binance platform, among others, I have implemented the possibility of entering almost automatically all trades made with the *USDT and *BNB pairs.
+
 The project use
 * API coingecko
 * API geckoterminal
