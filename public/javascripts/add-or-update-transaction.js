@@ -230,21 +230,167 @@ const setNumberTokenListeners = () => {
     });
 }
 
+let isBuy, binanceTrades;
+
+let supportedBinanceTokens = [];
+
+const getSupportedTokenInBinanceTrade = (t) => {
+    console.log("getSupportedTokenInBinanceTrade", JSON.stringify(t))
+    console.log("getSupportedTokenInBinanceTrade", supportedBinanceTokens)
+    for (let i=0; i<supportedBinanceTokens.length; i++) {
+        if (supportedBinanceTokens[i].symbol === t.toUpperCase()) {
+            return supportedBinanceTokens[i];
+        }
+    }
+    return null;
+}
+
+const fillTradeValues = (pos) => {
+    let trade = binanceTrades[pos];
+    $('#swapDate').val(trade.date);
+    $('#swapTime').val(trade.time);
+    $('#swapOutputTokenId').val(trade.outputSymbol);
+    $('#swapInputTokenId').val(trade.inputSymbol);
+    let cur;
+    if (isBuy) {
+        cur = getSupportedTokenInBinanceTrade(trade.outputSymbol);
+        $('#swapOutputTokenNumber').val(trade.quoteQty);
+        $('#swapInputTokenNumber').val(trade.qty);
+        if (trade.feeCurrency.toUpperCase() === trade.inputSymbol.toUpperCase()) {
+            $('#swapInputTokenNumber').val(trade.qty - trade.fee);
+        }
+        $('#swapOutputTokenQuotation').val(cur.value);
+        $('#swapOutputTokenQuotationCurrency').val(fiatCurrency);
+        $('#swapInputTokenQuotation').val(trade.price * cur.value);
+        $('#swapInputTokenQuotationCurrency').val(fiatCurrency);
+    } else {
+        cur = getSupportedTokenInBinanceTrade(trade.inputSymbol);
+        $('#swapOutputTokenNumber').val(trade.qty);
+        $('#swapInputTokenNumber').val(trade.quoteQty);
+        if (trade.feeCurrency.toUpperCase() === trade.inputSymbol.toUpperCase()) {
+            $('#swapInputTokenNumber').val(trade.quoteQty - trade.fee);
+        }
+        $('#swapOutputTokenQuotation').val(trade.price);
+        $('#swapOutputTokenQuotationCurrency').val(fiatCurrency);
+        $('#swapInputTokenQuotation').val(cur.value);
+        $('#swapInputTokenQuotationCurrency').val(fiatCurrency);
+    }
+    if (trade.feeCurrency.toUpperCase() === cur.symbol.toUpperCase()) {
+        $('#swapFee').val(trade.fee * cur.value);
+        $('#swapFeeCurrencyOpt').val(fiatCurrency);
+    } else if (trade.feeCurrency.toUpperCase() === trade.inputSymbol.toUpperCase()) {
+        $('#swapFee').val(trade.fee * trade.price * cur.value);
+        $('#swapFeeCurrencyOpt').val(fiatCurrency);
+    } else {
+        $('#swapFee').val(trade.fee);
+        $('#swapFeeCurrencyOpt').val(trade.feeCurrency);
+        alert(binanceVerifyFee)
+    }
+}
+
+const getNumValue = (v) => {
+    return `${formatDelim(v.toFixed(8), ds)}`
+}
+
+
+const fillTradesTable = (data) => {
+    supportedBinanceTokens = [];
+    supportedBinanceTokens.push( { "symbol": "USDT", value: data.usdtFiatValue });
+    supportedBinanceTokens.push( { "symbol": "BNB", value: data.bnbFiatValue });
+    isBuy = data.buy;
+    binanceTrades = data.trades;
+    $('#tradesTable').find('tbody tr').remove();
+    for (let i=0; i<binanceTrades.length; i++) {
+        let trade = binanceTrades[i];
+        let outputNumber = isBuy === true ? trade.quoteQty : trade.qty;
+        let inputNumber = isBuy === true ? trade.qty : trade.quoteQty;
+        let text = `${trade.date} ${trade.time} : ${getNumValue(outputNumber)} ${trade.outputSymbol} -> ${getNumValue(inputNumber)} ${trade.inputSymbol}`
+        let r = `<tr><td><i class="fa-solid fa-arrow-up" onclick="fillTradeValues(${i})"></i></td><td>${text}</td></tr>`
+        $('#tradesTable').append(r);
+    }
+}
+
+const showBinanceTrades = (params) => {
+    console.log("showBinanceTrades", JSON.stringify(params))
+    $.ajax(
+        {
+            type: "GET",
+            url: `/api/binance/mytrades?pair=${params.pair}&buy=${params.buy}`,
+            contentType: "application/json; charset=utf-8"
+        })
+        .done((data) => {
+            fillTradesTable(data);
+        })
+        .fail((error) => {
+            $('#message').text(error);
+        })
+}
+
+const determineTradeType = (outputToken, inputToken) => {
+    let res = { possible: true }
+    if (getSupportedTokenInBinanceTrade(outputToken) !== null) {
+        res.pair = `${inputToken}${outputToken}`;
+        res.buy = true;
+    } else if (getSupportedTokenInBinanceTrade(inputToken) !== null) {
+        res.pair = `${outputToken}${inputToken}`;
+        res.buy = false;
+    } else {
+        res.possible = false;
+    }
+    console.log("determineTradeType", JSON.stringify(res))
+    return res;
+}
+
+const showTradesIfPossible = () => {
+    console.log("showTradesIfPossible");
+    if (document.querySelector('#type').value === "swap") {
+        console.log("ok");
+        let wallet = document.querySelector('#swapWallet').value;
+        let output = document.querySelector('#swapOutputTokenId').value;
+        let input = document.querySelector('#swapInputTokenId').value;
+        if (wallet.toLowerCase() === "binance" && output !== "" && input !== "") {
+            let res = determineTradeType(output, input);
+            if (res.possible === true) {
+                showBinanceTrades(res);
+            }
+        }
+    }
+}
+const setSwapBinanceListeners = () => {
+    document.querySelector('#swapWallet').addEventListener("change", () => {
+        showTradesIfPossible();
+    });
+    document.querySelector('#swapOutputTokenId').addEventListener("change", () => {
+        showTradesIfPossible();
+    });
+    document.querySelector('#swapInputTokenId').addEventListener("change", () => {
+        showTradesIfPossible();
+    });
+}
+
+const initSupportedBinanceSymbols = () => {
+    supportedBinanceTokens.push( { "symbol": "USDT", value: 0.0 });
+    supportedBinanceTokens.push( { "symbol": "BNB", value: 0.0 });
+}
 const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {
         hideAll();
         let selectionType = document.querySelector('#type').value;
+        $('#tradesTable').hide();
         if (selectionType === "purchase") {
             $('#purchaseContainer').show();
         } else if (selectionType === "sale") {
             $('#saleContainer').show();
         } else if (selectionType === "swap") {
             $('#swapContainer').show();
+            $('#tradesTable').show();
         } else if (selectionType === "send") {
             $('#sendContainer').show();
         }
     });
+    setSwapBinanceListeners();
     setNumberTokenListeners();
+    initSupportedBinanceSymbols();
     if (trid === '') {
         $('#cancel').hide();
     }

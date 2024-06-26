@@ -6,7 +6,6 @@ const MongoHelper = require('../../mongo-helper');
 const config = require('config');
 const crypto = require('node:crypto');
 const axios = require('axios');
-const {getMyTrades} = require("../../../platforms");
 const utils = require('../../../utils')
 
 class Binance {
@@ -284,9 +283,12 @@ class Binance {
             inputSymbol = symbolCurrency.currency;
             outputSymbol = symbolCurrency.symbol;
         }
+        return true;
+        /* FORCE display
         let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol,
             this.getTradeDateTime(trade.time));
         return res === null;
+         */
     }
 
     getTradeDateTime = (timestamp) => {
@@ -302,7 +304,8 @@ class Binance {
             nTrade.qty += parseFloat(trade.qty);
             nTrade.price = parseFloat(trade.price);
             nTrade.quoteQty += parseFloat(trade.quoteQty);
-            nTrade.date = new Date(this.getTradeDateTime(trade.time));
+            nTrade.date = utils.getDateFromDate(new Date(this.getTradeDateTime(trade.time)));
+            nTrade.time = utils.getTimeFromDate(new Date(this.getTradeDateTime(trade.time)));
             nTrade.fee += parseFloat(trade.commission);
             nTrade.feeCurrency = trade.commissionAsset;
         }
@@ -316,8 +319,9 @@ class Binance {
         let usdt = await new MongoHelper().getUSDTValueInFiat();
         let bnb = await new MongoHelper().getBNBValueInFiat();
         let result = {
-            usdtEuroValue: usdt.value,
-            bnbEuroValue: bnb.value,
+            buy: buy,
+            usdtFiatValue: usdt.value,
+            bnbFiatValue: bnb.value,
             trades: []
         }
         if (tradesResult.error === false) {

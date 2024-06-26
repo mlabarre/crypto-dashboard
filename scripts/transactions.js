@@ -316,26 +316,30 @@ const prepareTransactionUpdate = async (id, sortDirection, token, wallet, action
     let initData = getBodyValuesForCreation();
     initData = updateFieldForTransactionUpdate(transaction, initData)
     initData.trid = id;
-    initData.fiat_symbol = config.get('fiat_symbol');
+    initData.fiatSymbol = config.get('fiat_symbol');
     initData.sortDirection = sortDirection;
     initData.token = token;
     initData.wallet = wallet;
     initData.action = action;
     initData.lang = lang;
     initData.chainExplorers = getChainExplorers();
+    initData.decimalSeparator = config.get('decimal_separator')
+    initData.fiatCurrency = config.get('fiat_currency')
     return initData;
 }
 
 const prepareTransactionCreation = async () => {
     let initData = getBodyValuesForCreation();
     initData.trid = "";
-    initData.fiat_symbol = config.get('fiat_symbol');
+    initData.fiatSymbol = config.get('fiat_symbol');
     initData.sortDirection = "";
     initData.token = "";
     initData.wallet = "";
     initData.action = "";
     initData.lang = "";
     initData.chainExplorers = getChainExplorers();
+    initData.decimalSeparator = config.get('decimal_separator')
+    initData.fiatCurrency = config.get('fiat_currency')
     return initData;
 }
 
