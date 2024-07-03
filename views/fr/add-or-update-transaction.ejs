@@ -46,12 +46,10 @@
                     </select>
                 </div>
                 <div class="input">
-                    <div>
-                        <label for="purchaseTokenId">Token </label>
-                        <select class="selectSymbolNode" id="purchaseTokenId" name="purchaseTokenId">
-                            <option value="">Choisir</option>
-                        </select>
-                    </div>
+                    <label for="purchaseTokenId">Token </label>
+                    <select class="selectSymbolNode" id="purchaseTokenId" name="purchaseTokenId">
+                        <option value="">Choisir</option>
+                    </select>
                 </div>
                 <div class="input">
                     <label for="purchaseTokenNumber"># tokens&nbsp;&nbsp;&nbsp; </label>
@@ -85,12 +83,10 @@
                     </select>
                 </div>
                 <div class="input">
-                    <div>
-                        <label for="saleTokenId">Token </label>
-                        <select class="selectSymbolNode" id="saleTokenId" name="saleTokenId">
-                            <option value="">Choisir</option>
-                        </select>
-                    </div>
+                    <label for="saleTokenId">Token </label>
+                    <select class="selectSymbolNode" id="saleTokenId" name="saleTokenId">
+                        <option value="">Choisir</option>
+                    </select>
                 </div>
                 <div class="input">
                     <label for="saleTokenNumber"># tokens&nbsp;&nbsp;&nbsp;</label>
@@ -127,27 +123,28 @@
                     <!-- Output of swap -->
                     <div>
                         <div class="input">
-                            <div>
-                                <label for="swapOutputTokenId">Token </label>
-                                <select class="selectSymbolNode select-right" id="swapOutputTokenId"
-                                        name="swapOutputTokenId">
-                                    <option value="">Choisir</option>
-                                </select>
-                            </div>
+                            <label for="swapOutputTokenId">Token </label>
+                            <select class="selectSymbolNode" id="swapOutputTokenId"
+                                    name="swapOutputTokenId">
+                                <option value="">Choisir</option>
+                            </select>
                         </div>
                         <div class="input">
                             <label for="swapOutputTokenNumber"># tokens&nbsp;&nbsp;&nbsp;</label>
-                            <input type="number" name="swapOutputTokenNumber" id="swapOutputTokenNumber" step="0.00000001"
+                            <input type="number" name="swapOutputTokenNumber" id="swapOutputTokenNumber"
+                                   step="0.00000001"
                                    value="<%= swapOutputTokenNumber %>">
                         </div>
                         <div class="input">
                             <label for="swapOutputTokenQuotation">Cotation </label>
-                            <input type="number" name="swapOutputTokenQuotation" id="swapOutputTokenQuotation" step="0.00000001"
+                            <input type="number" name="swapOutputTokenQuotation" id="swapOutputTokenQuotation"
+                                   step="0.00000001"
                                    value="<%= swapOutputTokenQuotation %>">
                         </div>
                         <div class="input">
                             <label for="swapOutputTokenQuotationCurrency">Devise cotation &nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" name="swapOutputTokenQuotationCurrency" id="swapOutputTokenQuotationCurrency"
+                            <input type="text" name="swapOutputTokenQuotationCurrency"
+                                   id="swapOutputTokenQuotationCurrency"
                                    value="<%= swapOutputTokenQuotationCurrency %>">
                         </div>
                     </div>
@@ -157,13 +154,11 @@
                     <!-- Input of swap -->
                     <div>
                         <div class="input">
-                            <div>
-                                <label for="swapInputTokenId">Token </label>
-                                <select class="selectSymbolNode select-right" id="swapInputTokenId"
-                                        name="swapInputTokenId">
-                                    <option value="">Choisir</option>
-                                </select>
-                            </div>
+                            <label for="swapInputTokenId">Token </label>
+                            <select class="selectSymbolNode" id="swapInputTokenId"
+                                    name="swapInputTokenId">
+                                <option value="">Choisir</option>
+                            </select>
                         </div>
                         <div class="input">
                             <label for="swapInputTokenNumber"># tokens &nbsp;&nbsp;&nbsp;</label>
@@ -172,12 +167,14 @@
                         </div>
                         <div class="input">
                             <label for="swapInputTokenQuotation">Cotation </label>
-                            <input type="number" name="swapInputTokenQuotation" id="swapInputTokenQuotation"  step="0.00000001"
+                            <input type="number" name="swapInputTokenQuotation" id="swapInputTokenQuotation"
+                                   step="0.00000001"
                                    value="<%= swapInputTokenQuotation %>">
                         </div>
                         <div class="input">
                             <label for="swapInputTokenQuotationCurrency">Devise cotation &nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" name="swapInputTokenQuotationCurrency" id="swapInputTokenQuotationCurrency"
+                            <input type="text" name="swapInputTokenQuotationCurrency"
+                                   id="swapInputTokenQuotationCurrency"
                                    value="<%= swapInputTokenQuotationCurrency %>">
                         </div>
 
@@ -191,7 +188,8 @@
                     </div>
                     <div class="input">
                         <label for="swapFeeCurrencyOpt">Devise </label>
-                        <input type="text" name="swapFeeCurrencyOpt" id="swapFeeCurrencyOpt" value="<%= swapFeeCurrencyOpt %>">
+                        <input type="text" name="swapFeeCurrencyOpt" id="swapFeeCurrencyOpt"
+                               value="<%= swapFeeCurrencyOpt %>">
                     </div>
                 </div>
             </div>
@@ -207,12 +205,10 @@
                     </div>
                 </div>
                 <div class="input">
-                    <div>
-                        <label for="sendTokenId">Token </label>
-                        <select class="selectSymbolNode" id="sendTokenId" name="sendTokenId">
-                            <option value="">Choisir</option>
-                        </select>
-                    </div>
+                    <label for="sendTokenId">Token </label>
+                    <select class="selectSymbolNode" id="sendTokenId" name="sendTokenId">
+                        <option value="">Choisir</option>
+                    </select>
                 </div>
                 <div class="col2">
                     <div>
@@ -287,6 +283,7 @@
             <div>
                 <span id="message" class="message"></span>
             </div>
+            <div><input type="hidden" name="orderId" id="orderId" value="<%= orderId %>"></div>
         </form>
     </div>
     <div>

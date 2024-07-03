@@ -283,8 +283,10 @@ class Binance {
             inputSymbol = symbolCurrency.currency;
             outputSymbol = symbolCurrency.symbol;
         }
-        let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol,
-            this.getTradeDateTime(trade.time));
+        let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol, trade.orderId);
+        if (res === null) {
+            console.log("Trade not stored : ", JSON.stringify(trade));
+        }
         return res === null;
     }
 

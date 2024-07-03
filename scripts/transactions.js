@@ -107,7 +107,8 @@ const prepareSwapData = (body) => {
         "wallet": body.swapWallet,
         "comment": body.comment,
         "chainExplorerOpt": body.chainExplorerOpt,
-        "txIdOpt": body.txIdOpt
+        "txIdOpt": body.txIdOpt,
+        "orderId": body.orderId
     }
 }
 
@@ -218,7 +219,8 @@ const getBodyValuesForCreation = () => {
         sendCounterpart: "",
         comment: "",
         chainExplorerOpt: "",
-        txIdOpt: ""
+        txIdOpt: "",
+        orderId: ""
     }
 }
 
@@ -234,6 +236,7 @@ const updateFieldForTransactionUpdatePurchase = (t, b) => {
     b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
+    b.orderId = "";
     return b;
 }
 
@@ -249,6 +252,7 @@ const updateFieldForTransactionUpdateSale = (t, b) => {
     b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
+    b.orderId = "";
     return b;
 }
 
@@ -270,6 +274,7 @@ const updateFieldForTransactionUpdateSwap = (t, b) => {
     b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
+    b.orderId = t.orderId === null ? "" : t.orderId;
     return b;
 }
 
@@ -288,6 +293,7 @@ const updateFieldForTransactionUpdateSend = (t, b) => {
     b.comment = t.comment;
     b.chainExplorerOpt = t.chainExplorerOpt;
     b.txIdOpt = t.txIdOpt;
+    b.orderId = "";
     return b;
 }
 

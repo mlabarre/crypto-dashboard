@@ -155,8 +155,8 @@ class MongoHelper {
         return allNames;
     }
 
-    findBinanceSwapTransaction = async (outputToken, inputToken, date) => {
-        let criteria = {type: "swap", outputSymbol: outputToken, inputSymbol: inputToken, date: new Date(date)};
+    findBinanceSwapTransaction = async (outputToken, inputToken, orderId) => {
+        let criteria = {type: "swap", outputSymbol: outputToken, inputSymbol: inputToken, orderId: ""+orderId};
         console.log("criteria", criteria)
         try {
             await this.init();

@@ -249,6 +249,7 @@ const fillTradeValues = (pos) => {
     $('#swapTime').val(trade.time);
     $('#swapOutputTokenId').val(trade.outputSymbol);
     $('#swapInputTokenId').val(trade.inputSymbol);
+    $('#orderId').val(trade.orderId);
     let cur;
     if (isBuy) {
         cur = getSupportedTokenInBinanceTrade(trade.outputSymbol);
@@ -268,7 +269,7 @@ const fillTradeValues = (pos) => {
         if (trade.feeCurrency.toUpperCase() === trade.inputSymbol.toUpperCase()) {
             $('#swapInputTokenNumber').val(trade.quoteQty - trade.fee);
         }
-        $('#swapOutputTokenQuotation').val(trade.price);
+        $('#swapOutputTokenQuotation').val(trade.price * cur.value);
         $('#swapOutputTokenQuotationCurrency').val(fiatCurrency);
         $('#swapInputTokenQuotation').val(cur.value);
         $('#swapInputTokenQuotationCurrency').val(fiatCurrency);
@@ -416,7 +417,9 @@ const init = () => {
                     })
                     .done((data) => {
                         alert(data);
+                        let type = $('#type').val();
                         $('#form')[0].reset();
+                        $('#type').val(type);
                     })
                     .fail((error) => {
                         $('#message').text(error);
