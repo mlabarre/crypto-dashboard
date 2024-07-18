@@ -20,6 +20,10 @@
         <form id="form">
 
             <div class="input top">
+                <input type="checkbox" id="autoBinance" checked /> Recherche automatique des transactions sur le compte Binance paramétré.
+            </div>
+
+            <div class="input top">
                 <label for="type">Type </label>
                 <select name="type" id="type">
                     <option value="purchase">Achat</option>
@@ -53,17 +57,17 @@
                 </div>
                 <div class="input">
                     <label for="purchaseTokenNumber"># tokens&nbsp;&nbsp;&nbsp; </label>
-                    <input type="number" name="purchaseTokenNumber" step="0.00000001"
+                    <input type="number" name="purchaseTokenNumber" id="purchaseTokenNumber" step="0.00000001"
                            value="<%= purchaseTokenNumber %>">
                 </div>
                 <div class="input">
                     <label for="purchaseTokenQuotationInFiat">Prix du token (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseTokenQuotationInFiat" step="0.00000001"
+                    <input type="number" name="purchaseTokenQuotationInFiat" id="purchaseTokenQuotationInFiat" step="0.00000001"
                            value="<%= purchaseTokenQuotationInFiat %>">
                 </div>
                 <div class="input">
                     <label for="purchaseFeeInFiat">Frais (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
+                    <input type="number" name="purchaseFeeInFiat" id="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
                 </div>
             </div>
 
@@ -275,7 +279,7 @@
                 <label for="comment">Commentaire</label>
                 <textarea id="comment" name="comment" rows="3" cols="60"><%= comment %></textarea>
             </div>
-            <div class="button-box">
+            <div class="button-box top">
                 <input class="button" type="button" name="cancel" id="cancel" value="Annuler">
                 <input class="button" type="button" name="validation" id="validation" value="Valider">
             </div>
@@ -286,11 +290,19 @@
             <div><input type="hidden" name="orderId" id="orderId" value="<%= orderId %>"></div>
         </form>
     </div>
+
     <div>
         <table id="tradesTable" class="styled-table">
             <tbody></tbody>
         </table>
     </div>
+
+    <div>
+        <table id="purchasesTable" class="styled-table">
+            <tbody></tbody>
+        </table>
+    </div>
+
 </div>
 
 <script src="/javascripts/add-or-update-transaction.js"></script>
@@ -326,7 +338,9 @@
     let validateFieldsMsg = "Il manque au moins une valeur ou elle est invalide...";
     let binanceVerifyFee = "Merci de vérifier le montant et la devise des frais";
     let choice = "Choisir";
-
+    let quoted = "quoté(s) à";
+    let wordFor = "pour";
+    let msgWait = "Recherche sur Binance des transactions de ce type. Merci de patienter."
     $(() => {
         init();
         document.querySelector('#chainExplorerOpt').value = "<%= chainExplorerOpt %>";

@@ -37,6 +37,7 @@ const preparePurchaseData = (body) => {
         "comment": body.comment,
         "chainExplorerOpt": body.chainExplorerOpt,
         "txIdOpt": body.txIdOpt,
+        "orderId": body.orderId
     }
 }
 

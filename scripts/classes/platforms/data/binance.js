@@ -12,15 +12,18 @@ class Binance {
 
     config;
 
-    IS_PURCHASE = 0;
-    IS_SALE = 1;
-    IS_WITHDRAW = 2;
-    IS_CONVERT = 3;
+    IS_PURCHASE = "purchase";
+    IS_SALE = "sale";
+    IS_WITHDRAW = "withdraw";
+    IS_CONVERT = "convert";
 
     constructor() {
         this.config = config.get('platforms_api.binance');
     }
 
+    isReady = () => {
+        return utils.varIsValid(this.config.get('secret_key')) && utils.varIsValid(this.config.get('api_key'));
+    }
     getSignature = (data) => {
         const hmac = crypto.createHmac('sha256', this.config.get('secret_key'));
         hmac.update(data);
@@ -47,16 +50,24 @@ class Binance {
         return queryString;
     }
 
+    buildQueryStringWithRangeForPayments = (timestamp, start, end) => {
+        let queryString = `timestamp=${tools.getCurrentTimestamp()}&beginTime=${start}`;
+        if (end !== undefined) {
+            queryString += `&endTime=${end}`;
+        }
+        return queryString;
+    }
+
     buildQueryStringTradesHisto = (pair) => {
         return `timestamp=${tools.getCurrentTimestamp()}&symbol=${pair}`;
     }
 
     buildQueryStringWithRangeForPurchase = (timestamp, start, end) => {
-        return `${this.buildQueryStringWithRange(timestamp, start, end)}&transactionType=0`;
+        return `${this.buildQueryStringWithRangeForPayments(timestamp, start, end)}&transactionType=0`;
     }
 
     buildQueryStringWithRangeForSale = (timestamp, start, end) => {
-        return `${this.buildQueryStringWithRange(timestamp, start, end)}&transactionType=1`;
+        return `${this.buildQueryStringWithRangeForPayments(timestamp, start, end)}&transactionType=1`;
     }
 
     buildWithdrawUrl = (queryString, signature) => {
@@ -88,7 +99,6 @@ class Binance {
                         "X-MBX-APIKEY": this.config.get('api_key')
                     }
                 });
-            console.log(response.data)
             return {
                 error: false,
                 data: await response.data
@@ -126,15 +136,18 @@ class Binance {
         return await this.get(url);
     }
 
-    saveInHistory = async (saveHistory) => {
+    saveInHistory = async (saveHistory, type) => {
         if (saveHistory) {
-            await new MongoHelper().addOrReplacePlatformsHistory({platform: "binance", timestamp: Date.now()})
+            await new MongoHelper().addOrUpdateBinancePlatformsHistory(type, Date.now())
         }
     }
 
-    getStartFromHistory = async () => {
-        let history = await new MongoHelper().findPlatformsHistory("binance");
-        return (history === null) ? tools.getTimestampFromDateString("2010-01-01") : history.timestamp;
+    getStartFromHistory = async (type) => {
+        let history = await new MongoHelper().findBinancePlatformsHistory();
+        if (history !== null && history.timestamps.hasOwnProperty(type)) {
+            return history.timestamps[type];
+        }
+        return tools.getTimestampFromDateString("2010-01-01");
     }
 
     sendFromStartDateRequest = async (startTimestamp, buildQueryFunction, buildUrlFunction, type, saveHistory) => {
@@ -157,7 +170,7 @@ class Binance {
             }
             startTimestamp = res.endTimestamp;
         }
-        await this.saveInHistory(saveHistory);
+        await this.saveInHistory(saveHistory, type);
         return {
             error: false,
             data: result
@@ -215,24 +228,24 @@ class Binance {
      * Transactions since last history date. To use with bot.
      */
 
-    getWithdrawListFromHistory = async () => {
-        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
-            this.buildWithdrawUrl, this.IS_WITHDRAW, true);
+    getWithdrawListFromHistory = async (saveHistory) => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_WITHDRAW), this.buildQueryStringWithRange,
+            this.buildWithdrawUrl, this.IS_WITHDRAW, saveHistory);
     }
 
-    getPurchaseListFromHistory = async () => {
-        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForPurchase,
-            this.buildPurchaseUrl, this.IS_PURCHASE, true);
+    getPurchaseListFromHistory = async (saveHistory) => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_PURCHASE), this.buildQueryStringWithRangeForPurchase,
+            this.buildPurchaseUrl, this.IS_PURCHASE, saveHistory);
     }
 
-    getSaleListFromHistory = async () => {
-        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRangeForSale,
-            this.buildSaleUrl, this.IS_SALE, true);
+    getSaleListFromHistory = async (saveHistory) => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_SALE), this.buildQueryStringWithRangeForSale,
+            this.buildSaleUrl, this.IS_SALE, saveHistory);
     }
 
-    getConvertListFromHistory = async () => {
-        return await this.sendFromStartDateRequest(await this.getStartFromHistory(), this.buildQueryStringWithRange,
-            this.buildConvertUrl, this.IS_CONVERT, true);
+    getConvertListFromHistory = async (saveHistory) => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_CONVERT), this.buildQueryStringWithRange,
+            this.buildConvertUrl, this.IS_CONVERT, saveHistory);
     }
 
     initializeTrade = (trade, trades, symbolCurrency) => {
@@ -273,7 +286,7 @@ class Binance {
         }
     }
 
-    ensureNotAlreadyStored = async (trade, symbolCurrency) => {
+    ensureSwapNotAlreadyStored = async (trade, symbolCurrency) => {
         if (symbolCurrency.currency === "") return false;
         let inputSymbol, outputSymbol;
         if (trade.isBuyer === true) {
@@ -284,25 +297,22 @@ class Binance {
             outputSymbol = symbolCurrency.symbol;
         }
         let res = await new MongoHelper().findBinanceSwapTransaction(outputSymbol, inputSymbol, trade.orderId);
-        if (res === null) {
-            console.log("Trade not stored : ", JSON.stringify(trade));
-        }
         return res === null;
     }
 
-    getTradeDateTime = (timestamp) => {
+    getTransactionDateTime = (timestamp) => {
         return new Date(Math.trunc(timestamp / 1000) * 1000);
     }
 
     handleTrade = async (trade, buy, trades) => {
         let symbolCurrency = this.determinesPairCurrency(trade.symbol);
-        if (await this.ensureNotAlreadyStored(trade, symbolCurrency) === true && trade.isBuyer === buy) {
+        if (await this.ensureSwapNotAlreadyStored(trade, symbolCurrency) === true && trade.isBuyer === buy) {
             let nTrade = trades[this.initializeTrade(trade, trades, symbolCurrency)];
             nTrade.qty += parseFloat(trade.qty);
             nTrade.price = parseFloat(trade.price);
             nTrade.quoteQty += parseFloat(trade.quoteQty);
-            nTrade.date = utils.getDateFromDate(new Date(this.getTradeDateTime(trade.time)));
-            nTrade.time = utils.getTimeFromDate(new Date(this.getTradeDateTime(trade.time)));
+            nTrade.date = utils.getDateFromDate(new Date(this.getTransactionDateTime(trade.time)));
+            nTrade.time = utils.getTimeFromDate(new Date(this.getTransactionDateTime(trade.time)));
             nTrade.fee += parseFloat(trade.commission);
             nTrade.feeCurrency = trade.commissionAsset;
         }
@@ -328,6 +338,52 @@ class Binance {
             }
         }
         return result;
+    }
+
+    ensurePurchaseNotAlreadyStored = async (purchase) => {
+        return await new MongoHelper().findBinancePurchaseTransaction(purchase.orderNo);
+    }
+
+    handlePurchase = (purchase) => {
+        return {
+            orderId: purchase.orderNo,
+            date: utils.getDateFromDate(new Date(this.getTransactionDateTime(purchase.createTime))),
+            time: utils.getTimeFromDate(new Date(this.getTransactionDateTime(purchase.createTime))),
+            symbol: purchase.cryptoCurrency,
+            tokens: parseFloat(purchase.obtainAmount),
+            quotation: parseFloat(purchase.price),
+            fiatAmount: parseFloat(purchase.sourceAmount),
+            fiatCurrency: purchase.fiatCurrency,
+            fee: parseFloat(purchase.totalFee)
+        }
+    }
+    /**
+     * @param result Contains {}
+     * @returns {Promise<{purchases: *[]}>}
+     */
+    getMyPurchases = async (result) => {
+        let purchasesResult = result["purchase"];
+        let purchases = []
+        if (purchasesResult.error === false) {
+            purchasesResult.data.sort((a,b) => b.createTime - a.createTime);
+            for (let i=0; i<purchasesResult.data.length; i++) {
+                let purchase = purchasesResult.data[i];
+                let prev = await this.ensurePurchaseNotAlreadyStored(purchase);
+                if (prev !== null || purchase.status.toLowerCase() !== "completed") {
+                    continue;
+                }
+                purchases.push(this.handlePurchase(purchase));
+            }
+        }
+        return { "purchases": purchases };
+    }
+
+    /**
+     * @param result Contains {}
+     * @returns {Promise<void>}
+     */
+    getMySales = async (result) => {
+
     }
 }
 

@@ -21,7 +21,7 @@ const formatDelim = (value, decimalSeparator) => {
     return decimalSeparator === '.' ? chain.replaceAll(' ', ',') : chain;
 }
 
-const   fieldSorter = (fields) => (a, b) => fields.map(o => {
+const fieldSorter = (fields) => (a, b) => fields.map(o => {
     let dir = 1;
     if (o[0] === '-') {
         dir = -1;
@@ -102,6 +102,10 @@ const storeUniqueInArray = (arr, item) => {
         arr.push(item);
     }
 }
+
+const varIsValid = (v) => {
+    return v !== undefined && v !== null && v !== "";
+}
 exports.fieldSorter = fieldSorter
 exports.dateSorter = dateSorter
 exports.getDateFromDate = getDateFromDate
@@ -113,3 +117,4 @@ exports.storeUniqueInArray = storeUniqueInArray
 exports.getDateAsAAAAMMDD = getDateAsAAAAMMDD
 exports.getDateTimeForenEN = getDateTimeForenEN;
 exports.pad = pad
+exports.varIsValid = varIsValid

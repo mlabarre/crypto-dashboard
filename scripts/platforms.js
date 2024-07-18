@@ -25,19 +25,54 @@ const getBinanceTransactionsFrom2010 = async () => {
     }
 }
 
-const getBinanceTransactions = async () => {
+const getBinanceTransactions = async (type) => {
     let binance = new Binance();
-    return {
-        withdraw: await binance.getWithdrawListFromHistory(true),
-        purchase: await binance.getPurchaseListFromHistory(true),
-        sale: await binance.getSaleListFromHistory(true),
-        swap: await binance.getConvertListFromHistory(true)
+    if (binance.isReady()) {
+        return {
+            withdraw: type ? {} : await binance.getWithdrawListFromHistory(true),
+            purchase: (!type || type === "purchase") ? await binance.getPurchaseListFromHistory(true) : {},
+            sale: (!type || type === "sale") ? await binance.getSaleListFromHistory(true) : {},
+            swap: type ? {} : await binance.getConvertListFromHistory(true)
+        }
+    } else {
+        return {withdraw: {}, purchase: {}, sale: {}, swap: {}};
     }
 }
 
 const getMyTrades = async (pair, buy) => {
-    return new Binance().getMyTrades(pair, buy);
+    let binance = new Binance();
+    if (binance.isReady()) {
+        return binance.getMyTrades(pair, buy);
+    } else {
+        return {
+            buy: buy,
+            usdtFiatValue: 0.0,
+            bnbFiatValue: 0.0,
+            trades: []
+        }
+    }
 }
+
+const getMyPurchases = async () => {
+    let binance = new Binance();
+    if (binance.isReady()) {
+        let result = await getBinanceTransactions("purchase");
+        return await binance.getMyPurchases(result);
+    } else {
+        return {"purchases": []}
+    }
+}
+
+const getMySales = async () => {
+    let binance = new Binance();
+    if (binance.isReady()) {
+        let result = await getBinanceTransactions("sale");
+        return await binance.getMySales(result);
+    } else {
+        return {"sales": []}
+    }
+}
+
 // Coinbase
 
 const getCoinbaseAccounts = async () => {
@@ -62,6 +97,8 @@ exports.getBinanceTransactionsForLast90Days = getBinanceTransactionsForLast90Day
 exports.getBinanceTransactionsFrom2010 = getBinanceTransactionsFrom2010
 exports.getBinanceTransactions = getBinanceTransactions
 exports.getMyTrades = getMyTrades
+exports.getMyPurchases = getMyPurchases
+exports.getMySales = getMySales
 exports.getCoinbaseAccounts = getCoinbaseAccounts
 exports.getCoinbaseTransactions = getCoinbaseTransactions
 exports.getCoinbaseAddresses = getCoinbaseAddresses

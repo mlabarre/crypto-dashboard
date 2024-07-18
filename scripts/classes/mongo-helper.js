@@ -156,8 +156,7 @@ class MongoHelper {
     }
 
     findBinanceSwapTransaction = async (outputToken, inputToken, orderId) => {
-        let criteria = {type: "swap", outputSymbol: outputToken, inputSymbol: inputToken, orderId: ""+orderId};
-        console.log("criteria", criteria)
+        let criteria = {type: "swap", outputSymbol: outputToken, inputSymbol: inputToken, orderId: "" + orderId};
         try {
             await this.init();
             return await this.dbo.collection(this.collectionTransactions).findOne(criteria);
@@ -165,6 +164,17 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    findBinancePurchaseTransaction = async (orderId) => {
+        let criteria = {type: "purchase", orderId: "" + orderId};
+        try {
+            await this.init();
+            return await this.dbo.collection(this.collectionTransactions).findOne(criteria);
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
     // my-cryptos
 
     findAllSymbolsInMyCryptos = async (ico) => {
@@ -378,7 +388,26 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
-
+    addOrUpdateBinancePlatformsHistory = async (type, timestamp) => {
+        try {
+            await this.init();
+            let history = {};
+            let field = `timestamps.${type}`
+            history[field] = timestamp;
+            return await this.dbo.collection(this.collectionPlatformsHistory)
+                .findOneAndUpdate({platform: "binance"}, {$set: history}, {upsert: true});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+    findBinancePlatformsHistory = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection(this.collectionPlatformsHistory).findOne({platform: "binance"});
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
     findPlatformsHistory = async (platform) => {
         try {
             await this.init();
@@ -387,7 +416,6 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
-
 }
 
 module.exports = MongoHelper;

@@ -61,7 +61,7 @@ const buildRowPerToken = (crypto) => {
         `</td><td><span>${crypto.token}</span></td><td>${images}</td>` +
         `<td class="num">${formatDelim(((crypto.nb * 10000) / 10000).toFixed(4), ds)}</td>` +
         `<td class="num">${value}</td>` +
-        `<td class="num">${crypto.invest.toFixed(2)}</td>` +
+        `<td class="num">${formatDelim(((crypto.invest * 100)/100).toFixed(2), ds)}</td>` +
         `${buildRoiHtml(crypto.roi)}` +
         `<td>${signRate(crypto.price24Percent)}</td>` +
         `</tr>`

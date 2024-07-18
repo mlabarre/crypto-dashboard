@@ -1,3 +1,5 @@
+let autoBinance = true;
+
 const setCurrentDate = (type) => {
     let d = new Date();
     if (type === "purchase") {
@@ -230,12 +232,13 @@ const setNumberTokenListeners = () => {
     });
 }
 
-let isBuy, binanceTrades;
+let isBuy, binanceTrades, binancePurchases;
+let currentPos = -1;
 
 let supportedBinanceTokens = [];
 
 const getSupportedTokenInBinanceTrade = (t) => {
-    for (let i=0; i<supportedBinanceTokens.length; i++) {
+    for (let i = 0; i < supportedBinanceTokens.length; i++) {
         if (supportedBinanceTokens[i].symbol === t.toUpperCase()) {
             return supportedBinanceTokens[i];
         }
@@ -285,6 +288,19 @@ const fillTradeValues = (pos) => {
         $('#swapFeeCurrencyOpt').val(trade.feeCurrency);
         alert(binanceVerifyFee)
     }
+    currentPos = pos;
+}
+
+let fillPurchaseValues = (pos) => {
+    let purchase = binancePurchases[pos];
+    $('#orderId').val(purchase.orderId);
+    $('#purchaseDate').val(purchase.date);
+    $('#purchaseTime').val(purchase.time);
+    $('#purchaseTokenId').val(purchase.symbol);
+    $('#purchaseTokenNumber').val(purchase.tokens);
+    $('#purchaseTokenQuotationInFiat').val(purchase.quotation);
+    $('#purchaseFeeInFiat').val(purchase.fee);
+    currentPos = pos;
 }
 
 const getNumValue = (v) => {
@@ -294,12 +310,12 @@ const getNumValue = (v) => {
 
 const fillTradesTable = (data) => {
     supportedBinanceTokens = [];
-    supportedBinanceTokens.push( { "symbol": "USDT", value: data.usdtFiatValue });
-    supportedBinanceTokens.push( { "symbol": "BNB", value: data.bnbFiatValue });
+    supportedBinanceTokens.push({"symbol": "USDT", value: data.usdtFiatValue});
+    supportedBinanceTokens.push({"symbol": "BNB", value: data.bnbFiatValue});
     isBuy = data.buy;
     binanceTrades = data.trades;
     $('#tradesTable').find('tbody tr').remove();
-    for (let i=0; i<binanceTrades.length; i++) {
+    for (let i = 0; i < binanceTrades.length; i++) {
         let trade = binanceTrades[i];
         let outputNumber = isBuy === true ? trade.quoteQty : trade.qty;
         let inputNumber = isBuy === true ? trade.qty : trade.quoteQty;
@@ -309,15 +325,49 @@ const fillTradesTable = (data) => {
     }
 }
 
+const fillPurchasesTable = (data) => {
+    binancePurchases = data.purchases;
+    $('#purchasesTable').find('tbody tr').remove();
+    for (let i = 0; i < binancePurchases.length; i++) {
+        let purchase = binancePurchases[i];
+        let text = `${purchase.date} ${purchase.time} : ${getNumValue(purchase.tokens)} ${purchase.symbol} ${quoted} ${getNumValue(purchase.quotation)} ${purchase.fiatCurrency} ${wordFor} ${getNumValue(purchase.fiatAmount)} ${purchase.fiatCurrency}`
+        let r = `<tr><td><i class="fa-solid fa-arrow-up" onclick="fillPurchaseValues(${i})"></i></td><td>${text}</td></tr>`
+        $('#purchasesTable').append(r);
+    }
+}
+
+const setMessage = (m) => {
+    $("#message").text(m)
+}
+
 const showBinanceTrades = (params) => {
+    setMessage(msgWait)
     $.ajax(
         {
             type: "GET",
-            url: `/api/binance/mytrades?pair=${params.pair}&buy=${params.buy}`,
+            url: `/api/binance/my-trades?pair=${params.pair}&buy=${params.buy}`,
             contentType: "application/json; charset=utf-8"
         })
         .done((data) => {
             fillTradesTable(data);
+            setMessage("")
+        })
+        .fail((error) => {
+            $('#message').text(error);
+        })
+}
+
+const showBinancePurchases = () => {
+    setMessage(msgWait)
+    $.ajax(
+        {
+            type: "GET",
+            url: "/api/binance/my-purchases",
+            contentType: "application/json; charset=utf-8"
+        })
+        .done((data) => {
+            fillPurchasesTable(data);
+            setMessage("")
         })
         .fail((error) => {
             $('#message').text(error);
@@ -325,7 +375,7 @@ const showBinanceTrades = (params) => {
 }
 
 const determineTradeType = (outputToken, inputToken) => {
-    let res = { possible: true }
+    let res = {possible: true}
     if (getSupportedTokenInBinanceTrade(outputToken) !== null) {
         res.pair = `${inputToken}${outputToken}`;
         res.buy = true;
@@ -338,8 +388,11 @@ const determineTradeType = (outputToken, inputToken) => {
     return res;
 }
 
-const showTradesIfPossible = () => {
-    if (document.querySelector('#type').value === "swap") {
+const showValuesIfPossible = () => {
+    let type = document.querySelector('#type').value;
+    $('#tradesTable').hide();
+    $('#purchasesTable').hide();
+    if (type === "swap") {
         console.log("ok");
         let wallet = document.querySelector('#swapWallet').value;
         let output = document.querySelector('#swapOutputTokenId').value;
@@ -348,25 +401,33 @@ const showTradesIfPossible = () => {
             let res = determineTradeType(output, input);
             if (res.possible === true) {
                 showBinanceTrades(res);
+                $('#tradesTable').show();
             }
         }
+    } else if (type === "purchase" && document.querySelector('#purchaseWallet').value === "binance") {
+        showBinancePurchases();
+        $('#purchasesTable').show();
     }
 }
-const setSwapBinanceListeners = () => {
+const setBinanceListeners = () => {
+    if (autoBinance === false) return;
     document.querySelector('#swapWallet').addEventListener("change", () => {
-        showTradesIfPossible();
+        if (autoBinance === true) showValuesIfPossible();
+    });
+    document.querySelector('#purchaseWallet').addEventListener("change", () => {
+        if (autoBinance === true) showValuesIfPossible();
     });
     document.querySelector('#swapOutputTokenId').addEventListener("change", () => {
-        showTradesIfPossible();
+        if (autoBinance === true) showValuesIfPossible();
     });
     document.querySelector('#swapInputTokenId').addEventListener("change", () => {
-        showTradesIfPossible();
+        if (autoBinance === true) showValuesIfPossible();
     });
 }
 
 const initSupportedBinanceSymbols = () => {
-    supportedBinanceTokens.push( { "symbol": "USDT", value: 0.0 });
-    supportedBinanceTokens.push( { "symbol": "BNB", value: 0.0 });
+    supportedBinanceTokens.push({"symbol": "USDT", value: 0.0});
+    supportedBinanceTokens.push({"symbol": "BNB", value: 0.0});
 }
 const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {
@@ -384,7 +445,11 @@ const init = () => {
             $('#sendContainer').show();
         }
     });
-    setSwapBinanceListeners();
+    autoBinance = document.querySelector('#autoBinance').checked;
+    document.querySelector("#autoBinance").addEventListener("change", (e) => {
+        autoBinance = document.querySelector('#autoBinance').checked;
+    });
+    setBinanceListeners();
     setNumberTokenListeners();
     initSupportedBinanceSymbols();
     if (trid === '') {
@@ -394,55 +459,77 @@ const init = () => {
         history.back();
     });
     $('#validation').on('click', () => {
-        let type = document.getElementById('type');
-        let msg = validateFields(type.value);
-        let msg2 = coherenceControl();
-        if (msg !== '' || msg2 !== '') {
-            $('#message').text(msg + msg2);
-        } else {
-            $('#message').text('');
-            let formData = document.querySelector(('form'));
-            let fields = {};
-            for (let i = 0; i < formData.length; i++) {
-                fields[formData[i].name] = formData[i].value;
-            }
-            let json = JSON.stringify(fields);
-            if (trid === "") {
-                $.ajax(
-                    {
-                        type: "POST",
-                        url: "/api/add-transaction",
-                        contentType: "application/json; charset=utf-8",
-                        data: json
-                    })
-                    .done((data) => {
-                        alert(data);
-                        let type = $('#type').val();
-                        $('#form')[0].reset();
-                        $('#type').val(type);
-                    })
-                    .fail((error) => {
-                        $('#message').text(error);
-                    })
+            let type = document.getElementById('type');
+            let msg = validateFields(type.value);
+            let msg2 = coherenceControl();
+            if (msg !== '' || msg2 !== '') {
+                $('#message').text(msg + msg2);
             } else {
-                $.ajax(
-                    {
-                        type: "PUT",
-                        url: `/api/update-transaction?id=${trid}`,
-                        contentType: "application/json; charset=utf-8",
-                        data: json
-                    })
-                    .done((data) => {
-                        // Updated : returns to transactions list
-                        document.location.href = `/followTransactions?lang=fr&sortDirection=${sortDirection}` +
-                            `&token=${token}&wallet=${wallet}&action=${action}`;
-                    })
-                    .fail((error) => {
-                        $('#message').text(error);
-                    })
+                $('#message').text('');
+                let formData = document.querySelector(('form'));
+                let fields = {};
+                for (let i = 0; i < formData.length; i++) {
+                    fields[formData[i].name] = formData[i].value;
+                }
+                let json = JSON.stringify(fields);
+                let doReset = true;
+                let type = $('#type');
+                if (trid === "") {
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/api/add-transaction",
+                            contentType: "application/json; charset=utf-8",
+                            data: json
+                        })
+                        .done((data) => {
+                                alert(data);
+                                if (autoBinance === true && type.val() === "purchase" && $('#purchaseWallet').val() === "binance" && currentPos >= 0) {
+                                    if (currentPos < binancePurchases.length) {
+                                        binancePurchases.splice(currentPos, 1);
+                                        currentPos = -1;
+                                        doReset = false;
+                                        fillPurchasesTable({purchases: binancePurchases});
+                                    }
+                                } else if (autoBinance === true && type.val() === "swap" && $('#swapWallet').val() === "binance" && currentPos >= 0) {
+                                    if (currentPos < binanceTrades.length) {
+                                        binanceTrades.splice(currentPos, 1);
+                                        currentPos = -1;
+                                        doReset = false;
+                                        fillPurchasesTable({trades: binanceTrades});
+                                    }
+                                }
+                                if (doReset === true) {
+                                    $('#form')[0].reset();
+
+                                }
+                                $('#type').val(type.val());
+                            }
+                        )
+                        .fail((error) => {
+                            $('#message').text(error);
+                        })
+                } else {
+                    $.ajax(
+                        {
+                            type: "PUT",
+                            url: `/api/update-transaction?id=${trid}`,
+                            contentType: "application/json; charset=utf-8",
+                            data: json
+                        })
+                        .done((data) => {
+                            // Updated : returns to transactions list
+                            document.location.href = `/followTransactions?lang=fr&sortDirection=${sortDirection}` +
+                                `&token=${token}&wallet=${wallet}&action=${action}`;
+                        })
+                        .fail((error) => {
+                            $('#message').text(error);
+                        })
+                }
             }
         }
-    });
+    )
+    ;
     getWalletsName();
     getMySymbols();
     selectType();

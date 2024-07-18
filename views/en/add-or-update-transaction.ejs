@@ -20,6 +20,10 @@
         <form id="form">
 
             <div class="input top">
+                <input type="checkbox" id="autoBinance" checked/> Automatically search for transactions on the configured Binance account.
+            </div>
+
+            <div class="input top">
                 <label for="type">Type </label>
                 <select name="type" id="type">
                     <option value="purchase">Purchase</option>
@@ -54,17 +58,17 @@
                 </div>
                 <div class="input">
                     <label for="purchaseTokenNumber"># tokens&nbsp;&nbsp;&nbsp; </label>
-                    <input type="number" name="purchaseTokenNumber" step="0.00000001"
+                    <input type="number" name="purchaseTokenNumber" id="purchaseTokenNumber" step="0.00000001"
                            value="<%= purchaseTokenNumber %>">
                 </div>
                 <div class="input">
                     <label for="purchaseTokenQuotationInFiat">Token price (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseTokenQuotationInFiat" step="0.00000001"
+                    <input type="number" name="purchaseTokenQuotationInFiat" id="purchaseTokenQuotationInFiat" step="0.00000001"
                            value="<%= purchaseTokenQuotationInFiat %>">
                 </div>
                 <div class="input">
                     <label for="purchaseFeeInFiat">Fee (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
+                    <input type="number" name="purchaseFeeInFiat" id="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
                 </div>
             </div>
 
@@ -281,7 +285,7 @@
                 <input type="hidden" id="wallet" name="wallet">
                 <input type="hidden" id="lang" name="lang">
             </div>
-            <div class="button-box">
+            <div class="button-box top">
                 <input class="button" type="button" name="cancel" id="cancel" value="Cancel">
                 <input class="button" type="button" name="validation" id="validation" value="Validate">
             </div>
@@ -292,6 +296,19 @@
             <div><input type="hidden" name="orderId" id="orderId" value="<%= orderId %>"></div>
         </form>
     </div>
+
+    <div>
+        <table id="tradesTable" class="styled-table">
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div>
+        <table id="purchasesTable" class="styled-table">
+            <tbody></tbody>
+        </table>
+    </div>
+
 </div>
 
 <script src="/javascripts/add-or-update-transaction.js"></script>
@@ -327,6 +344,10 @@
     let validateFieldsMsg = "At least one value is missing or invalid...";
     let binanceVerifyFee = "Please verify fee amount and currency";
     let choice = "Select";
+    let quoted = "quoted at"
+    let wordFor = "for";
+    let msgWait = "Searching Binance for transactions of this type. Please wait."
+
 
     $(() => {
         init();

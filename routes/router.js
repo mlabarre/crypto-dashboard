@@ -259,8 +259,13 @@ router
             response.send(data);
         })
     })
-    .get('/api/binance/mytrades', function( request, response, next) {
+    .get('/api/binance/my-trades', function( request, response, next) {
         platforms.getMyTrades(request.query.pair, request.query.buy === "true").then( (data) => {
+            response.send(data);
+        })
+    })
+    .get('/api/binance/my-purchases', function( request, response, next) {
+        platforms.getMyPurchases().then( (data) => {
             response.send(data);
         })
     })
