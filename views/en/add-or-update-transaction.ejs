@@ -19,8 +19,14 @@
 
         <form id="form">
 
-            <div class="input top">
-                <input type="checkbox" id="autoBinance" checked/> Automatically search for transactions on the configured Binance account.
+            <div class="input top column">
+                <div>
+                    <input type="checkbox" id="autoBinance" checked/> Automatically search for transactions on the
+                    configured Binance account.
+                </div>
+                <div>
+                    <input type="checkbox" id="autoReset"/> Reset fields after validation (don't use current data as pattern)
+                </div>
             </div>
 
             <div class="input top">
@@ -63,12 +69,14 @@
                 </div>
                 <div class="input">
                     <label for="purchaseTokenQuotationInFiat">Token price (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseTokenQuotationInFiat" id="purchaseTokenQuotationInFiat" step="0.00000001"
+                    <input type="number" name="purchaseTokenQuotationInFiat" id="purchaseTokenQuotationInFiat"
+                           step="0.00000001"
                            value="<%= purchaseTokenQuotationInFiat %>">
                 </div>
                 <div class="input">
                     <label for="purchaseFeeInFiat">Fee (<%= fiatSymbol %>) </label>
-                    <input type="number" name="purchaseFeeInFiat" id="purchaseFeeInFiat" step="0.01" value="<%= purchaseFeeInFiat %>">
+                    <input type="number" name="purchaseFeeInFiat" id="purchaseFeeInFiat" step="0.01"
+                           value="<%= purchaseFeeInFiat %>">
                 </div>
             </div>
 

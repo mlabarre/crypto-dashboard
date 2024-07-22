@@ -1,4 +1,5 @@
 let autoBinance = true;
+let autoReset = false;
 
 const setCurrentDate = (type) => {
     let d = new Date();
@@ -449,6 +450,9 @@ const init = () => {
     document.querySelector("#autoBinance").addEventListener("change", (e) => {
         autoBinance = document.querySelector('#autoBinance').checked;
     });
+    document.querySelector("#autoReset").addEventListener("change", (e) => {
+        autoReset = document.querySelector('#autoReset').checked;
+    });
     setBinanceListeners();
     setNumberTokenListeners();
     initSupportedBinanceSymbols();
@@ -472,7 +476,6 @@ const init = () => {
                     fields[formData[i].name] = formData[i].value;
                 }
                 let json = JSON.stringify(fields);
-                let doReset = true;
                 let type = $('#type');
                 if (trid === "") {
                     $.ajax(
@@ -488,18 +491,16 @@ const init = () => {
                                     if (currentPos < binancePurchases.length) {
                                         binancePurchases.splice(currentPos, 1);
                                         currentPos = -1;
-                                        doReset = false;
                                         fillPurchasesTable({purchases: binancePurchases});
                                     }
                                 } else if (autoBinance === true && type.val() === "swap" && $('#swapWallet').val() === "binance" && currentPos >= 0) {
                                     if (currentPos < binanceTrades.length) {
                                         binanceTrades.splice(currentPos, 1);
                                         currentPos = -1;
-                                        doReset = false;
-                                        fillPurchasesTable({trades: binanceTrades});
+                                        fillTradesTable({trades: binanceTrades});
                                     }
                                 }
-                                if (doReset === true) {
+                                if (autoReset === true) {
                                     $('#form')[0].reset();
 
                                 }

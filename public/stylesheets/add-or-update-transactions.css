@@ -78,3 +78,7 @@ select {
 .tx-sel {
     margin-right: 15px;
 }
+
+.column {
+    flex-direction: column;
+}

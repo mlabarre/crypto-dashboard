@@ -54,7 +54,8 @@ const valorizeToken = (token, values, usdt) => {
     token.name = values.name;
     token.quotation = values.quotation === undefined ? 'N/A' : values.quotation;
     token.quotation_usdt = values.quotation_usdt === undefined ? 'N/A' : values.quotation_usdt;
-    token.value = values.quotation === undefined ? 'N/A' : values.quotation * token.tokens;
+    //token.value = values.quotation === undefined ? 'N/A' : values.quotation * token.tokens;
+    token.value = values.quotation === undefined ? 0.0 : values.quotation * token.tokens;
     token.start_price_usdt = token.start_price / usdt.value;
     token.quotation_date = values.quotation_date;
     token.last_five_minutes_quotation_date = values.last_five_minutes_quotation_date;
