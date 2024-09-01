@@ -15,6 +15,7 @@ class Binance {
     IS_PURCHASE = "purchase";
     IS_SALE = "sale";
     IS_WITHDRAW = "withdraw";
+    IS_SWAP = "swap";
     IS_CONVERT = "convert";
 
     constructor() {
@@ -82,6 +83,10 @@ class Binance {
         return `${this.config.get('payments_list_url')}?${queryString}&signature=${signature}`;
     }
 
+    buildSwapUrl = (queryString, signature) => {
+        return `${this.config.get('dribblet_url')}?${queryString}&signature=${signature}`;
+    }
+
     buildConvertUrl = (queryString, signature) => {
         return `${this.config.get('convert_url')}?${queryString}&signature=${signature}`;
     }
@@ -111,10 +116,11 @@ class Binance {
         }
     }
 
-    getDataFromRange = async (startTimestamp, buildQueryFunction, buildUrl) => {
+    getDataFromRange = async (startTimestamp, buildQueryFunction, buildUrl, days) => {
         let done = false;
+        let interval = days === undefined ? 90 : days;
         let currentTimestamp = tools.getCurrentTimestamp();
-        let endTimestamp = tools.getTimestampPast(startTimestamp, 90);
+        let endTimestamp = tools.getTimestampPast(startTimestamp, interval);
         if (endTimestamp >= currentTimestamp) {
             done = true;
             endTimestamp = currentTimestamp;
@@ -154,14 +160,15 @@ class Binance {
         let result = [];
         let done = false;
         while (done === false) {
-            let res = await this.getDataFromRange(startTimestamp, buildQueryFunction, buildUrlFunction)
+            let res = await this.getDataFromRange(startTimestamp, buildQueryFunction,
+                buildUrlFunction, type === this.IS_CONVERT ? 30 : 90)
             done = res.done;
             if (res.response.error === true) {
                 return res.response;
             }
             if (type === this.IS_WITHDRAW && res.response.data.length > 0) {
                 result = result.concat(res.response.data);
-            } else if (type === this.IS_CONVERT) {
+            } else if (type === this.IS_SWAP) {
                 result = result.concat(res.response.list)
             } else {
                 if (res.response.data.success === true && res.response.data.total > 0) {
@@ -192,8 +199,12 @@ class Binance {
         return await this.send90DaysRequest(this.buildQueryStringForSale, this.buildSaleUrl);
     }
 
+    getSwapListForLast90Days = async () => {
+        return await this.send90DaysRequest(this.buildQueryString, this.buildSwapUrl);
+    }
+
     getConvertListForLast90Days = async () => {
-        return await this.send90DaysRequest(this.buildQueryString, this.buildConvertUrl());
+        return await this.send90DaysRequest(this.buildQueryString, this.buildConvertUrl);
     }
 
     /*
@@ -218,8 +229,14 @@ class Binance {
             this.buildSaleUrl, this.IS_SALE, false);
     }
 
-    getConvertListFrom2010 = async () => {
+    getSwapListFrom2010 = async () => {
         let startTimestamp = tools.getTimestampFromDateString("2010-01-01");
+        return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
+            this.buildSwapUrl, this.IS_SWAP, false);
+    }
+
+    getConvertListFrom2010 = async () => {
+        let startTimestamp = tools.getTimestampFromDateString("2024-01-01");
         return await this.sendFromStartDateRequest(startTimestamp, this.buildQueryStringWithRange,
             this.buildConvertUrl, this.IS_CONVERT, false);
     }
@@ -241,6 +258,11 @@ class Binance {
     getSaleListFromHistory = async (saveHistory) => {
         return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_SALE), this.buildQueryStringWithRangeForSale,
             this.buildSaleUrl, this.IS_SALE, saveHistory);
+    }
+
+    getSwapListFromHistory = async (saveHistory) => {
+        return await this.sendFromStartDateRequest(await this.getStartFromHistory(this.IS_SWAP), this.buildQueryStringWithRange,
+            this.buildSwapUrl, this.IS_SWAP, saveHistory);
     }
 
     getConvertListFromHistory = async (saveHistory) => {
@@ -280,6 +302,12 @@ class Binance {
                 currency: "BNB",
                 symbol: pair.replace("BNB", "")
             })
+        }
+        if (pair.indexOf("USDC") > 0) {
+            return ({
+                currency: "USDC",
+                symbol: pair.replace("USDC", "")
+            })
         } else {
             return ({currency: "", symbol: ""})
 
@@ -318,18 +346,33 @@ class Binance {
         }
     }
 
-    getMyTrades = async (pair, buy) => {
+    getSwapTrades = async (pair) => {
         let queryString = this.buildQueryStringTradesHisto(pair);
         let signature = this.getSignature(queryString);
         let url = this.buildTradesHistoUrl(queryString, signature);
-        let tradesResult = await this.get(url);
+        console.log("trade URL", url);
+        return await this.get(url);
+
+    }
+
+    getConvertTrades = async () => {
+        return this.getDataFromRange(await this.getStartFromHistory(this.IS_CONVERT),this.buildQueryStringWithRange,this.buildConvertUrl, 30);
+    }
+
+    getMyTrades = async (pair, buy) => {
+        let tradesResult = await this.getSwapTrades(pair);
+        console.log('tradesResult', JSON.stringify(tradesResult));
         let usdt = await new MongoHelper().getUSDTValueInFiat();
         let bnb = await new MongoHelper().getBNBValueInFiat();
+        let usdc = await new MongoHelper().getUSDCValueInFiat();
+        let convertResults = await this.getConvertTrades();
         let result = {
             buy: buy,
             usdtFiatValue: usdt.value,
             bnbFiatValue: bnb.value,
-            trades: []
+            usdcFiatValue: usdc.value,
+            trades: [],
+            convert: convertResults
         }
         if (tradesResult.error === false) {
             let trades = tradesResult.data;

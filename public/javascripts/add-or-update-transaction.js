@@ -313,6 +313,7 @@ const fillTradesTable = (data) => {
     supportedBinanceTokens = [];
     supportedBinanceTokens.push({"symbol": "USDT", value: data.usdtFiatValue});
     supportedBinanceTokens.push({"symbol": "BNB", value: data.bnbFiatValue});
+    supportedBinanceTokens.push({"symbol": "USDC", value: data.usdcFiatValue});
     isBuy = data.buy;
     binanceTrades = data.trades;
     $('#tradesTable').find('tbody tr').remove();
@@ -429,6 +430,7 @@ const setBinanceListeners = () => {
 const initSupportedBinanceSymbols = () => {
     supportedBinanceTokens.push({"symbol": "USDT", value: 0.0});
     supportedBinanceTokens.push({"symbol": "BNB", value: 0.0});
+    supportedBinanceTokens.push({"symbol": "USDC", value: 0.0});
 }
 const init = () => {
     document.querySelector('#type').addEventListener("change", (e) => {

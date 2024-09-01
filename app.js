@@ -1,13 +1,13 @@
-const config = require('config');
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const MongoHelper = require('./scripts/classes/mongo-helper');
-const favicon = require('serve-favicon');
-const router = require('./routes/router');
-const {buildIconsDir} = require('./scripts/utils')
+const config = require('config'),
+    createError = require('http-errors'),
+    express = require('express'),
+    path = require('path'),
+    logger = require('morgan'),
+    cookieParser = require('cookie-parser'),
+    MongoHelper = require('./scripts/classes/mongo-helper'),
+    favicon = require('serve-favicon'),
+    router = require('./routes/router'),
+    {buildIconsDir} = require('./scripts/utils');
 
 const app = express()
     .set('views', path.join(__dirname, 'views'))
@@ -38,6 +38,6 @@ buildIconsDir().then(() => {
 })
 
 app.listen(config.get('server_port'),
-    () => console.log(`tracking app is listening on port ${config.get('server_port')}.`));
+    () => console.log(`dashboard app is listening on port ${config.get('server_port')}.`));
 
 module.exports = app;

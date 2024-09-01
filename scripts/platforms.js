@@ -10,7 +10,8 @@ const getBinanceTransactionsForLast90Days = async () => {
         purchase: await binance.getPurchaseListForLast90Days(),
         sale: await binance.getSaleListForLast90Days(),
         withdraw: await binance.getWithdrawListForLast90Days(),
-        swap: await binance.getConvertListForLast90Days(),
+        swap: await binance.getSwapListForLast90Days(),
+        convert: await binance.getConvertListForLast90Days(),
     }
 
 }
@@ -21,7 +22,7 @@ const getBinanceTransactionsFrom2010 = async () => {
         //withdraw: await binance.getWithdrawListFrom2010(),
         //purchase: await binance.getPurchaseListFrom2010(),
         //sale: await binance.getSaleListFrom2010(),
-        swap: await binance.getConvertListFrom2010()
+        swap: await binance.getSwapListFrom2010()
     }
 }
 
@@ -32,7 +33,8 @@ const getBinanceTransactions = async (type) => {
             withdraw: type ? {} : await binance.getWithdrawListFromHistory(true),
             purchase: (!type || type === "purchase") ? await binance.getPurchaseListFromHistory(true) : {},
             sale: (!type || type === "sale") ? await binance.getSaleListFromHistory(true) : {},
-            swap: type ? {} : await binance.getConvertListFromHistory(true)
+            swap: type ? {} : await binance.getSwapListFromHistory(true),
+            convert: type ? {} : await binance.getConvertListFromHistory(true)
         }
     } else {
         return {withdraw: {}, purchase: {}, sale: {}, swap: {}};
@@ -48,6 +50,7 @@ const getMyTrades = async (pair, buy) => {
             buy: buy,
             usdtFiatValue: 0.0,
             bnbFiatValue: 0.0,
+            usdcFiatValue: 0.0,
             trades: []
         }
     }

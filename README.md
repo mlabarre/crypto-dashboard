@@ -146,6 +146,7 @@ In <CRYPTO_HOME>/dashboard/config create a file named *default.json* with the fo
       "secret_key": "<BINANCE_SECRET-KEY>",
       "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
       "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "dribblet_url": "https://api.binance.com/sapi/v1/asset/dribblet",
       "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
       "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
     },
@@ -282,6 +283,7 @@ Edit the <CRYPTO_HOME>/crypto-dashboard/config/default.json file and modify it a
       "secret_key": "<BINANCE_SECRET-KEY>",
       "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
       "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
+      "dribblet_url": "https://api.binance.com/sapi/v1/asset/dribblet",
       "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
       "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
     },

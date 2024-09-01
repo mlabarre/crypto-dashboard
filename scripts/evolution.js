@@ -4,15 +4,43 @@ const {Wallet} = require('./classes/portfolio')
 
 const handleEvolutionTransaction = async (wallet, tr) => {
     if (tr.type === "purchase") {
-        return await wallet.buyToken(tr.wallet, tr.symbol, tr.tokens, tr.date, tr.quotation);
+        return await wallet.buyToken(
+            tr.wallet,
+            tr.symbol,
+            tr.tokens,
+            tr.date,
+            tr.quotation
+        );
     } else if (tr.type === "sale") {
-        return await wallet.saleToken(tr.wallet, tr.symbol, tr.tokens);
+        return await wallet.saleToken(
+            tr.wallet,
+            tr.symbol,
+            tr.tokens
+        );
     } else if (tr.type === "swap") {
-        return await wallet.swapToken(tr.wallet, tr.outputSymbol, tr.inputSymbol, tr.outputTokens,
-            tr.inputTokens, tr.inputTokenQuotation, tr.date, tr.fee, tr.feeCurrency, tr.inputTokenQuotationCurrency);
+        return await wallet.swapToken(
+            tr.wallet,
+            tr.outputSymbol,
+            tr.inputSymbol,
+            tr.outputTokens,
+            tr.inputTokens,
+            tr.inputTokenQuotation,
+            tr.date,
+            tr.fee,
+            tr.feeCurrency,
+            tr.inputTokenQuotationCurrency
+        );
     } else if (tr.type === "send") {
-        return await wallet.sendToken(tr.symbol, tr.sendWallet, tr.receiveWallet, tr.sendTokens,
-            tr.receiveTokens, tr.date, tr.fee, tr.feeCurrency);
+        return await wallet.sendToken(
+            tr.symbol,
+            tr.sendWallet,
+            tr.receiveWallet,
+            tr.sendTokens,
+            tr.receiveTokens,
+            tr.date,
+            tr.fee,
+            tr.feeCurrency
+        );
     }
 }
 
@@ -49,6 +77,9 @@ const findCrypto = (symbol, myCryptos) => {
     return null;
 }
 
+const clearNaN = (v) => {
+    return isNaN(v) ? 0.0 : v;
+}
 const valorizeToken = (token, values, usdt) => {
     token.id = values.id;
     token.name = values.name;
@@ -74,6 +105,10 @@ const valorizeToken = (token, values, usdt) => {
         values.last_day_quotation) * 100 / values.last_day_quotation;
     token.variation_on_one_week = (values.quotation -
         values.last_week_quotation) * 100 / values.last_week_quotation;
+    clearNaN(token.variation_on_five_minutes);
+    clearNaN(token.variation_on_one_hour);
+    clearNaN(token.variation_on_one_day);
+    clearNaN(token.variation_on_one_week);
     token.ico = values.ico_address !== undefined;
 }
 

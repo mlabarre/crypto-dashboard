@@ -279,6 +279,16 @@ class MongoHelper {
             await this.mongoClient.close();
         }
     }
+
+    getUSDCValueInFiat = async () => {
+        try {
+            await this.init();
+            return await this.dbo.collection(this.collectionParams).findOne({id: "usdc"})
+        } finally {
+            await this.mongoClient.close();
+        }
+    }
+
     // alerts
 
     getAlerts = async () => {

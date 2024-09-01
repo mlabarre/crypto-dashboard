@@ -23,7 +23,8 @@
             <span class="title-text"> <%= fiat_symbol %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variation: </span>
             <span id="variation" class="title-data"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span id="sizeup" class="sizeup">A</span>&nbsp;<span id="sizedown" class="sizedown">A</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-text" id="date"></span>&nbsp;&nbsp;
+            <input type="checkbox" id="dontShowlower"/><span class="title-text">Cacher montant < 1 <%= fiat_symbol %></span>
         </div>
 
         <table id="cryptos" class="styled-table">
@@ -86,6 +87,9 @@
                 <input type="button" class="button" id="alertAdd" onclick="addOrUpdateAlert();return false;"
                        value="Enregistrer">
             </div>
+        </div>
+        <div class="one_token dontfollow">
+            <input type="checkbox" name="dontfollow" id="dontFollow"/><span>Ne pas/plus suivre</span>
         </div>
         <div class="text-mini">
             Une alerte sur un token particulier prévaut sur une alerte globale.

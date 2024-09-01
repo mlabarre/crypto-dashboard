@@ -57,6 +57,7 @@
       "withdraw_list_url": "https://api.binance.com/sapi/v1/capital/withdraw/history",
       "payments_list_url": "https://api.binance.com/sapi/v1/fiat/payments",
       "convert_url": "https://api.binance.com/sapi/v1/convert/tradeFlow",
+      "dribblet_url": "https://api.binance.com/sapi/v1/asset/dribblet",
       "trades_histo_url": "https://api.binance.com/api/v3/myTrades"
     },
     "coinbase": {

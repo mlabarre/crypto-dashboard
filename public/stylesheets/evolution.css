@@ -118,3 +118,12 @@
 .styled-table th, .styled-table td {
     padding: 4px 5px;
 }
+
+.dontfollow {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    color: cadetblue;
+}
