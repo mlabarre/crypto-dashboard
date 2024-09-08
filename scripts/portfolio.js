@@ -72,7 +72,8 @@ const getCryptoInfo = (symbol, cryptos) => {
     }
 }
 
-const valorize = (tokens, myCryptos) => {
+const valorize = (tokens, myCryptos, dontShowLower) => {
+    let tokensToShow = [];
     for (let i = 0; i < tokens.length; i++) {
         let quotation, id, image, price24h;
         [quotation, id, image, price24h] = getCryptoInfo(tokens[i].token, myCryptos);
@@ -80,8 +81,11 @@ const valorize = (tokens, myCryptos) => {
         tokens[i].image = image;
         tokens[i].id = id;
         tokens[i].price24Percent = price24h;
+        if (tokens[i].value > 1 || dontShowLower === false) {
+            tokensToShow.push(tokens[i]);
+        }
     }
-    return tokens;
+    return tokensToShow;
 }
 
 const findTokenInValuesPerToken = (tokensValue, token) => {
@@ -172,7 +176,7 @@ const getTokenFromObjectList = (list) => {
     return symbols;
 }
 
-const removeValueForIco = (symbolsInMyCryptos, list) => {
+const removeValueForIco = (list) => {
     for (let item in list) {
         if (list[item].token !== '' && isNaN(list[item].value)) {
             list[item].value = "N/A";
@@ -188,11 +192,13 @@ const getInvestIndexInArray = (arr, symbol) => {
 const buildInvestPerToken = (evolutionTokens, perToken) => {
     for (let i = 0; i < evolutionTokens.length; i++) {
         let tokenIndex = getInvestIndexInArray(perToken, evolutionTokens[i].symbol);
-        let token = perToken[tokenIndex];
-        if (token.hasOwnProperty("invest")) {
-            token.invest += evolutionTokens[i].start_price * evolutionTokens[i].tokens;
-        } else {
-            token.invest = evolutionTokens[i].start_price * evolutionTokens[i].tokens;
+        if (tokenIndex >= 0) {
+            let token = perToken[tokenIndex];
+            if (token.hasOwnProperty("invest")) {
+                token.invest += evolutionTokens[i].start_price * evolutionTokens[i].tokens;
+            } else {
+                token.invest = evolutionTokens[i].start_price * evolutionTokens[i].tokens;
+            }
         }
     }
 }
@@ -214,20 +220,19 @@ const buildTokensChain = async () => {
     return handleFees(stock, fees);
 }
 
-const portfolio = async (sortField = "token", sortDirection = "A") => {
+const portfolio = async (dontShowLower, sortField = "token", sortDirection = "A") => {
     let myCryptos = await new MongoHelper().findAllMyCryptos(true);
     let stock = await buildTokensChain();
-    valorize(stock.tokens, myCryptos);
+    valorize(stock.tokens, myCryptos, false);
     let result = buildValuePerToken(stock.getTokens());
-    let symbols = getTokenFromObjectList(await new MongoHelper().findAllSymbolsInMyCryptos(true));
     let sortDirective = sortDirection === "A" ? sortField : "-" + sortField;
-    let perToken = removeValueForIco(symbols, valorize(result.tokensValue, myCryptos));
+    let perToken = removeValueForIco(valorize(result.tokensValue, myCryptos, dontShowLower));
     let evolutionResult = await evolution.evolution();
     buildInvestPerToken(evolutionResult.result.tokens, perToken);
     computeRoi(perToken)
     return {
         total: result.total,
-        perWallet: removeValueForIco(symbols, setTotalPerWallet(stock.getTokens())),
+        perWallet: removeValueForIco(setTotalPerWallet(stock.getTokens())),
         perToken: perToken.sort(utils.fieldSorter([sortDirective]))
     };
 }

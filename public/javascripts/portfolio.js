@@ -1,5 +1,6 @@
 let lastSortField = "token";
 let lastSortDirection = "A";
+let dontShowLower = false;
 
 const signRate = (rate) => {
     if (rate) {
@@ -104,7 +105,7 @@ const getTokens = () => {
     $.ajax(
         {
             type: "GET",
-            url: `/api/portfolio?sortField=${lastSortField}&sortDirection=${lastSortDirection}`,
+            url: `/api/portfolio?dontShowLower=${dontShowLower}&sortField=${lastSortField}&sortDirection=${lastSortDirection}`,
             contentType: "application/json; charset=utf-8",
             accept: "application/json; charset=utf-8"
         })
@@ -122,6 +123,11 @@ const reload = () => {
 }
 
 const init = () => {
+    document.querySelector("#dontShowlower").addEventListener("change", (e) => {
+        dontShowLower = document.querySelector('#dontShowlower').checked;
+        console.log(dontShowLower)
+        reload();
+    });
     reload();
     setInterval(reload, parseInt(refresh) * 1000);
 }

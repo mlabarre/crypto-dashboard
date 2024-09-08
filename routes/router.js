@@ -114,7 +114,7 @@ router
         })
     })
     .get('/api/portfolio', function (request, response, next) {
-        portFolio.portfolio(request.query.sortField, request.query.sortDirection).then((data) => {
+        portFolio.portfolio(request.query.dontShowLower === "true", request.query.sortField, request.query.sortDirection).then((data) => {
             response.send(data);
         })
     })
