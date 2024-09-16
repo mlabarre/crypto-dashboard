@@ -39,10 +39,10 @@ const setAlertsVariables = (tokenAlert) => {
     setAlertValue('lt_1w', tokenAlert.lt1w < 0 ? '' : tokenAlert.lt1w);
 }
 
-const getAlertJson = () => {
+const getAlertJson = (b) => {
     return {
         token: tokenAlert,
-        dontFollow: document.querySelector('#dontFollow').checked,
+        dontFollow: b,
         gt5mn: getAlertValue('gt_5mn') === '' ? -1.0 : parseFloat(getAlertValue('gt_5mn')),
         lt5mn: getAlertValue('lt_5mn') === '' ? -1.0 : parseFloat(getAlertValue('lt_5mn')),
         gt1h:  getAlertValue('gt_1h') === '' ? -1.0 : parseFloat(getAlertValue('gt_1h')),

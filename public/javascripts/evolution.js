@@ -69,12 +69,13 @@ const cancelAlert = () => {
 }
 
 const addOrUpdateAlert = () => {
+    let b = document.querySelector('#dontFollow').checked;
     $.ajax(
         {
             url: "/api/alert",
             method: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(getAlertJson()),
+            data: JSON.stringify(getAlertJson(b)),
             success: (data) => {
                 getDatas();
                 hideAlertPanel();

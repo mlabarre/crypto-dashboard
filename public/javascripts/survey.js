@@ -77,7 +77,7 @@ const addOrUpdateAlert = () => {
             url: "/api/alert-survey",
             method: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(getAlertJson()),
+            data: JSON.stringify(getAlertJson(false)),
             success: (data) => {
                 getDatas();
                 showEvolutionPanel();
